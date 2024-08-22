@@ -35,7 +35,14 @@ public:
 private:
     const Real _delta;
     const Real _radius;
-    const Real _center_x;
-    const Real _center_y;
-    const Real _center_omega;
+    const Real _number_x;
+    const Real _number_y;
+    const Real _omega;
+    std::vector<int> _domain; // 新增domain成员变量
+    std::vector<std::pair<int, int>> _particle_centers_coordinate;
+    std::vector<int> _particle_radius;
+    
+    std::pair<std::vector<std::pair<int, int>>, std::vector<int>> 
+    particleCentersWithoutTemplate(int radius_particle, int particle_number_total, int number_x, int number_y, const std::vector<int>& domain);
+
 };

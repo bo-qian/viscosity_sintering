@@ -1,10 +1,10 @@
 [Mesh]
     type = GeneratedMesh
     dim = 2
-    nx = 100
+    nx = 300
     ny = 100
     xmin = 0
-    xmax = 100
+    xmax = 300
     ymin = 0
     ymax = 100
     elem_type = QUAD4
@@ -20,9 +20,10 @@
             type = MultiParticles
             delta = 3
             radius = 25
-            center_x = 50
-            center_y = 50
-            center_omega = 0.9
+            number_x = 2
+            number_y = 1
+            omega = 0.9
+            domain = '300 100'
         [../]
     [../]
 []
@@ -84,7 +85,7 @@
     l_tol = 1e-4
     l_max_its = 30
   
-    dt = 2.0
+    dt = 0.5
     end_time = 80.0
   []
   

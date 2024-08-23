@@ -46,6 +46,16 @@ MultiParticles::MultiParticles(const InputParameters & parameters)
     // Store the results in the class members
     _particle_centers_coordinate = result.first;
     _particle_radius = result.second;
+
+    // Print the particle centers and radii
+    std::cout << "Particle centers and radii:" << std::endl;
+    for (size_t i = 0; i < _particle_centers_coordinate.size(); ++i)
+    {
+        std::cout << "Center: (" << _particle_centers_coordinate[i].first 
+                  << ", " << _particle_centers_coordinate[i].second << "), "
+                  << "Radius: " << _particle_radius[i] << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 std::pair<std::vector<std::pair<int, int>>, std::vector<int>> 
@@ -53,17 +63,17 @@ MultiParticles::particleCentersWithoutTemplate(int radius_particle, int particle
 {
     std::vector<int> particle_radius(particle_number_total, radius_particle);
     std::vector<std::pair<int, int>> particle_centers_coordinate;
-    
+
     for (int j = 0; j < number_y; ++j) 
     {
         for (int i = 0; i < number_x; ++i) 
         {
-            int x_coordinate = static_cast<int>(domain[0] / 2 + (i + (1 - number_x) / 2) * radius_particle * 2);
-            int y_coordinate = static_cast<int>(domain[1] / 2 + (j + (1 - number_y) / 2) * radius_particle * 2);
-            particle_centers_coordinate.push_back({x_coordinate, y_coordinate});
+            float x_coordinate = domain[0] / 2.0f + (i + (1.0f - number_x) / 2.0f) * radius_particle * 2.0f;
+            float y_coordinate = domain[1] / 2.0f + (j + (1.0f - number_y) / 2.0f) * radius_particle * 2.0f;
+            particle_centers_coordinate.push_back({static_cast<int>(x_coordinate), static_cast<int>(y_coordinate)});
         }
     }
-    
+
     return {particle_centers_coordinate, particle_radius};
 }
 

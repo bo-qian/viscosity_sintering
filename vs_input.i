@@ -1,13 +1,16 @@
 [Mesh]
     type = GeneratedMesh
     dim = 2
-    nx = 300
+    nx = 200
     ny = 100
     xmin = 0
-    xmax = 300
+    xmax = 200
     ymin = 0
     ymax = 100
-    elem_type = QUAD4
+    elem_type = 'QUAD9'
+
+    # type = FileMesh
+    # file = 'gmsh_vs.msh'
 []
 
 [Variables]
@@ -23,7 +26,7 @@
             number_x = 2
             number_y = 1
             omega = 0.9
-            domain = '300 100'
+            domain = '200 100'
         [../]
     [../]
 []

@@ -1,22 +1,13 @@
-// This file is part of the MOOSE framework
-// https://www.mooseframework.org
-//
-// All rights reserved, see COPYRIGHT for full restrictions
-// https://github.com/idaholab/moose/blob/master/COPYRIGHT
-//
-// Licensed under LGPL 2.1, please see LICENSE for details
-// https://www.gnu.org/licenses/lgpl-2.1.html
-
-#include "MultiParticles.h"
+#include "MultiParticles_2D.h"
 #include <cmath>
 #include <iostream>
 #include <vector>
 #include <utility>
 
-registerMooseObject("viscosity_sinteringApp", MultiParticles);
+registerMooseObject("viscosity_sinteringApp", MultiParticles_2D);
 
 InputParameters
-MultiParticles::validParams()
+MultiParticles_2D::validParams()
 {
     InputParameters params = InitialCondition::validParams();
     params.addRequiredParam<Real>("delta", "The thinkness of  interface");
@@ -28,7 +19,7 @@ MultiParticles::validParams()
     return params;
 }
 
-MultiParticles::MultiParticles(const InputParameters & parameters)
+MultiParticles_2D::MultiParticles_2D(const InputParameters & parameters)
   : InitialCondition(parameters), 
   _delta(getParam<Real>("delta")), 
   _radius(getParam<Real>("radius")), 
@@ -59,7 +50,7 @@ MultiParticles::MultiParticles(const InputParameters & parameters)
 }
 
 std::pair<std::vector<std::pair<int, int>>, std::vector<int>> 
-MultiParticles::particleCentersWithoutTemplate(int radius_particle, int particle_number_total, int number_x, int number_y, const std::vector<int>& domain)
+MultiParticles_2D::particleCentersWithoutTemplate(int radius_particle, int particle_number_total, int number_x, int number_y, const std::vector<int>& domain)
 {
     std::vector<int> particle_radius(particle_number_total, radius_particle);
     std::vector<std::pair<int, int>> particle_centers_coordinate;
@@ -79,7 +70,7 @@ MultiParticles::particleCentersWithoutTemplate(int radius_particle, int particle
 
 // This is the primary function custom ICs must implement.
 Real
-MultiParticles::value(const Point & p)
+MultiParticles_2D::value(const Point & p)
 {
     Real total_value = 0.0;
 
@@ -92,7 +83,7 @@ MultiParticles::value(const Point & p)
             std::pow(p(1) - _particle_centers_coordinate[i].second, 2)) - _particle_radius[i];
         
         // Compute the argument of the tanh function
-        double argument = distance * 2 * std::atanh(_omega) / _delta;
+        double argument = distance * 2 * std::atanh(1 - 2 * _omega) / _delta;
         
         // Compute the value for this particle and add it to the total value
         total_value += 0.5 * (1.0 - std::tanh(argument));

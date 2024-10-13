@@ -30,7 +30,7 @@
       
       # Initial expression for phase-field c
       [./InitialCondition]
-          type = MultiParticles
+          type = MultiParticles_2D
           delta = 3
           radius = 25
           number_x = 2
@@ -43,6 +43,16 @@
       order = FIRST
       family = LAGRANGE
   [../]
+  # [./v]
+  #     order = FIRST
+  #     family = LAGRANGE
+  #     type = Vector
+  #     [./InitialCondition]
+  #       type = VectorConstantIC  # 使用矢量初始条件
+  #       x_value = 2.0            # x 分量的初始值
+  #       y_value = 2.0   
+  #     [../]
+  # [../]
 []
 
 
@@ -123,6 +133,12 @@
     kappa_name = kappa_c
     # coupled_variables = 'gr0 gr1 gr2 gr3' # Must be changed as op_num changes. Copy/paste from line 4
   [../]
+  [./CH_CoupleV]
+    type = CHCoupV
+    variable = c
+    v = '100 100'
+  [../]
+
   # [./CH_RBM]
   #   type = MultiGrainRigidBodyMotion
   #   variable = w
@@ -276,12 +292,13 @@
   nl_rel_tol = 1e-07
   nl_abs_tol = 1e-09
   start_time = 0.0
-  end_time = 8000.0
+  end_time = 1000.0
   dt = 2
 []
 
 [Outputs]
   exodus = true
+  interval = 5
   perf_graph = true
   [./display]
     type = Console

@@ -2,18 +2,23 @@
 
 #include "Kernel.h"
 
+/**
+ * Define the Kernel for a convection operator that looks like:
+ *
+ * (-u * v , grad(test))
+ *
+ * where V is a given constant velocity field.
+ */
 class CHCoupV : public Kernel
 {
 public:
-  static InputParameters validParams();
   CHCoupV(const InputParameters & parameters);
+  static InputParameters validParams();
 
 protected:
-  virtual Real computeQpResidual() override;  // 计算残差
-  virtual Real computeQpJacobian() override;  // 计算雅可比矩阵
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
 
 private:
-  const VectorValue & _v;  // 耦合速度变量
+  const VectorVariableValue & _v;
 };
-
-#endif // CUSTOMKERNEL_H

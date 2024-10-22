@@ -190,7 +190,18 @@
   #   prop_names = 'kappa_gr kappa_c M L'
   #   prop_values = '250 4000 4.5 60'
   # [../]
-  
+  [./Parameters]
+    type = MaterialParameters
+    mu_volume = 0.4
+    mu_ratio = 0.001
+    epsilon_Nc = 3.01
+    M = 0.005
+    alpha = 120.00
+    kappa_C = 135.00
+    c = c
+  [../]
+
+
   [./constants]
     type = GenericConstantMaterial
     prop_names = 'kappa_c M'

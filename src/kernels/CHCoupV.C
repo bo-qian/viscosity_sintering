@@ -2,7 +2,6 @@
 
 registerMooseObject("viscosity_sinteringApp", CHCoupV);
 
-
 InputParameters 
 CHCoupV::validParams()
 {
@@ -12,8 +11,7 @@ CHCoupV::validParams()
 }
 
 CHCoupV::CHCoupV(const InputParameters & parameters)
-  : 
-    Kernel(parameters),
+  : Kernel(parameters),
     _v(coupledVectorValue("v"))  // 初始化速度矢量变量
 {
 }

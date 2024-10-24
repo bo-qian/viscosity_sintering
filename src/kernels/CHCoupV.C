@@ -6,6 +6,7 @@ InputParameters
 CHCoupV::validParams()
 {
   InputParameters params = Kernel::validParams();
+  params.addClassDescription("velocity coupled into CH equation");
   params.addRequiredCoupledVar("v", "The velocity variable coupled into CH equation");
   return params;
 }

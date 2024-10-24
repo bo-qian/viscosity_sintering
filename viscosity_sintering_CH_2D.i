@@ -136,7 +136,7 @@
   [./CH_CoupleV]
     type = CHCoupV
     variable = c
-    v = '100 100'
+    v = '100 100 0'
   [../]
 
   # [./CH_RBM]
@@ -309,7 +309,7 @@
 
 [Outputs]
   exodus = true
-  interval = 5
+  time_step_interval = 5
   perf_graph = true
   [./display]
     type = Console

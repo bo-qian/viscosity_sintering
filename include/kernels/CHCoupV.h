@@ -7,7 +7,7 @@
  *
  * (-u * v , grad(test))
  *
- * where V is a given constant velocity field.
+ * where v is a coupled.
  */
 class CHCoupV : public Kernel
 {

@@ -1,3 +1,14 @@
+/*
+ * @Author: Bo Qian
+ * @Date: 2024-10-12 20:20:46
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-10-29 13:43:08
+ * @LastEditors: Bo Qian
+ * @Description: Kernel for CH equation coupled with velocity
+ * @FilePath: /viscosity_sintering/src/kernels/CHCoupV.C
+ */
+
 #include "CHCoupV.h"
 
 registerMooseObject("viscosity_sinteringApp", CHCoupV);

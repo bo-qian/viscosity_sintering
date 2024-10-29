@@ -1,3 +1,14 @@
+/*** 
+ * @Author: Bo Qian
+ * @Date: 2024-10-13 16:38:56
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-10-29 13:44:10
+ * @LastEditors: Bo Qian
+ * @Description: Header file for the viscosity term in the Stokes equation
+ * @FilePath: /viscosity_sintering/include/kernels/StokVisco.h
+ */
+
 #ifndef EXCLUDE_THIS_FILE
 
 #pragma once

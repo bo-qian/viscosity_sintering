@@ -1,3 +1,14 @@
+/*
+ * @Author: Bo Qian
+ * @Date: 2024-10-24 09:08:32
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-10-29 13:45:42
+ * @LastEditors: Bo Qian
+ * @Description: Incompressibility Kernel
+ * @FilePath: /viscosity_sintering/src/kernels/Incompressibility.C
+ */
+
 # include "Incompressibility.h"
 
 registerMooseObject("viscosity_sinteringApp", Incompressibility);

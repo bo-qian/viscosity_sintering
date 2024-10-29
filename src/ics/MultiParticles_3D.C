@@ -1,3 +1,14 @@
+/*
+ * @Author: Bo Qian
+ * @Date: 2024-10-12 20:20:46
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-10-29 13:46:43
+ * @LastEditors: Bo Qian
+ * @Description: 3D Initial Condition for MultiParticles
+ * @FilePath: /viscosity_sintering/src/ics/MultiParticles_3D.C
+ */
+
 #include "MultiParticles_3D.h"
 #include <cmath>
 #include <iostream>

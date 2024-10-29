@@ -1,3 +1,14 @@
+/*** 
+ * @Author: Bo Qian
+ * @Date: 2024-10-21 09:55:05
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-10-29 13:46:12
+ * @LastEditors: Bo Qian
+ * @Description: Header file for Material Parameters
+ * @FilePath: /viscosity_sintering/include/materials/MaterialParameters.h
+ */
+
 # pragma once
 
 # include "DerivativeMaterialInterface.h"

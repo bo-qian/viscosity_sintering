@@ -1,3 +1,14 @@
+/*** 
+ * @Author: Bo Qian
+ * @Date: 2024-10-12 20:20:46
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-10-29 13:43:39
+ * @LastEditors: Bo Qian
+ * @Description: Header file for CH equation coupled with velocity
+ * @FilePath: /viscosity_sintering/include/kernels/CHCoupV.h
+ */
+
 #pragma once
 
 #include "Kernel.h"

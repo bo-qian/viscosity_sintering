@@ -1,3 +1,14 @@
+/*** 
+ * @Author: Bo Qian
+ * @Date: 2024-10-12 20:20:46
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-10-29 13:46:25
+ * @LastEditors: Bo Qian
+ * @Description: Head File of MultiParticles_3D
+ * @FilePath: /viscosity_sintering/include/ics/MultiParticles_3D.h
+ */
+
 #pragma once
 
 // MOOSE Includes

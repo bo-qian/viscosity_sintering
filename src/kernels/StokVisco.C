@@ -1,3 +1,14 @@
+/*
+ * @Author: Bo Qian
+ * @Date: 2024-10-13 16:38:35
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-10-29 13:45:17
+ * @LastEditors: Bo Qian
+ * @Description: Kernel for the viscosity term in the Stokes equation
+ * @FilePath: /viscosity_sintering/src/kernels/StokVisco.C
+ */
+
 #ifndef EXCLUDE_THIS_FILE
 
 #include "StokVisco.h"
@@ -42,7 +53,7 @@ StokVisco::computeQpResidual()
     // 访问 _mu_eff
     Real mu_eff = materialParams._mu_eff[_qp];
   
-  return mu_eff * ((_grad_u[_qp] + _grad_u[_qp].transpose()) * _grad_test[_i][_qp]);
+  return mu_eff * ((_grad_u[_qp] + _grad_u[_qp].tr()) * _grad_test[_i][_qp]);
 }
 
 Real
@@ -59,7 +70,7 @@ StokVisco::computeQpJacobian()
     // 访问 _mu_eff
     Real mu_eff = materialParams._mu_eff[_qp];
 
-	return -mu_eff * ((_grad_phi[_j][_qp] + _grad_phi[_j][_qp].transpose()) * _grad_test[_i][_qp]);
+	return -mu_eff * ((_grad_phi[_j][_qp] + _grad_phi[_j][_qp].tr()) * _grad_test[_i][_qp]);
 }
 
 // Real

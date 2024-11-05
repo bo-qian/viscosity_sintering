@@ -43,6 +43,18 @@
       order = FIRST
       family = LAGRANGE
   [../]
+  [./u]
+      order = FIRST
+      family = LAGRANGE
+  [../]
+  [./v]
+      order = FIRST
+      family = LAGRANGE
+  [../]
+
+
+
+
   # [./v]
   #     order = FIRST
   #     family = LAGRANGE

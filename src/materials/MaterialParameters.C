@@ -3,11 +3,13 @@
  * @Date: 2024-10-21 09:54:40
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-10-29 13:40:05
+ * @LastEditTime: 2024-10-29 14:35:01
  * @LastEditors: Bo Qian
  * @Description: 
  * @FilePath: /viscosity_sintering/src/materials/MaterialParameters.C
  */
+
+#ifndef EXCLUDE_THIS_FILE
 
 # include "MaterialParameters.h"
 
@@ -30,21 +32,21 @@ MaterialParameters::validParams()
 
 MaterialParameters::MaterialParameters(const InputParameters & parameters)
 	: DerivativeMaterialInterface<Material>(parameters),
-		_mu_volume(getParam<Real>("mu_volume")),
-		_mu_ratio(getParam<Real>("mu_ratio")),
-		_epsilon_Nc(getParam<Real>("epsilon_Nc")),
-		_M(getParam<Real>("M")),
-		_alpha(getParam<Real>("alpha")),
-		_kappa_C(getParam<Real>("kappa_C")),
-		_Nc(declareProperty<Real>("Nc")),
-		_c(coupledValue("c")),
-    _c_var(coupled("c")),
-    _c_name(getVar("c", 0)->name()),
-		_dNdc(declarePropertyDerivative<Real>("Nc", _c_name)),
-		_F_loc(declareProperty<Real>("F_loc")),
-		_dF_loc(declarePropertyDerivative<Real>("F_loc", _c_name)),
-		_mu_eff(declareProperty<Real>("mu_eff")),
-		_dmu_eff(declarePropertyDerivative<Real>("mu_eff", _c_name))
+	_mu_volume(getParam<Real>("mu_volume")),
+	_mu_ratio(getParam<Real>("mu_ratio")),
+	_epsilon_Nc(getParam<Real>("epsilon_Nc")),
+	_M(getParam<Real>("M")),
+	_alpha(getParam<Real>("alpha")),
+	_kappa_C(getParam<Real>("kappa_C")),
+	_Nc(declareProperty<Real>("Nc")),
+	_c(coupledValue("c")),
+	_c_var(coupled("c")),
+	_c_name(getVar("c", 0)->name()),
+	_dNdc(declarePropertyDerivative<Real>("Nc", _c_name)),
+	_F_loc(declareProperty<Real>("F_loc")),
+	_dF_loc(declarePropertyDerivative<Real>("F_loc", _c_name)),
+	_mu_eff(declareProperty<Real>("mu_eff")),
+	_dmu_eff(declarePropertyDerivative<Real>("mu_eff", _c_name))
 {
 
 }
@@ -69,3 +71,5 @@ MaterialParameters::ComputeQpMuEff()
 	// Compute mu_eff
 	_mu_eff[_qp] = (_mu_ratio + (1 - _mu_ratio) * _Nc[_qp]) * _mu_volume;
 }
+
+#endif

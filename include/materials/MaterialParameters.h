@@ -3,16 +3,18 @@
  * @Date: 2024-10-21 09:55:05
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-10-29 13:46:12
+ * @LastEditTime: 2024-10-29 14:34:35
  * @LastEditors: Bo Qian
  * @Description: Header file for Material Parameters
  * @FilePath: /viscosity_sintering/include/materials/MaterialParameters.h
  */
 
+#ifndef EXCLUDE_THIS_FILE
+
 # pragma once
 
-# include "DerivativeMaterialInterface.h"
-# include "Material.h"
+#include "DerivativeMaterialInterface.h"
+#include "Material.h"
 
 class MaterialParameters : public DerivativeMaterialInterface<Material>
 {
@@ -43,3 +45,5 @@ public:
 	MaterialProperty<Real> & _dmu_eff;
 
 };
+
+#endif

@@ -3,7 +3,7 @@
  * @Date: 2024-10-29 11:01:08
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-10-29 13:40:47
+ * @LastEditTime: 2024-11-05 21:09:17
  * @LastEditors: Bo Qian
  * @Description: Header file for Viscosity Sintering Material
  * @FilePath: /viscosity_sintering/include/materials/ViscositySinteringMaterial.h
@@ -12,13 +12,13 @@
 #pragma once
 
 #include "Material.h"
+#include "DerivativeMaterialInterface.h"
 
-class ViscositySinteringMaterial : public Material
+class ViscositySinteringMaterial : public DerivativeMaterialInterface<Material>
 {
 	public:
-		ViscositySinteringMaterial(const InputParameters & parameters);
-
 		static InputParameters validParams();
+		ViscositySinteringMaterial(const InputParameters & parameters);
 
 	protected:
 		virtual void computeQpProperties() override;
@@ -44,3 +44,5 @@ class ViscositySinteringMaterial : public Material
 		MaterialProperty<Real> & _dmu_eff;
 
 };
+
+extern template class DerivativeMaterialInterface<Material>;

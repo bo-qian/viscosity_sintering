@@ -3,7 +3,7 @@
  * @Date: 2024-10-24 09:08:53
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-10-29 13:46:02
+ * @LastEditTime: 2024-11-06 22:47:02
  * @LastEditors: Bo Qian
  * @Description: Header file for Incompressibility Kernel
  * @FilePath: /viscosity_sintering/include/kernels/Incompressibility.h
@@ -22,11 +22,19 @@ class Incompressibility : public Kernel
 		static InputParameters validParams();
 
 	protected:
-		virtual Real computeQpResidual();
-		virtual Real computeQpJacobian();
+		virtual RealVectorValue computeQpVelocity();
+		virtual Real computeQpDivVelocity();
+
+		virtual Real computeQpResidual() override;
+		virtual Real computeQpJacobian() override;
 	
 	private:
-		const VectorVariableValue & _v;
-		const unsigned int _v_var;
-		const VariableValue & _div_v;
+		const VariableValue & _u_velocity;
+		const VariableValue & _v_velocity;
+		const VariableValue & _w_velocity;
+
+		const VariableGradient & _grad_u_velocity;
+		const VariableGradient & _grad_v_velocity;
+		const VariableGradient & _grad_w_velocity;
+ 
 };

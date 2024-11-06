@@ -3,7 +3,7 @@
  * @Date: 2024-10-12 20:20:46
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-10-29 13:43:39
+ * @LastEditTime: 2024-11-06 22:29:37
  * @LastEditors: Bo Qian
  * @Description: Header file for CH equation coupled with velocity
  * @FilePath: /viscosity_sintering/include/kernels/CHCoupV.h
@@ -27,9 +27,14 @@ public:
   static InputParameters validParams();
 
 protected:
+  virtual RealVectorValue computeQpVelocity();
+
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
 
 private:
-  const VectorVariableValue & _v;
+  // const VectorVariableValue & _v;
+  const VariableValue & _u_velocity;
+  const VariableValue & _v_velocity;
+  const VariableValue & _w_velocity;
 };

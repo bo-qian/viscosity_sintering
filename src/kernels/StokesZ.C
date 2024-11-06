@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:57:41
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-05 20:41:47
+ * @LastEditTime: 2024-11-06 23:03:32
  * @LastEditors: Bo Qian
  * @Description: Kernel of z-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesZ.C
@@ -21,13 +21,14 @@ StokesZ::validParams()
   params.addRequiredCoupledVar("u", "x-velocity variable");
   params.addRequiredCoupledVar("v", "y-velocity variable");
 	params.addRequiredCoupledVar("p", "Pressure variable");
+	params.addRequiredCoupledVar("c", "variant of phase field");
   return params;
 }
 
 StokesZ::StokesZ(const InputParameters & parameters)
   : Kernel(parameters),
   _mu_eff(getMaterialProperty<Real>("mu_eff")),
-  _kappa_C(getMaterialProperty<Real>("kappa_C")),
+  _kappa_c(getMaterialProperty<Real>("kappa_C")),
 
   // Coupled variables
   _u_vel(coupledValue("u")),
@@ -61,7 +62,7 @@ StokesZ::pressureTermZ()
 Real
 StokesZ::surfaceTensionTermZ()
 {
-	return _kappa_C[_qp] * (_grad_c[_qp](0) * _grad_c[_qp](2) * _grad_test[_i][_qp](0)
+	return _kappa_c[_qp] * (_grad_c[_qp](0) * _grad_c[_qp](2) * _grad_test[_i][_qp](0)
 													+ _grad_c[_qp](1) * _grad_c[_qp](2) * _grad_test[_i][_qp](1)
 													+ _grad_c[_qp](2) * _grad_c[_qp](2) * _grad_test[_i][_qp](2));
 }

@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 14:05:01
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-05 20:42:32
+ * @LastEditTime: 2024-11-06 23:18:17
  * @LastEditors: Bo Qian
  * @Description: Kernel of x-component of the Stokes equation
  * @FilePath: /viscosity_sintering/include/kernels/StokesX.h
@@ -12,6 +12,7 @@
 #pragma once
 
 #include "Kernel.h"
+#include "MooseEnum.h"
 
 class StokesX : public Kernel
 {
@@ -21,12 +22,15 @@ public:
 
 protected:
 
+	MooseEnum _dim;
+	enum Dimension { two_dimension, three_dimension };
+
 	// virtual Real computeQpResidual() override
 	// {
 	// 	return 0.0;
 	// }
 
-  // virtual Real computeQpJacobian() 
+  // virtual Real computeQpJacobian() override
 	// {
 	// 	return 0.0;
 	// }
@@ -38,13 +42,13 @@ protected:
 
 	virtual Real computeQpResidual() override;
 
-	virtual Real velocityTermX();
+	virtual Real velocityTermX(Dimension type);
 	virtual Real pressureTermX();
-	virtual Real surfaceTensionTermX();
-	virtual Real ResidualX();
+	virtual Real surfaceTensionTermX(Dimension type);
+	virtual Real ResidualX(Dimension type);
 
 	const MaterialProperty<Real> & _mu_eff;
-	const MaterialProperty<Real> & _kappa_C;
+	const MaterialProperty<Real> & _kappa_c;
 
 	const VariableValue & _c;
 	const VariableGradient & _grad_c;

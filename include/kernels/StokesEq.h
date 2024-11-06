@@ -13,17 +13,20 @@
 
 #pragma once
 
-#include "Kernel.h"
+#include "StokesX"
+// #include "StokesY"
+// #include "StokesZ"
 
-class StokesEq : public Kernel
+class StokesEq : public StokesX, public StokesY, public StokesZ
 {
 	public:
 		StokesEq(const InputParameters & parameters);
 		static InputParameters validParams();
 
 	protected:
-		virtual Real computeQpResidual() override;
-		virtual Real computeQpJacobian() override;
+		const Real 
+		virtual Real computeQpResidual();
+		// virtual Real computeQpJacobian();
 
 };
 

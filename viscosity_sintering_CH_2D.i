@@ -25,31 +25,35 @@
 
 [Variables]
   [./c]
-      order = FIRST
-      family = LAGRANGE
-      
-      # Initial expression for phase-field c
-      [./InitialCondition]
-          type = MultiParticles_2D
-          delta = 3
-          radius = 25
-          number_x = 2
-          number_y = 2
-          omega = 0.05
-          domain = '200 200'
-      [../]
+    order = FIRST
+    family = LAGRANGE
+    
+    # Initial expression for phase-field c
+    [./InitialCondition]
+        type = MultiParticles_2D
+        delta = 3
+        radius = 25
+        number_x = 2
+        number_y = 2
+        omega = 0.05
+        domain = '200 200'
+    [../]
   [../]
-  [./w]
-      order = FIRST
-      family = LAGRANGE
+  [./mu]
+    order = FIRST
+    family = LAGRANGE
   [../]
   [./u]
-      order = FIRST
-      family = LAGRANGE
+    order = FIRST
+    family = LAGRANGE
   [../]
   [./v]
-      order = FIRST
-      family = LAGRANGE
+    order = FIRST
+    family = LAGRANGE
+  [../]
+  [./p]
+    order = FIRST
+    family = LAGRANGE
   [../]
 
 
@@ -129,27 +133,54 @@
   # Cahn Hilliard kernels
   [./dt_w]
     type = CoupledTimeDerivative
-    variable = w
+    variable = mu
     v = c
   [../]
   [./CH_wres]
     type = SplitCHWRes
-    variable = w
+    variable = mu
     mob_name = M
   [../]
   [./CH_Parsed]
     type = SplitCHParsed
     variable = c
     f_name = f_loc
-    w = w
+    w = mu
     kappa_name = kappa_c
     # coupled_variables = 'gr0 gr1 gr2 gr3' # Must be changed as op_num changes. Copy/paste from line 4
   [../]
   [./CH_CoupleV]
     type = CHCoupV
     variable = c
-    v = '100 100 0'
+    x_velocity = u
+    y_velocity = v
   [../]
+  [./StokesX]
+    type = StokesX
+    variable = u
+    dim = 2
+    c = c
+    p = p
+    v = v
+    w = 0
+  [../]
+  [./StokesY]
+    type = StokesY
+    variable = v
+    dim = 2
+    c = c
+    p = p
+    u = u
+    w = 0
+  [../]
+  [./Incompressibility]
+    type = Incompressibility
+    variable = p
+    x_velocity = u
+    y_velocity = v
+  [../]
+
+
 
   # [./CH_RBM]
   #   type = MultiGrainRigidBodyMotion
@@ -202,20 +233,26 @@
   #   prop_names = 'kappa_gr kappa_c M L'
   #   prop_values = '250 4000 4.5 60'
   # [../]
-  [./Parameters]
-    type = MaterialParameters
-    mu_volume = 0.4
-    mu_ratio = 0.001
-    epsilon_Nc = 3.01
-    M = 0.005
-    alpha = 120.00
-    kappa_C = 135.00
+  [./ViscosityMaterial]
+    type = ViscositySinteringMaterial
     c = c
   [../]
+
+  # [./Parameters]
+  #   type = MaterialParameters
+  #   mu_volume = 0.4
+  #   mu_ratio = 0.001
+  #   epsilon_Nc = 3.01
+  #   M = 0.005
+  #   alpha = 120.00
+  #   kappa_C = 135.00
+  #   c = c
+  # [../]
 
 
   [./constants]
     type = GenericConstantMaterial
+    block = 0
     prop_names = 'kappa_c M'
     prop_values = '135.00 0.005'
   [../]
@@ -304,24 +341,24 @@
 [Executioner]
   type = Transient
   scheme = bdf2
-  solve_type = NEWTON
+  solve_type = 'PJFNK'
   petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type
                          -sub_pc_type -pc_asm_overlap'
   petsc_options_value = 'asm      31                  preonly
                          ilu          2'
-  l_tol = 1e-05
+  l_tol = 1e-04
   nl_max_its = 30
-  l_max_its = 30
-  nl_rel_tol = 1e-07
-  nl_abs_tol = 1e-09
+  l_max_its = 50
+  nl_rel_tol = 1e-06
+  nl_abs_tol = 1e-08
   start_time = 0.0
   end_time = 1000.0
-  dt = 2
+  dt = 0.05
 []
 
 [Outputs]
   exodus = true
-  time_step_interval = 5
+  time_step_interval = 20
   perf_graph = true
   [./display]
     type = Console

@@ -12,25 +12,22 @@
 #ifndef EXCLUDE_THIS_FILE
 
 #include "StokesEq.h"
-#include "StokesX.h"
-#include "StokesY.h"
-#include "StokesZ.h"
+#include "MooseEnum.h"
 
 registerMooseObject("viscosity_sinteringApp", StokesEq);
 
 InputParameters
 StokesEq::validParams()
 {
-  InputParameters params = Kernel::validParams();
+  InputParameters params = StokesX::validParams();
+	MooseEnum dimension("2D 3D");
   params.addClassDescription("Kernel of the Stokes equation");
+	params.addRequiredParam<MooseEnum>("Dimension", dimension, "The X, Y, or Z component");
   return params;
 }
 
 StokesEq::StokesEq(const InputParameters & parameters)
-  : Kernel(parameters)
-	_StokesX(parameters),
-	_StokesY(parameters),
-	_StokesZ(parameters)
+  : StokesX(parameters)
 {
   
 }

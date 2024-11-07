@@ -55,82 +55,32 @@
     order = FIRST
     family = LAGRANGE
   [../]
-
-
-
-
-  # [./v]
-  #     order = FIRST
-  #     family = LAGRANGE
-  #     type = Vector
-  #     [./InitialCondition]
-  #       type = VectorConstantIC  # 使用矢量初始条件
-  #       x_value = 2.0            # x 分量的初始值
-  #       y_value = 2.0   
-  #     [../]
-  # [../]
 []
 
-
-# [Variables]
-#   [./c]
-#   [../]
-#   [./w]
-#   [../]
-#   [./PolycrystalVariables] # Automatically creates order parameter variables
-#   [../]
-# []
-
-# [AuxVariables]
-#   [./bnds]
-#   [../]
-#   [./force]
-#     order = CONSTANT
-#     family = MONOMIAL
-#   [../]
-#   [./free_energy]
-#     order = CONSTANT
-#     family = MONOMIAL
-#   [../]
-#   [./unique_grains]
-#     order = CONSTANT
-#     family = MONOMIAL
-#   [../]
-#   [./var_indices]
-#     order = CONSTANT
-#     family = MONOMIAL
-#   [../]
-#   [./centroids]
-#     order = CONSTANT
-#     family = MONOMIAL
-#   [../]
-# []
-
-# [Functions]
-#   [./load_x]
-#     # Defines the force on the grains in the x-direction
-#     type = ParsedFunction
-#     expression = 0.005*cos(x*pi/600)
-#   [../]
-#   [./load_y]
-#     # Defines the force on the grains in the y-direction
-#     type = ConstantFunction
-#     value = 0.002
-#   [../]
-# []
-
 [Kernels]
-  # [./RigidBodyMultiKernel]
-  #   # Creates all of the necessary Allen Cahn kernels automatically
-  #   c = c
-  #   f_name = f_loc
-  #   mob_name = L
-  #   kappa_name = kappa_gr
-  #   grain_force = grain_force
-  #   grain_volumes = grain_volumes
-  #   grain_tracker_object = grain_center
-  # [../]
   # Cahn Hilliard kernels
+  [./StokesX]
+    type = StokesX
+    variable = u
+    dim = 2
+    c = c
+    p = p
+    v = v
+  [../]
+  [./StokesY]
+    type = StokesY
+    variable = v
+    dim = 2
+    c = c
+    p = p
+    u = u
+  [../]
+  [./Incompressibility]
+    type = Incompressibility
+    variable = p
+    x_velocity = u
+    y_velocity = v
+  [../]
   [./dt_w]
     type = CoupledTimeDerivative
     variable = mu
@@ -147,7 +97,6 @@
     f_name = f_loc
     w = mu
     kappa_name = kappa_c
-    # coupled_variables = 'gr0 gr1 gr2 gr3' # Must be changed as op_num changes. Copy/paste from line 4
   [../]
   [./CH_CoupleV]
     type = CHCoupV
@@ -155,75 +104,22 @@
     x_velocity = u
     y_velocity = v
   [../]
-  [./StokesX]
-    type = StokesX
-    variable = u
-    dim = 2
-    c = c
-    p = p
-    v = v
-    w = 0
-  [../]
-  [./StokesY]
-    type = StokesY
-    variable = v
-    dim = 2
-    c = c
-    p = p
-    u = u
-    w = 0
-  [../]
-  [./Incompressibility]
-    type = Incompressibility
-    variable = p
-    x_velocity = u
-    y_velocity = v
-  [../]
-
-
-
-  # [./CH_RBM]
-  #   type = MultiGrainRigidBodyMotion
-  #   variable = w
-  #   c = c
-  #   v = 'gr0 gr1 gr2 gr3'
-  #   grain_force = grain_force
-  #   grain_volumes = grain_volumes
-  #   grain_tracker_object = grain_center
-  # [../]
 []
 
-# [AuxKernels]
-#   [./force_x]
-#     type = FunctionAux
-#     variable = force
-#     function = load_x
-#   [../]
-#   [./force_y]
-#     type = FunctionAux
-#     variable = force
-#     function = load_y
-#   [../]
-#   [./energy_density]
-#     type = TotalFreeEnergy
-#     variable = free_energy
-#     f_name = f_loc
-#     kappa_names = kappa_c
-#     interfacial_vars = c
-#   [../]
-#   [./bnds]
-#     type = BndsCalcAux
-#     variable = bnds
-#   [../]
-# []
+
 
 [BCs]
-  [./bcs]
-    #zero flux BC
-    type = NeumannBC
-    value = 0
-    variable = c
+  [./bcs_u]
+    type = DirichletBC
+    variable = u
     boundary = '0 1 2 3'
+    value = 0
+  [../]
+  [./bcs_v]
+    type = DirichletBC
+    variable = v
+    boundary = '0 1 2 3'
+    value = 0
   [../]
 []
 
@@ -237,17 +133,6 @@
     type = ViscositySinteringMaterial
     c = c
   [../]
-
-  # [./Parameters]
-  #   type = MaterialParameters
-  #   mu_volume = 0.4
-  #   mu_ratio = 0.001
-  #   epsilon_Nc = 3.01
-  #   M = 0.005
-  #   alpha = 120.00
-  #   kappa_C = 135.00
-  #   c = c
-  # [../]
 
 
   [./constants]
@@ -264,75 +149,14 @@
     constant_expressions = '120.00'
     coupled_variables = 'c'
     expression = 'A*c^2*(1-c)^2'
-    # coupled_variables = 'c gr0 gr1 gr2 gr3' #Must be changed as op_num changes. Copy/paste from line 4
-    # expression = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
-    #             -4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)
-    #             +3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)'
-                                  #Copy/paste from lines 5-6
     derivative_order = 2
   [../]
-
-
-  # [./free_energy]
-  #   type = DerivativeParsedMaterial
-  #   property_name = f_loc
-  #   constant_names = 'A B'
-  #   constant_expressions = '450 1.5'
-  #   coupled_variables = 'c gr0 gr1 gr2 gr3' #Must be changed as op_num changes. Copy/paste from line 4
-  #   expression = 'A*c^2*(1-c)^2+B*(c^2+6*(1-c)*(gr0^2+gr1^2+gr2^2+gr3^2)
-  #               -4*(2-c)*(gr0^3+gr1^3+gr2^3+gr3^3)
-  #               +3*(gr0^2+gr1^2+gr2^2+gr3^2)^2)'
-  #                                #Copy/paste from lines 5-6
-  #   derivative_order = 2
-  # [../]
-  # [./force_density]
-  #   type = ExternalForceDensityMaterial
-  #   c = c
-  #   k = 10.0
-  #   force_x = load_x
-  #   force_y = load_y
-  # [../]
 []
 
-# [Postprocessors]
-#   [./total_energy]
-#     type = ElementIntegralVariablePostprocessor
-#     variable = free_energy
-#     execute_on = 'initial timestep_end'
-#   [../]
-# []
 
-# [VectorPostprocessors]
-#   [./forces]
-#     type = GrainForcesPostprocessor
-#     grain_force = grain_force
-#   [../]
-#   [./grain_volumes]
-#     type = FeatureVolumeVectorPostprocessor
-#     flood_counter = grain_center
-#     execute_on = 'initial timestep_begin'
-#   [../]
-# []
-
-# [UserObjects]
-#   [./grain_center]
-#     type = GrainTracker
-#     outputs = none
-#     compute_var_to_feature_map = true
-#     execute_on = 'initial timestep_begin'
-#   [../]
-#   [./grain_force]
-#     type = ComputeExternalGrainForceAndTorque
-#     grain_data = grain_center
-#     c = c
-#     etas = 'gr0 gr1 gr2 gr3'
-#     force_density = force_density_ext
-#     execute_on = 'linear nonlinear'
-#   [../]
-# []
 
 [Preconditioning]
-  [./coupled]
+  [./cw_coupling]
     type = SMP
     full = true
   [../]
@@ -340,21 +164,21 @@
 
 [Executioner]
   type = Transient
+  solve_type = NEWTON
   scheme = bdf2
-  solve_type = 'PJFNK'
-  petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type
-                         -sub_pc_type -pc_asm_overlap'
-  petsc_options_value = 'asm      31                  preonly
-                         ilu          2'
-  l_tol = 1e-04
-  nl_max_its = 30
-  l_max_its = 50
-  nl_rel_tol = 1e-06
-  nl_abs_tol = 1e-08
-  start_time = 0.0
-  end_time = 1000.0
-  dt = 0.05
+
+  petsc_options_iname = '-pc_type -sub_pc_type'
+  petsc_options_value = 'asm      lu          '
+
+  l_max_its = 30
+  l_tol = 1e-4
+  nl_max_its = 20
+  nl_rel_tol = 1e-9
+
+  dt = 2.0
+  end_time = 20.0
 []
+
 
 [Outputs]
   exodus = true
@@ -366,56 +190,7 @@
   [../]
 []
 
-# [ICs]
-#   [./concentration_IC]
-#     type = SpecifiedSmoothCircleIC
-#     x_positions = '150 450 150 450'
-#     y_positions = '150 150 450 450'
-#     z_positions = '0   0   0   0'
-#     radii =       '120 120 120 120'
-#     variable = c
-#     invalue = 1.0
-#     outvalue = 0.0
-#     int_width = 25
-#   [../]
-#   [./gr0_IC]
-#     type = SmoothCircleIC
-#     variable = gr0
-#     x1 = 150
-#     y1 = 150
-#     radius = 120
-#     invalue = 1.0
-#     outvalue = 0.0
-#     int_width = 25
-#   [../]
-#   [./gr1_IC]
-#     type = SmoothCircleIC
-#     variable = gr1
-#     x1 = 450
-#     y1 = 150
-#     radius = 120
-#     invalue = 1.0
-#     outvalue = 0.0
-#     int_width = 25
-#   [../]
-#   [./gr2_IC]
-#     type = SmoothCircleIC
-#     variable = gr2
-#     x1 = 150
-#     y1 = 450
-#     radius = 120
-#     invalue = 1.0
-#     outvalue = 0.0
-#     int_width = 25
-#   [../]
-#   [./gr3_IC]
-#     type = SmoothCircleIC
-#     variable = gr3
-#     x1 = 450
-#     y1 = 450
-#     radius = 120
-#     invalue = 1.0
-#     outvalue = 0.0
-#     int_width = 25
-#   [../]
-# []
+[Debug]
+  show_material_props = true
+  # show_execution_order = true
+[]

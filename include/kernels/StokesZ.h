@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:57:14
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-06 23:00:42
+ * @LastEditTime: 2024-11-07 14:33:33
  * @LastEditors: Bo Qian
  * @Description: Kernel of z-component of the Stokes equation
  * @FilePath: /viscosity_sintering/include/kernels/StokesZ.h
@@ -37,6 +37,7 @@ protected:
 	// }
 
 	virtual Real computeQpResidual() override;
+	virtual Real computeQpJacobian() override;
 
 	virtual Real velocityTermZ();
 	virtual Real pressureTermZ();

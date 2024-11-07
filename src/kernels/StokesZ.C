@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:57:41
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-06 23:03:32
+ * @LastEditTime: 2024-11-07 14:34:58
  * @LastEditors: Bo Qian
  * @Description: Kernel of z-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesZ.C
@@ -77,4 +77,12 @@ Real
 StokesZ::computeQpResidual()
 {
 	return ResidualZ();
+}
+
+Real
+StokesZ::computeQpJacobian()
+{
+	return _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](0)
+				+ _grad_phi[_j][_qp](1) * _grad_test[_i][_qp](1)
+				+ (_grad_phi[_j][_qp](2) + _grad_phi[_j][_qp](2)) * _grad_test[_i][_qp](2);
 }

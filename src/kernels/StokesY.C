@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:46:17
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-06 23:29:28
+ * @LastEditTime: 2024-11-07 14:32:03
  * @LastEditors: Bo Qian
  * @Description: Kernel of y-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesY.C
@@ -21,7 +21,7 @@ StokesY::validParams()
 	params.addRequiredParam<MooseEnum>("dim", dims, "The dimension of the simulation");
 	params.addClassDescription("Kernel of y-component of the Stokes equation");
   params.addRequiredCoupledVar("u", "x-velocity variable");
-  params.addRequiredCoupledVar("w", "z-velocity variable");
+  params.addCoupledVar("w", 0, "z-velocity variable");
   params.addRequiredCoupledVar("p", "Pressure variable");
 	params.addRequiredCoupledVar("c", "variant of phase field");
   return params;
@@ -119,4 +119,21 @@ StokesY::computeQpResidual()
 		default:
 			mooseError("Invalid dimension value, should be 2 or 3");
 	}
+}
+
+Real
+StokesY::computeQpJacobian()
+{
+  switch (_dim)
+  {
+    case 2:
+      return _grad_phi[_j][_qp](0)* _grad_test[_i][_qp](0)
+					 + (_grad_phi[_j][_qp](1) + _grad_phi[_j][_qp](1)) * _grad_test[_i][_qp](1);
+    case 3:
+      return _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](0)
+					 + (_grad_phi[_j][_qp](1) + _grad_phi[_j][_qp](1)) * _grad_test[_i][_qp](1)
+					 + _grad_phi[_j][_qp](2) * _grad_test[_i][_qp](2);
+    default:
+      mooseError("Invalid dimension value, should be 2 or 3");
+  }
 }

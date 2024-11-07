@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 14:11:36
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-06 23:27:41
+ * @LastEditTime: 2024-11-07 14:29:18
  * @LastEditors: Bo Qian
  * @Description: Kernel of x-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesX.C
@@ -119,5 +119,22 @@ StokesX::computeQpResidual()
 			return ResidualX(Dimension::three_dimension);
 		default:
 			mooseError("Invalid dimension value, should be 2 or 3");
+	}
+}
+
+Real 
+StokesX::computeQpJacobian()
+{
+	switch (_dim)
+	{
+		case 2:
+			return (_grad_phi[_j][_qp](0) + _grad_phi[_j][_qp](0)) * _grad_test[_i][_qp](0)
+						+ _grad_phi[_j][_qp](1) * _grad_test[_i][_qp](1);
+		case 3:
+			return (_grad_phi[_j][_qp](0) + _grad_phi[_j][_qp](0)) * _grad_test[_i][_qp](0)
+						+ _grad_phi[_j][_qp](1) * _grad_test[_i][_qp](1)
+						+ _grad_phi[_j][_qp](2) * _grad_test[_i][_qp](2);
+    default:
+      mooseError("Invalid dimension value, should be 2 or 3");
 	}
 }

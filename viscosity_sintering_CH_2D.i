@@ -63,17 +63,17 @@
     type = StokesX
     variable = u
     dim = 2
-    c = c
-    p = p
-    v = v
+    phase_field = c
+    pressure = p
+    y_velocity = v
   [../]
   [./StokesY]
     type = StokesY
     variable = v
     dim = 2
-    c = c
-    p = p
-    u = u
+    phase_field = c
+    pressure = p
+    x_velocity = u
   [../]
   [./Incompressibility]
     type = Incompressibility
@@ -81,29 +81,58 @@
     x_velocity = u
     y_velocity = v
   [../]
-  [./dt_w]
-    type = CoupledTimeDerivative
-    variable = mu
-    v = c
-  [../]
-  [./CH_wres]
-    type = SplitCHWRes
-    variable = mu
-    mob_name = M
-  [../]
-  [./CH_Parsed]
-    type = SplitCHParsed
+
+  # [./dt_mu]
+  #   type = CoupledTimeDerivative
+  #   variable = mu
+  #   v = c
+  # [../]
+
+  [./dt_C]
+    type = TimeDerivative
     variable = c
-    f_name = f_loc
-    w = mu
-    kappa_name = kappa_c
   [../]
+  
   [./CH_CoupleV]
     type = CHCoupV
     variable = c
     x_velocity = u
     y_velocity = v
   [../]
+
+  [./CHMob]
+    type = CHMob
+    variable = c
+    coupledvar = mu
+  [../]
+
+
+
+  [./CHMuFloc]
+    type = CHMuFloc
+    variable = mu
+    coupledvar = c
+  [../]
+  [./CHMuKap]
+    type = CHMuKap
+    variable = mu
+    coupledvar = c
+  [../]
+
+
+  # [./CH_wres]
+  #   type = SplitCHWRes
+  #   variable = mu
+  #   mob_name = M
+  # [../]
+  # [./CH_Parsed]
+  #   type = SplitCHParsed
+  #   variable = c
+  #   f_name = f_loc
+  #   w = mu
+  #   kappa_name = kappa_c
+  # [../]
+
 []
 
 
@@ -131,7 +160,7 @@
   # [../]
   [./ViscosityMaterial]
     type = ViscositySinteringMaterial
-    c = c
+    cvar = c
   [../]
 
 
@@ -142,15 +171,15 @@
     prop_values = '135.00 0.005'
   [../]
 
-  [./free_energy]
-    type = DerivativeParsedMaterial
-    property_name = f_loc
-    constant_names = 'A'
-    constant_expressions = '120.00'
-    coupled_variables = 'c'
-    expression = 'A*c^2*(1-c)^2'
-    derivative_order = 2
-  [../]
+  # [./free_energy]
+  #   type = DerivativeParsedMaterial
+  #   property_name = f_loc
+  #   constant_names = 'A'
+  #   constant_expressions = '120.00'
+  #   coupled_variables = 'c'
+  #   expression = 'A*c^2*(1-c)^2'
+  #   derivative_order = 2
+  # [../]
 []
 
 
@@ -165,24 +194,25 @@
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  scheme = bdf2
+  scheme = implicit-euler
 
   petsc_options_iname = '-pc_type -sub_pc_type'
   petsc_options_value = 'asm      lu          '
 
   l_max_its = 30
-  l_tol = 1e-4
+  l_tol = 1e-6
   nl_max_its = 20
   nl_rel_tol = 1e-9
 
-  dt = 2.0
-  end_time = 20.0
+  dt = 0.01
+  start_time = 0.0
+  end_time = 100.0
 []
 
 
 [Outputs]
   exodus = true
-  time_step_interval = 20
+  time_step_interval = 1
   perf_graph = true
   [./display]
     type = Console

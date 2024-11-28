@@ -125,7 +125,7 @@
   [Materials]
     [./vaicosity_material]
       type = ViscositySinteringMaterial
-      c = c
+      cvar = c
     [../]
     
     [./constants]

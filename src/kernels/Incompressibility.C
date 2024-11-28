@@ -3,7 +3,7 @@
  * @Date: 2024-10-24 09:08:32
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-06 22:51:19
+ * @LastEditTime: 2024-11-28 17:23:47
  * @LastEditors: Bo Qian
  * @Description: Incompressibility Kernel
  * @FilePath: /viscosity_sintering/src/kernels/Incompressibility.C
@@ -26,6 +26,10 @@ Incompressibility::validParams()
 
 Incompressibility::Incompressibility(const InputParameters & parameters)
   : Kernel(parameters),
+  _u_velocity_var(coupled("x_velocity")),
+  _v_velocity_var(coupled("y_velocity")),
+  _w_velocity_var(coupled("z_velocity")),
+
   _u_velocity(coupledValue("x_velocity")),
   _v_velocity(coupledValue("y_velocity")),
   _w_velocity(coupledValue("z_velocity")),
@@ -60,5 +64,20 @@ Incompressibility::computeQpResidual()
 Real
 Incompressibility::computeQpJacobian()
 {
-  return computeQpDivVelocity() * _test[_i][_qp];
+  return 0.0;
+}
+
+Real
+Incompressibility::computeQpOffDiagJacobian(unsigned jvar)
+{
+  if (jvar == _u_velocity_var)
+    return _grad_phi[_j][_qp](0) * _grad_test[_j][_qp](0);
+
+  if (jvar == _v_velocity_var)
+    return _grad_phi[_j][_qp](1) * _grad_test[_j][_qp](1);
+
+  if (jvar == _w_velocity_var)
+    return _grad_phi[_j][_qp](2) * _grad_test[_j][_qp](2);
+
+  return 0.0;
 }

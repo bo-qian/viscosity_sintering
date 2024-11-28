@@ -6,6 +6,9 @@
 # MOOSE_DIR        - Root directory of the MOOSE project
 #
 ###############################################################################
+# 自定义编译标志
+CXXFLAGS += -DEXCLUDE_THIS_FILE
+
 # Use the MOOSE submodule if it exists and MOOSE_DIR is not set
 MOOSE_SUBMODULE    := $(CURDIR)/moose
 ifneq ($(wildcard $(MOOSE_SUBMODULE)/framework/Makefile),)

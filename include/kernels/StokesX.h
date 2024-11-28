@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 14:05:01
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-07 14:28:17
+ * @LastEditTime: 2024-11-28 16:27:28
  * @LastEditors: Bo Qian
  * @Description: Kernel of x-component of the Stokes equation
  * @FilePath: /viscosity_sintering/include/kernels/StokesX.h
@@ -42,6 +42,7 @@ protected:
 
 	virtual Real computeQpResidual() override;
 	virtual Real computeQpJacobian() override;
+	virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
 	virtual Real velocityTermX(Dimension type);
 	virtual Real pressureTermX();
@@ -49,13 +50,18 @@ protected:
 	virtual Real ResidualX(Dimension type);
 
 	const MaterialProperty<Real> & _mu_eff;
+	const MaterialProperty<Real> & _dmu_eff;
 	const MaterialProperty<Real> & _kappa_c;
 
+	const unsigned int _cvar;
 	const VariableValue & _c;
 	const VariableGradient & _grad_c;
+	const unsigned int _pvar;
 	const VariableValue & _p;
 
+	const unsigned int _v_vel_var;
 	const VariableValue & _v_vel;
+	const unsigned int _w_vel_var;
 	const VariableValue & _w_vel;
 
 	const VariableGradient & _grad_v_vel;

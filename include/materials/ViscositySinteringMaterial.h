@@ -3,7 +3,7 @@
  * @Date: 2024-10-29 11:01:08
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-06 22:58:48
+ * @LastEditTime: 2024-11-11 15:13:20
  * @LastEditors: Bo Qian
  * @Description: Header file for Viscosity Sintering Material
  * @FilePath: /viscosity_sintering/include/materials/ViscositySinteringMaterial.h
@@ -41,6 +41,7 @@ class ViscositySinteringMaterial : public DerivativeMaterialInterface<Material>
 		MaterialProperty<Real> & _dNdc;
 		MaterialProperty<Real> & _F_loc;
 		MaterialProperty<Real> & _dF_loc;
+		MaterialProperty<Real> & _dF2_loc;
 		MaterialProperty<Real> & _mu_eff;
 		MaterialProperty<Real> & _dmu_eff;
 		MaterialProperty<Real> & _kappa_c;

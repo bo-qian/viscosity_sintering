@@ -1,3 +1,13 @@
+/*
+ * @Author: Bo Qian
+ * @Date: 2024-10-12 20:20:46
+ * @Email: bqian@shu.edu.cn
+ * @Location: Shanghai University
+ * @LastEditTime: 2024-12-05 10:58:59
+ * @LastEditors: Bo Qian
+ * @Description: 
+ * @FilePath: /viscosity_sintering/src/main.C
+ */
 //* This file is part of the MOOSE framework
 //* https://www.mooseframework.org
 //*

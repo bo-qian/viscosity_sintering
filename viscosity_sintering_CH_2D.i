@@ -43,44 +43,44 @@
     order = FIRST
     family = LAGRANGE
   [../]
-  [./u]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./v]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./p]
-    order = FIRST
-    family = LAGRANGE
-  [../]
+  # [./u]
+  #   order = FIRST
+  #   family = LAGRANGE
+  # [../]
+  # [./v]
+  #   order = FIRST
+  #   family = LAGRANGE
+  # [../]
+  # [./p]
+  #   order = FIRST
+  #   family = LAGRANGE
+  # [../]
 []
 
 [Kernels]
   # Cahn Hilliard kernels
-  [./StokesX]
-    type = StokesX
-    variable = u
-    dim = 2
-    phase_field = c
-    pressure = p
-    y_velocity = v
-  [../]
-  [./StokesY]
-    type = StokesY
-    variable = v
-    dim = 2
-    phase_field = c
-    pressure = p
-    x_velocity = u
-  [../]
-  [./Incompressibility]
-    type = Incompressibility
-    variable = p
-    x_velocity = u
-    y_velocity = v
-  [../]
+  # [./StokesX]
+  #   type = StokesX
+  #   variable = u
+  #   dim = 2
+  #   phase_field = c
+  #   pressure = p
+  #   y_velocity = v
+  # [../]
+  # [./StokesY]
+  #   type = StokesY
+  #   variable = v
+  #   dim = 2
+  #   phase_field = c
+  #   pressure = p
+  #   x_velocity = u
+  # [../]
+  # [./Incompressibility]
+  #   type = Incompressibility
+  #   variable = p
+  #   x_velocity = u
+  #   y_velocity = v
+  # [../]
 
   # [./dt_mu]
   #   type = CoupledTimeDerivative
@@ -93,12 +93,12 @@
     variable = c
   [../]
   
-  [./CH_CoupleV]
-    type = CHCoupV
-    variable = c
-    x_velocity = u
-    y_velocity = v
-  [../]
+  # [./CH_CoupleV]
+  #   type = CHCoupV
+  #   variable = c
+  #   x_velocity = u
+  #   y_velocity = v
+  # [../]
 
   [./CHMob]
     type = CHMob
@@ -137,20 +137,20 @@
 
 
 
-[BCs]
-  [./bcs_u]
-    type = DirichletBC
-    variable = u
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-  [./bcs_v]
-    type = DirichletBC
-    variable = v
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-[]
+# [BCs]
+#   [./bcs_u]
+#     type = DirichletBC
+#     variable = u
+#     boundary = '0 1 2 3'
+#     value = 0
+#   [../]
+#   [./bcs_v]
+#     type = DirichletBC
+#     variable = v
+#     boundary = '0 1 2 3'
+#     value = 0
+#   [../]
+# []
 
 [Materials]
   # [./constants]
@@ -164,12 +164,12 @@
   [../]
 
 
-  [./constants]
-    type = GenericConstantMaterial
-    block = 0
-    prop_names = 'kappa_c M'
-    prop_values = '135.00 0.005'
-  [../]
+  # [./constants]
+  #   type = GenericConstantMaterial
+  #   block = 0
+  #   prop_names = 'kappa_c M'
+  #   prop_values = '135.00 0.005'
+  # [../]
 
   # [./free_energy]
   #   type = DerivativeParsedMaterial
@@ -191,22 +191,38 @@
   [../]
 []
 
+# [Executioner]
+#   type = Transient
+#   solve_type = NEWTON
+#   scheme = implicit-euler
+
+#   petsc_options_iname = '-pc_type -sub_pc_type'
+#   petsc_options_value = 'asm      lu          '
+
+#   l_max_its = 30
+#   l_tol = 1e-6
+#   nl_max_its = 20
+#   nl_rel_tol = 1e-9
+
+#   dt = 0.001
+#   start_time = 0.0
+#   end_time = 0.001
+# []
+
 [Executioner]
+  # petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart'
+  # petsc_options_value = 'hypre boomeramg 101'
   type = Transient
-  solve_type = NEWTON
-  scheme = implicit-euler
-
-  petsc_options_iname = '-pc_type -sub_pc_type'
-  petsc_options_value = 'asm      lu          '
-
+  dt = 0.001
   l_max_its = 30
-  l_tol = 1e-6
-  nl_max_its = 20
-  nl_rel_tol = 1e-9
-
-  dt = 0.01
-  start_time = 0.0
-  end_time = 100.0
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-9
+  solve_type = NEWTON
+  petsc_options_iname = '-pc_type -ksp_grmres_restart -sub_ksp_type -sub_pc_type -pc_asm_overlap'
+  petsc_options_value = 'asm         31   preonly   lu      1'
+  l_tol = 1e-4
+  end_time = 80.0
+  scheme = bdf2
 []
 
 

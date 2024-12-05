@@ -3,7 +3,7 @@
  * @Date: 2024-11-11 14:38:40
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-28 15:10:18
+ * @LastEditTime: 2024-12-03 14:32:39
  * @LastEditors: Bo Qian
  * @Description: Kernel of the local free energy term of Cahn-Hilliard equation
  * @FilePath: /viscosity_sintering/src/kernels/CHMuFloc.C

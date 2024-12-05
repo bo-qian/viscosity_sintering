@@ -3,7 +3,7 @@
  * @Date: 2024-10-29 11:01:43
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-12 14:46:29
+ * @LastEditTime: 2024-12-03 15:51:10
  * @LastEditors: Bo Qian
  * @Description: Materials for Viscosity Sintering App
  * @FilePath: /viscosity_sintering/src/materials/ViscositySinteringMaterial.C
@@ -48,13 +48,46 @@ ViscositySinteringMaterial::ViscositySinteringMaterial(const InputParameters & p
 	_dF2_loc(declareProperty<Real>("dF2_loc")),
 	_mu_eff(declareProperty<Real>("mu_eff")),
 	_dmu_eff(declareProperty<Real>("dmu_eff")),
-	_kappa_c(declareProperty<Real>("kappa_C"))
-{ 
+	_kappa_c(declareProperty<Real>("kappa_C")),
+	_mobility(declareProperty<Real>("M"))
+{
+// 静态变量确保只打印一次
+  static bool isPrinted = false;
+  if (!isPrinted)
+  {
+    // 打印表头
+		std::cout << "Material Parameters of Viscosity Sintering App" << std::endl;
+		std::cout << "---------------------------------------------------" << std::endl;
+    std::cout << std::left << std::setw(25) << "Parameter" 
+              << std::setw(25) << "Value" << std::endl;
+    std::cout << "---------------------------------------------------" << std::endl;
+
+    // 打印物料参数
+    std::cout << std::setw(25) << "mu_volume" 
+              << std::setw(25) << _mu_volume << std::endl;
+    std::cout << std::setw(25) << "mu_ratio" 
+              << std::setw(25) << _mu_ratio << std::endl;
+    std::cout << std::setw(25) << "epsilon_Nc" 
+              << std::setw(25) << _epsilon_Nc << std::endl;
+    std::cout << std::setw(25) << "mobility" 
+              << std::setw(25) << _M << std::endl;
+    std::cout << std::setw(25) << "alpha" 
+              << std::setw(25) << _alpha << std::endl;
+    std::cout << std::setw(25) << "kappa_C" 
+              << std::setw(25) << _kappa_C << std::endl;
+		
+		std::cout << "---------------------------------------------------" << std::endl;
+		std::cout << std::endl;
+
+    // 设置标志位，防止后续打印
+    isPrinted = true;
+	} 
 }
 
 void
 ViscositySinteringMaterial::computeQpProperties()
 {
+
 	// Compute N(C)
 	_Nc[_qp] = _c[_qp] * _c[_qp] * (1 + 2 * (1 - _c[_qp]) + _epsilon_Nc * (1 - _c[_qp]) * (1 - _c[_qp]));
 
@@ -79,4 +112,5 @@ ViscositySinteringMaterial::computeQpProperties()
 	// compute kappa_C
 	_kappa_c[_qp] = _kappa_C;
 
+	_mobility[_qp] = _M;
 }

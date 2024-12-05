@@ -3,7 +3,7 @@
  * @Date: 2024-10-12 20:20:46
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-10-29 13:42:40
+ * @LastEditTime: 2024-12-03 15:50:23
  * @LastEditors: Bo Qian
  * @Description: 2D Initial Condition for MultiParticles
  * @FilePath: /viscosity_sintering/src/ics/MultiParticles_2D.C
@@ -50,13 +50,21 @@ MultiParticles_2D::MultiParticles_2D(const InputParameters & parameters)
     _particle_radius = result.second;
 
     // Print the particle centers and radii
-    std::cout << "Particle centers and radii:" << std::endl;
+    
+    std::cout << std::endl;
+	std::cout << "Particle centers and radii" << std::endl;
+	std::cout << "---------------------------------------------------" << std::endl;
+    std::cout << std::left << std::setw(25) << "Center" 
+              << std::setw(25) << "Radius" << std::endl;
+    std::cout << "---------------------------------------------------" << std::endl;
+    
     for (size_t i = 0; i < _particle_centers_coordinate.size(); ++i)
     {
-        std::cout << "Center: (" << _particle_centers_coordinate[i].first 
-                  << ", " << _particle_centers_coordinate[i].second << "), "
-                  << "Radius: " << _particle_radius[i] << std::endl;
+        std::cout << std::setw(25) << "(" << _particle_centers_coordinate[i].first 
+                  << ", " << _particle_centers_coordinate[i].second << ")"
+                  <<  std::setw(25) << _particle_radius[i] << std::endl;
     }
+    std::cout << "---------------------------------------------------" << std::endl;
     std::cout << std::endl;
 }
 

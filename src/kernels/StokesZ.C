@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:57:41
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-28 17:18:34
+ * @LastEditTime: 2024-12-11 16:50:15
  * @LastEditors: Bo Qian
  * @Description: Kernel of z-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesZ.C
@@ -97,12 +97,13 @@ Real
 StokesZ::computeQpOffDiagJacobian(unsigned jvar)
 {
 	if (jvar == _cvar)
-		return - _dmu_eff[_qp] * _phi[_j][_qp] * ((_grad_u[_qp](0) + _grad_u_vel[_qp](0)) * _grad_test[_i][_qp](0)
-																								+ (_grad_u[_qp](1) + _grad_v_vel[_qp](0)) * _grad_test[_i][_qp](1)
-																								+ (_grad_u[_qp](2) + _grad_u[_qp](0)) * _grad_test[_i][_qp](2))
-						+ _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](2) + _grad_c[_qp](0) * _grad_phi[_j][_qp](2))
-															+ (_grad_phi[_j][_qp](1) * _grad_c[_qp](2) + _grad_c[_qp](1) * _grad_phi[_j][_qp](2))
-															+ (_grad_phi[_j][_qp](2) * _grad_c[_qp](2) + _grad_c[_qp](2) * _grad_phi[_j][_qp](2))); 
+		// return - _dmu_eff[_qp] * _phi[_j][_qp] * ((_grad_u[_qp](0) + _grad_u_vel[_qp](0)) * _grad_test[_i][_qp](0)
+		// 																						+ (_grad_u[_qp](1) + _grad_v_vel[_qp](0)) * _grad_test[_i][_qp](1)
+		// 																						+ (_grad_u[_qp](2) + _grad_u[_qp](0)) * _grad_test[_i][_qp](2))
+		// 				+ _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](2) + _grad_c[_qp](0) * _grad_phi[_j][_qp](2))
+		// 													+ (_grad_phi[_j][_qp](1) * _grad_c[_qp](2) + _grad_c[_qp](1) * _grad_phi[_j][_qp](2))
+		// 													+ (_grad_phi[_j][_qp](2) * _grad_c[_qp](2) + _grad_c[_qp](2) * _grad_phi[_j][_qp](2))); 
+		return 0.0;
 	
 	if (jvar == _u_vel_var)
 		return - _mu_eff[_qp] * _grad_phi[_j][_qp](2) * _grad_test[_i][_qp](0);

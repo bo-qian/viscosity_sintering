@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:46:17
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-28 16:58:18
+ * @LastEditTime: 2024-12-11 16:49:59
  * @LastEditors: Bo Qian
  * @Description: Kernel of y-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesY.C
@@ -150,10 +150,11 @@ StokesY::computeQpOffDiagJacobian(unsigned jvar)
 	{
 		case 2:
 			if (jvar == _cvar)
-				return - _dmu_eff[_qp] * _phi[_j][_qp] * ((_grad_u[_qp](0) + _grad_u_vel[_qp](0)) * _grad_test[_i][_qp](0)
-																									 + (_grad_u[_qp](1) + _grad_u[_qp](0)) * _grad_test[_i][_qp](1))
-							  + _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](1) + _grad_c[_qp](0) * _grad_phi[_j][_qp](1))
-								                  + (_grad_phi[_j][_qp](1) * _grad_c[_qp](1) + _grad_c[_qp](1) * _grad_phi[_j][_qp](1))); 
+				// return - _dmu_eff[_qp] * _phi[_j][_qp] * ((_grad_u[_qp](0) + _grad_u_vel[_qp](0)) * _grad_test[_i][_qp](0)
+				// 																					 + (_grad_u[_qp](1) + _grad_u[_qp](0)) * _grad_test[_i][_qp](1))
+				// 			  + _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](1) + _grad_c[_qp](0) * _grad_phi[_j][_qp](1))
+				// 				                  + (_grad_phi[_j][_qp](1) * _grad_c[_qp](1) + _grad_c[_qp](1) * _grad_phi[_j][_qp](1))); 
+				return 0.0;
 			
 			if (jvar == _u_vel_var)
 				return - _mu_eff[_qp] * _grad_phi[_j][_qp](1) * _grad_test[_i][_qp](0);
@@ -166,12 +167,13 @@ StokesY::computeQpOffDiagJacobian(unsigned jvar)
 
 		case 3:
 			if (jvar == _cvar)
-				return - _dmu_eff[_qp] * _phi[_j][_qp] * ((_grad_u[_qp](0) + _grad_u_vel[_qp](0)) * _grad_test[_i][_qp](0)
-																									 + (_grad_u[_qp](1) + _grad_u[_qp](0)) * _grad_test[_i][_qp](1)
-																									 + (_grad_u[_qp](2) + _grad_w_vel[_qp](0)) * _grad_test[_i][_qp](2))
-							  + _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](1) + _grad_c[_qp](0) * _grad_phi[_j][_qp](1))
-								                  + (_grad_phi[_j][_qp](1) * _grad_c[_qp](1) + _grad_c[_qp](1) * _grad_phi[_j][_qp](1))
-								                  + (_grad_phi[_j][_qp](2) * _grad_c[_qp](1) + _grad_c[_qp](2) * _grad_phi[_j][_qp](1))); 
+				// return - _dmu_eff[_qp] * _phi[_j][_qp] * ((_grad_u[_qp](0) + _grad_u_vel[_qp](0)) * _grad_test[_i][_qp](0)
+				// 																					 + (_grad_u[_qp](1) + _grad_u[_qp](0)) * _grad_test[_i][_qp](1)
+				// 																					 + (_grad_u[_qp](2) + _grad_w_vel[_qp](0)) * _grad_test[_i][_qp](2))
+				// 			  + _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](1) + _grad_c[_qp](0) * _grad_phi[_j][_qp](1))
+				// 				                  + (_grad_phi[_j][_qp](1) * _grad_c[_qp](1) + _grad_c[_qp](1) * _grad_phi[_j][_qp](1))
+				// 				                  + (_grad_phi[_j][_qp](2) * _grad_c[_qp](1) + _grad_c[_qp](2) * _grad_phi[_j][_qp](1))); 
+				return 0.0;
 			
 			if (jvar == _u_vel_var)
 				return - _mu_eff[_qp] * _grad_phi[_j][_qp](1) * _grad_test[_i][_qp](0);

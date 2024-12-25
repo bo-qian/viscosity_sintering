@@ -3,7 +3,7 @@
  * @Date: 2024-11-11 14:38:40
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-03 14:32:39
+ * @LastEditTime: 2024-12-25 15:14:30
  * @LastEditors: Bo Qian
  * @Description: Kernel of the local free energy term of Cahn-Hilliard equation
  * @FilePath: /viscosity_sintering/src/kernels/CHMuFloc.C
@@ -47,7 +47,7 @@ CHMuFloc::computeQpJacobian()
 Real 
 CHMuFloc::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  if (jvar == _cvar)
-    return - _df2loc_dc[_qp] * _phi[_j][_qp] * _test[_i][_qp];
+  // if (jvar == _cvar)
+  //   return - _df2loc_dc[_qp] * _phi[_j][_qp] * _test[_i][_qp];
   return 0.0;
 }

@@ -3,7 +3,7 @@
  * @Date: 2024-10-12 20:20:46
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-11 16:47:27
+ * @LastEditTime: 2024-12-16 15:35:55
  * @LastEditors: Bo Qian
  * @Description: Kernel for CH equation coupled with velocity
  * @FilePath: /viscosity_sintering/src/kernels/CHCoupV.C

@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:57:14
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-28 17:17:10
+ * @LastEditTime: 2024-12-25 16:42:17
  * @LastEditors: Bo Qian
  * @Description: Kernel of z-component of the Stokes equation
  * @FilePath: /viscosity_sintering/include/kernels/StokesZ.h
@@ -43,11 +43,14 @@ protected:
 	virtual Real velocityTermZ();
 	virtual Real pressureTermZ();
 	virtual Real surfaceTensionTermZ();
-	virtual Real ResidualZ();
+	virtual Real muEffPhiZ();
 
 	const MaterialProperty<Real> & _mu_eff;
 	const MaterialProperty<Real> & _dmu_eff;
 	const MaterialProperty<Real> & _kappa_c;
+	const MaterialProperty<Real> & _mu_volume;
+	const MaterialProperty<Real> & _mu_ratio;
+	const MaterialProperty<Real> & _epsilon_Nc;
 
 	const unsigned int _cvar;
 	const VariableValue & _c;

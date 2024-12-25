@@ -1,4 +1,3 @@
-
 [Mesh]
   type = GeneratedMesh
   dim = 2
@@ -8,7 +7,7 @@
   xmax = 200
   ymin = 0
   ymax = 200
-  elem_type = QUAD4
+  elem_type = QUAD9
   # uniform_refine = 1
 []
 
@@ -18,35 +17,63 @@
   #   family = LAGRANGE
     
   #   # Initial expression for phase-field c
-  #   # [./InitialCondition]
-  #   #     type = MultiParticles_2D
-  #   #     delta = 3
-  #   #     radius = 25
-  #   #     number_x = 2
-  #   #     number_y = 2
-  #   #     omega = 0.05
-  #   #     domain = '200 200'
-  #   # [../]
+  #   [./InitialCondition]
+  #       type = MultiParticles_2D
+  #       delta = 3
+  #       radius = 25
+  #       number_x = 2
+  #       number_y = 2
+  #       omega = 0.05
+  #       domain = '200 200'
+  #   [../]
   # [../]
   # [./mu]
   #   order = FIRST
   #   family = LAGRANGE
-  #   # [./InitialCondition]
-  #   #     type = ConstantIC
-  #   #     value = 0.0
-  #   # [../]
+  #   [./InitialCondition]
+  #       type = ConstantIC
+  #       value = 0.0
+  #   [../]
   # [../]
   [./u]
-    order = FIRST
+    order = SECOND
     family = LAGRANGE
+    # [./InitialCondition]
+    #     type = ConstantIC
+    #     value = 0.0
+    # [../]
   [../]
   [./v]
-    order = FIRST
+    order = SECOND
     family = LAGRANGE
+    # [./InitialCondition]
+    #     type = ConstantIC
+    #     value = 0.0
+    # [../]
   [../]
   [./p]
     order = FIRST
     family = LAGRANGE
+    # [./InitialCondition]
+    #     type = ConstantIC
+    #     value = 0.0
+    # [../]
+  [../]
+[]
+
+[AuxVariables]
+  [./c]
+    order = FIRST
+    family = MONOMIAL
+    [./InitialCondition]
+      type = MultiParticles_2D
+      delta = 3
+      radius = 25
+      number_x = 2
+      number_y = 2
+      omega = 0.05
+      domain = '200 200'
+    [../]
   [../]
 []
 
@@ -56,15 +83,16 @@
     type = StokesX
     variable = u
     dim = 2
-    phase_field = C_initial
+    phase_field = c
     pressure = p
     y_velocity = v
+
   [../]
   [./StokesY]
     type = StokesY
     variable = v
     dim = 2
-    phase_field = C_initial
+    phase_field = c
     pressure = p
     x_velocity = u
   [../]
@@ -75,6 +103,16 @@
     y_velocity = v
   [../]
   
+
+  # [./IC_C]
+  #   type = InitialConditionC
+  #   variable = c
+  #   # radius = 25
+  #   # number_x = 2
+  #   # number_y = 2
+  #   # omega = 0.05
+  #   # domain = '200 200'
+  # [../]
 
 
   # [./dt_C]
@@ -146,31 +184,25 @@
 
 
 
-[BCs]
-  [./bcs_u]
-    type = DirichletBC
-    variable = u
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-  [./bcs_v]
-    type = DirichletBC
-    variable = v
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-[]
+# [BCs]
+#   [./bcs_u]
+#     type = DirichletBC
+#     variable = u
+#     boundary = '0 1 2 3'
+#     value = 0
+#   [../]
+#   [./bcs_v]
+#     type = DirichletBC
+#     variable = v
+#     boundary = '0 1 2 3'
+#     value = 0
+#   [../]
+# []
 
 [Materials]
   [./ViscosityMaterial]
-    type = InitialConditionC
-    # cvar = c
-    delta = 3
-    radius = 25
-    number_x = 2
-    number_y = 2
-    omega = 0.05
-    domain = '200 200' 
+    type = ViscositySinteringMaterial
+    cvar = c
   [../]
 
 
@@ -198,26 +230,32 @@
   [./cw_coupling]
     type = SMP
     full = true
+    # petsc_options_iname = '-pc_type'
+    # petsc_options_value = 'lu'
   [../]
 []
 
 [Executioner]
   type = Steady
-  solve_type = PJFNK
+  solve_type = JFNK
   # scheme = bdf2
+  # petsc_options_iname = '-pc_type -pc_hypre_type'
+  # petsc_options_value = 'hypre boomeramg'
+  # petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
+  # petsc_options_value = 'lu mumps'
 
-  # petsc_options_iname = '-pc_type -sub_pc_type'
-  # petsc_options_value = 'lu      lu          '
+  petsc_options_iname = '-pc_type -sub_pc_type'
+  petsc_options_value = 'mumps      lu          '
 
-  # # l_max_its = 100
-  # # l_tol = 1e-6
+  l_max_its = 500
+  # l_tol = 1e-6
   # nl_max_its = 30
-  # nl_rel_tol = 1e-7
-  # nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-7
+  nl_abs_tol = 1e-6
 
   # dt = 0.001
   # start_time = 0.0
-  # end_time = 50
+  # end_time = 0.01
 []
 
 

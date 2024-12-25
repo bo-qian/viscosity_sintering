@@ -3,7 +3,7 @@
  * @Date: 2024-11-11 12:27:32
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-03 14:37:55
+ * @LastEditTime: 2024-12-19 17:48:15
  * @LastEditors: Bo Qian
  * @Description: Kernel of the mobility term of Cahn-Hilliard equation
  * @FilePath: /viscosity_sintering/src/kernels/CHMob.C
@@ -24,7 +24,7 @@ CHMob::validParams()
 
 CHMob::CHMob(const InputParameters & parameters)
   : Kernel(parameters),
-  _mobility(getMaterialProperty<Real>("M")),
+  _mobility(getMaterialProperty<Real>("M_value")),
   _muvar(coupled("coupledvar")),
   _mu(coupledValue("coupledvar")),
   _grad_mu(coupledGradient("coupledvar"))

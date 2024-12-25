@@ -3,22 +3,22 @@
  * @Date: 2024-10-12 20:20:46
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-12 15:38:07
+ * @LastEditTime: 2024-12-19 10:08:14
  * @LastEditors: Bo Qian
  * @Description: Head File of InitialConditionC
- * @FilePath: /viscosity_sintering/include/materials/InitialConditionC.h
+ * @FilePath: /viscosity_sintering/include/kernels/InitialConditionC.h
  */
 
 #pragma once
 
 // MOOSE Includes
-#include "Material.h"
+#include "Kernel.h"
 #include "MooseTypes.h"            // 添加该头文件
 
 /**
  * MultiParticles just returns a constant value.
  */
-class InitialConditionC : public Material
+class InitialConditionC : public Kernel
 {
 public:
   /**
@@ -33,8 +33,30 @@ public:
    *
    * This must be overriden by derived classes.
    */
-  virtual void computeQpProperties(const Point & p);
-  // virtual Real value(const Point & p) override;  // 确保 Point 类型正确包含
+  // virtual void computeQpProperties(const Point & p);
+  virtual Real value(const Point & p);  // 确保 Point 类型正确包含
+
+protected:
+
+	virtual Real computeQpResidual() override;
+	// virtual Real computeQpJacobian() override;
+  
+	// virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
+
+	// virtual Real computeQpResidual() override
+	// {
+	// 	return 0.0;
+	// }
+
+  virtual Real computeQpJacobian() override;
+	// {
+	// 	return 0.0;
+	// }
+
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override
+	{
+		return 0.0;
+	}
 
 private:
     const Real _delta;
@@ -46,7 +68,9 @@ private:
     std::vector<std::pair<int, int>> _particle_centers_coordinate;
     std::vector<int> _particle_radius;
 
-		MaterialProperty<Real> & _C_Initial;
+    // const Real _C_Initial;
+
+		// MaterialProperty<Real> & _C_Initial;
 
     // 函数声明的参数类型需要与函数定义保持一致
     std::pair<std::vector<std::pair<int, int>>, std::vector<int>> 

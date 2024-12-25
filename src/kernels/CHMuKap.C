@@ -3,7 +3,7 @@
  * @Date: 2024-11-11 15:16:57
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-03 14:31:39
+ * @LastEditTime: 2024-12-25 15:08:15
  * @LastEditors: Bo Qian
  * @Description: Kernel of the kappa term of Cahn-Hilliard equation
  * @FilePath: /viscosity_sintering/src/kernels/CHMuKap.C
@@ -24,7 +24,8 @@ CHMuKap::validParams()
 
 CHMuKap::CHMuKap(const InputParameters & parameters)
   : Kernel(parameters),
-  _kappa_c(getMaterialProperty<Real>("kappa_C")),
+  _kappa_c(getMaterialProperty<Real>("kappa_C_value")),
+  _theta(getMaterialProperty<Real>("theta_value")),
   _cvar(coupled("coupledvar")),
   _c(coupledValue("coupledvar")),
   _grad_c(coupledGradient("coupledvar"))
@@ -35,9 +36,7 @@ CHMuKap::CHMuKap(const InputParameters & parameters)
 Real
 CHMuKap::computeQpResidual()
 {
-  return _kappa_c[_qp] * (_grad_c[_qp](0) * _grad_test[_i][_qp](0) 
-                          + _grad_c[_qp](1) * _grad_test[_i][_qp](1)
-                          + _grad_c[_qp](2) * _grad_test[_i][_qp](2));
+  return - _theta[_qp] * _kappa_c[_qp] * (_grad_c[_qp] * _grad_test[_i][_qp]);
 }
 
 Real
@@ -50,8 +49,6 @@ Real
 CHMuKap::computeQpOffDiagJacobian(unsigned int jvar)
 {
   if (jvar == _cvar)
-    return _kappa_c[_qp] * (_grad_phi[_j][_qp](0) * _grad_test[_i][_qp](0) 
-                            + _grad_phi[_j][_qp](1) * _grad_test[_i][_qp](1)
-                            + _grad_phi[_j][_qp](2) * _grad_test[_i][_qp](2));
+    return - _theta[_qp] * _kappa_c[_qp] * (_grad_phi[_j][_qp] * _grad_test[_i][_qp]);
   return 0.0;
 }

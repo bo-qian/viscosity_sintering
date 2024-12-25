@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 14:11:36
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-11 16:49:32
+ * @LastEditTime: 2024-12-25 16:29:55
  * @LastEditors: Bo Qian
  * @Description: Kernel of x-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesX.C
@@ -34,7 +34,10 @@ StokesX::StokesX(const InputParameters & parameters)
 
   _mu_eff(getMaterialProperty<Real>("mu_eff")),
 	_dmu_eff(getMaterialProperty<Real>("dmu_eff")),
-  _kappa_c(getMaterialProperty<Real>("kappa_C")),
+  _kappa_c(getMaterialProperty<Real>("kappa_C_value")),
+	_mu_volume(getMaterialProperty<Real>("mu_volume_value")),
+	_mu_ratio(getMaterialProperty<Real>("mu_ratio_value")),
+	_epsilon_Nc(getMaterialProperty<Real>("epsilon_Nc_value")),
 
 	_cvar(coupled("phase_field")),
   _c(coupledValue("phase_field")),
@@ -52,79 +55,58 @@ StokesX::StokesX(const InputParameters & parameters)
 	_grad_w_vel(coupledGradient("z_velocity"))
 
 {
-	
 }
 
-Real 
-StokesX::velocityTermX(Dimension type)
+Real
+StokesX::velocityTermX()
 {
-	switch (type)
+	switch (_dim)
 	{
-		case two_dimension:
+		case 2:
 			return (_grad_u[_qp](0) + _grad_u[_qp](0)) * _grad_test[_i][_qp](0)
 						+ (_grad_u[_qp](1) + _grad_v_vel[_qp](0)) * _grad_test[_i][_qp](1);
-		case three_dimension:
+		case 3:
 			return (_grad_u[_qp](0) + _grad_u[_qp](0)) * _grad_test[_i][_qp](0)
 						+ (_grad_u[_qp](1) + _grad_v_vel[_qp](0)) * _grad_test[_i][_qp](1)
 						+ (_grad_u[_qp](2) + _grad_w_vel[_qp](0)) * _grad_test[_i][_qp](2);
-    default:
-      mooseError("type must be three_dimension or three_dimension");
+		default:
+			mooseError("Invalid dimension value, should be 2 or 3");
 	}
 }
 
 Real
 StokesX::pressureTermX()
 {
-	return -_p[_qp] * _grad_test[_i][_qp](0);
+	return _p[_qp] * _grad_test[_i][_qp](0);
 }
 
 Real
-StokesX::surfaceTensionTermX(Dimension type)
+StokesX::surfaceTensionTermX()
 {
-	switch (type)
+	switch (_dim)
 	{
-		case two_dimension:
+		case 2:
 			return _kappa_c[_qp] * (_grad_c[_qp](0) * _grad_c[_qp](0) * _grad_test[_i][_qp](0)
 													+ _grad_c[_qp](0) * _grad_c[_qp](1) * _grad_test[_i][_qp](1));
-		case three_dimension:
+		case 3:
 			return _kappa_c[_qp] * (_grad_c[_qp](0) * _grad_c[_qp](0) * _grad_test[_i][_qp](0)
 													+ _grad_c[_qp](0) * _grad_c[_qp](1) * _grad_test[_i][_qp](1)
 													+ _grad_c[_qp](0) * _grad_c[_qp](2) * _grad_test[_i][_qp](2));
     default:
-      mooseError("type must be three_dimension or three_dimension");
+      mooseError("Invalid dimension value, should be 2 or 3");
 	}
 }
 
 Real
-StokesX::ResidualX(Dimension type)
+StokesX::muEffPhiX()
 {
-	switch (type)
-	{
-		case two_dimension:
-			return -_mu_eff[_qp] * velocityTermX(Dimension::two_dimension) 
-							+ pressureTermX() + surfaceTensionTermX(Dimension::two_dimension);
-
-		case three_dimension:
-			return -_mu_eff[_qp] * velocityTermX(Dimension::three_dimension) 
-							+ pressureTermX() + surfaceTensionTermX(Dimension::three_dimension);
-
-		default:
-			mooseError("type must be three_dimension or three_dimension");
-	}
+	return _mu_volume[_qp] * (_mu_ratio[_qp] + (1 - _mu_ratio[_qp]) * (_phi[_j][_qp] * _phi[_j][_qp] * (1 + 2 * (1 - _phi[_j][_qp]) + _epsilon_Nc[_qp] * (1 - _phi[_j][_qp]) * (1 - _phi[_j][_qp]))));
 }
 
 Real 
 StokesX::computeQpResidual()
 {
-	switch (_dim)
-	{
-		case 2:
-			return ResidualX(Dimension::two_dimension);
-		case 3:
-			return ResidualX(Dimension::three_dimension);
-		default:
-			mooseError("Invalid dimension value, should be 2 or 3");
-	}
+	return _mu_eff[_qp] * velocityTermX() + pressureTermX() - surfaceTensionTermX();
 }
 
 Real 
@@ -133,10 +115,10 @@ StokesX::computeQpJacobian()
 	switch (_dim)
 	{
 		case 2:
-			return - _mu_eff[_qp] * (2 * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](0)
+			return _mu_eff[_qp] * (2 * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](0)
 																	 + _grad_phi[_j][_qp](1) * _grad_test[_i][_qp](1));
 		case 3:
-			return - _mu_eff[_qp] * (2 * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](0)
+			return _mu_eff[_qp] * (2 * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](0)
 																	 + _grad_phi[_j][_qp](1) * _grad_test[_i][_qp](1)
 																	 + _grad_phi[_j][_qp](2) * _grad_test[_i][_qp](2));
     default:
@@ -151,39 +133,39 @@ StokesX::computeQpOffDiagJacobian(unsigned jvar)
 	{
 		case 2:
 			if (jvar == _cvar)
-				// return - _dmu_eff[_qp] * _phi[_j][_qp] * ((_grad_u[_qp](0) + _grad_u[_qp](0)) * _grad_test[_i][_qp](0)
-				// 																					 + (_grad_u[_qp](1) + _grad_v_vel[_qp](0)) * _grad_test[_i][_qp](1))
-				// 			  + _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](0) + _grad_c[_qp](0) * _grad_phi[_j][_qp](0))
-				// 				                  + (_grad_phi[_j][_qp](1) * _grad_c[_qp](0) + _grad_c[_qp](1) * _grad_phi[_j][_qp](0)));
-				return 0.0;
+				return muEffPhiX() * ((_grad_u[_qp](0) + _grad_u[_qp](0)) * _grad_test[_i][_qp](0)
+														+ (_grad_u[_qp](1) + _grad_v_vel[_qp](0)) * _grad_test[_i][_qp](1))
+							  - _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](0) + _grad_c[_qp](0) * _grad_phi[_j][_qp](0))
+								                  + (_grad_phi[_j][_qp](1) * _grad_c[_qp](0) + _grad_c[_qp](1) * _grad_phi[_j][_qp](0)));
+				// return 0.0;
 			
 			if (jvar == _v_vel_var)
-				return - _mu_eff[_qp] * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](1);
+				return _mu_eff[_qp] * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](1);
 
 			if (jvar == _pvar)
-				return - _phi[_j][_qp] * _grad_test[_i][_qp](0);
+				return _phi[_j][_qp] * _grad_test[_i][_qp](0);
 			
 			return 0.0;
 
 
 		case 3:
 			if (jvar == _cvar)
-				// return - _dmu_eff[_qp] * _phi[_j][_qp] * ((_grad_u[_qp](0) + _grad_u[_qp](0)) * _grad_test[_i][_qp](0)
-				// 																					 + (_grad_u[_qp](1) + _grad_v_vel[_qp](0)) * _grad_test[_i][_qp](1)
-				// 																					 + (_grad_u[_qp](2) + _grad_w_vel[_qp](0)) * _grad_test[_i][_qp](2))
-				// 			  + _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](0) + _grad_c[_qp](0) * _grad_phi[_j][_qp](0))
-				// 				                  + (_grad_phi[_j][_qp](1) * _grad_c[_qp](0) + _grad_c[_qp](1) * _grad_phi[_j][_qp](0))
-				// 				                  + (_grad_phi[_j][_qp](2) * _grad_c[_qp](0) + _grad_c[_qp](2) * _grad_phi[_j][_qp](0))); 
-				return 0.0;
+				return muEffPhiX() * ((_grad_u[_qp](0) + _grad_u[_qp](0)) * _grad_test[_i][_qp](0)
+														+ (_grad_u[_qp](1) + _grad_v_vel[_qp](0)) * _grad_test[_i][_qp](1)
+														+ (_grad_u[_qp](2) + _grad_w_vel[_qp](0)) * _grad_test[_i][_qp](2))
+							  - _kappa_c[_qp] * ((_grad_phi[_j][_qp](0) * _grad_c[_qp](0) + _grad_c[_qp](0) * _grad_phi[_j][_qp](0))
+								                  + (_grad_phi[_j][_qp](1) * _grad_c[_qp](0) + _grad_c[_qp](1) * _grad_phi[_j][_qp](0))
+								                  + (_grad_phi[_j][_qp](2) * _grad_c[_qp](0) + _grad_c[_qp](2) * _grad_phi[_j][_qp](0))); 
+				// return 0.0;
 			
 			if (jvar == _v_vel_var)
-				return - _mu_eff[_qp] * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](1);
+				return _mu_eff[_qp] * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](1);
 			
 			if (jvar == _w_vel_var)
-				return - _mu_eff[_qp] * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](2);
+				return _mu_eff[_qp] * _grad_phi[_j][_qp](0) * _grad_test[_i][_qp](2);
 
 			if (jvar == _pvar)
-				return - _phi[_j][_qp] * _grad_test[_i][_qp](0);
+				return _phi[_j][_qp] * _grad_test[_i][_qp](0);
 			
 			return 0.0;
 		default:

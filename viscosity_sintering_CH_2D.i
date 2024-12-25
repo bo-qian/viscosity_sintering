@@ -8,7 +8,7 @@
   xmax = 200
   ymin = 0
   ymax = 200
-  elem_type = QUAD4
+  elem_type = QUAD9
   # uniform_refine = 1
 []
 
@@ -33,11 +33,11 @@
     family = LAGRANGE
   [../]
   # [./u]
-  #   order = FIRST
+  #   order = SECOND
   #   family = LAGRANGE
   # [../]
   # [./v]
-  #   order = FIRST
+  #   order = SECOND
   #   family = LAGRANGE
   # [../]
   # [./p]
@@ -176,7 +176,7 @@
 
 [Executioner]
   type = Transient
-  solve_type = PJFNK
+  solve_type = JFNK
   # scheme = bdf2
 
   petsc_options_iname = '-pc_type -sub_pc_type'
@@ -184,19 +184,19 @@
 
   # l_max_its = 100
   # l_tol = 1e-6
-  nl_max_its = 30
+  # nl_max_its = 30
   nl_rel_tol = 1e-7
   nl_abs_tol = 1e-6
 
-  dt = 0.001
+  dt = 0.5
   start_time = 0.0
-  end_time = 50
+  end_time = 500
 []
 
 
 [Outputs]
   exodus = true
-  time_step_interval = 1
+  time_step_interval = 2
   perf_graph = true
   [./display]
     type = Console

@@ -3,7 +3,7 @@
  * @Date: 2024-10-12 20:20:46
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-03 15:50:23
+ * @LastEditTime: 2024-12-19 18:24:37
  * @LastEditors: Bo Qian
  * @Description: 2D Initial Condition for MultiParticles
  * @FilePath: /viscosity_sintering/src/ics/MultiParticles_2D.C
@@ -49,23 +49,41 @@ MultiParticles_2D::MultiParticles_2D(const InputParameters & parameters)
     _particle_centers_coordinate = result.first;
     _particle_radius = result.second;
 
-    // Print the particle centers and radii
-    
-    std::cout << std::endl;
-	std::cout << "Particle centers and radii" << std::endl;
-	std::cout << "---------------------------------------------------" << std::endl;
-    std::cout << std::left << std::setw(25) << "Center" 
-              << std::setw(25) << "Radius" << std::endl;
-    std::cout << "---------------------------------------------------" << std::endl;
-    
-    for (size_t i = 0; i < _particle_centers_coordinate.size(); ++i)
-    {
-        std::cout << std::setw(25) << "(" << _particle_centers_coordinate[i].first 
-                  << ", " << _particle_centers_coordinate[i].second << ")"
-                  <<  std::setw(25) << _particle_radius[i] << std::endl;
+    // Helper function for centering text in a fixed-width field
+    auto centerText = [](const std::string &text, int width) {
+        int padLeft = (width - text.size()) / 2;
+        int padRight = width - padLeft - text.size();
+        return std::string(padLeft, ' ') + text + std::string(padRight, ' ');
+    };
+
+    // Column widths
+    const int centerWidth = 25;
+    const int radiusWidth = 10;
+
+    // Print header
+    std::cout << "\nParticle Centers and Radii\n";
+    std::cout << std::string(centerWidth + radiusWidth, '=') << '\n';
+    std::cout << centerText("Center", centerWidth)
+              << centerText("Radius", radiusWidth) << '\n';
+    std::cout << std::string(centerWidth + radiusWidth, '-') << '\n';
+
+    // Print data rows
+    for (size_t i = 0; i < _particle_centers_coordinate.size(); ++i) {
+        std::ostringstream centerStream;
+        centerStream << "(" << _particle_centers_coordinate[i].first 
+                     << ", " << _particle_centers_coordinate[i].second << ")";
+        std::string centerTextStr = centerStream.str();
+
+        std::ostringstream radiusStream;
+        radiusStream << _particle_radius[i];
+        std::string radiusTextStr = radiusStream.str();
+
+        std::cout << centerText(centerTextStr, centerWidth)
+                  << centerText(radiusTextStr, radiusWidth) << '\n';
     }
-    std::cout << "---------------------------------------------------" << std::endl;
-    std::cout << std::endl;
+
+    // Print footer
+    std::cout << std::string(centerWidth + radiusWidth, '=') << "\n\n";
 }
 
 std::pair<std::vector<std::pair<int, int>>, std::vector<int>> 

@@ -3,7 +3,7 @@
  * @Date: 2024-10-29 11:01:43
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-25 16:23:13
+ * @LastEditTime: 2024-12-26 18:04:13
  * @LastEditors: Bo Qian
  * @Description: Materials for Viscosity Sintering App
  * @FilePath: /viscosity_sintering/src/materials/ViscositySinteringMaterial.C
@@ -54,6 +54,7 @@ ViscositySinteringMaterial::ViscositySinteringMaterial(const InputParameters & p
 	_dF2_loc(declareProperty<Real>("dF2_loc")),
 	_mu_eff(declareProperty<Real>("mu_eff")),
 	_dmu_eff(declareProperty<Real>("dmu_eff")),
+	_alpha_var(declareProperty<Real>("alpha_value")),
 	_kappa_C(declareProperty<Real>("kappa_C_value")),
 	_mobility(declareProperty<Real>("M_value")),
 	_theta_var(declareProperty<Real>("theta_value")),
@@ -123,7 +124,7 @@ ViscositySinteringMaterial::computeQpProperties()
 	_dNdc[_qp] = 2 * _c[_qp] * (1 - _c[_qp]) * (3 + _epsilon_Nc * (1 - 2 * _c[_qp]));
 
 	// Compute F_loc
-	_F_loc[_qp] = _alpha * _c[_qp] * (1 - _c[_qp]) * (1 - _c[_qp]);
+	_F_loc[_qp] = _alpha * _c[_qp] * _c[_qp] * (1 - _c[_qp]) * (1 - _c[_qp]);
 
 	// Compute dF_loc
 	_dF_loc[_qp] = 2 * _alpha * _c[_qp] * (1 - _c[_qp]) * (1 - 2 * _c[_qp]);
@@ -136,6 +137,9 @@ ViscositySinteringMaterial::computeQpProperties()
 	
 	// Compute dmu_eff
 	_dmu_eff[_qp] = _mu_volume * (1 - _mu_ratio) * _dNdc[_qp];
+
+	// compute alpha_var
+	_alpha_var[_qp] = _alpha;
 
 	// compute kappa_C
 	_kappa_C[_qp] = _kc;

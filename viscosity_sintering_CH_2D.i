@@ -46,6 +46,13 @@
   # [../]
 []
 
+[AuxVariables]
+  [./F_density]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+[]
+
 [Kernels]
   # Cahn Hilliard kernels
   # [./StokesX]
@@ -140,6 +147,14 @@
 #   [../]
 # []
 
+[AuxKernels]
+  [./TotalFreeEnergy]
+    type = VSTotalFreeEnergy
+    variable = F_density
+    phase_field = c
+  [../]
+[]
+
 [Materials]
   [./ViscosityMaterial]
     type = ViscositySinteringMaterial
@@ -179,8 +194,8 @@
   solve_type = JFNK
   # scheme = bdf2
 
-  petsc_options_iname = '-pc_type -sub_pc_type'
-  petsc_options_value = 'lu      lu          '
+  petsc_options_iname = '-pc_type -pc_factor_mat_solver_type'
+  petsc_options_value = 'lu      mumps'
 
   # l_max_its = 100
   # l_tol = 1e-6

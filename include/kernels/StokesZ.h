@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:57:14
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-25 16:42:17
+ * @LastEditTime: 2025-02-11 19:37:47
  * @LastEditors: Bo Qian
  * @Description: Kernel of z-component of the Stokes equation
  * @FilePath: /viscosity_sintering/include/kernels/StokesZ.h
@@ -20,21 +20,6 @@ public:
 	static InputParameters validParams();
 
 protected:
-
-	// virtual Real computeQpResidual() override
-	// {
-	// 	return 0.0;
-	// }
-
-  // virtual Real computeQpJacobian() 
-	// {
-	// 	return 0.0;
-	// }
-
-  // virtual Real computeQpOffDiagJacobian(unsigned jvar) override
-	// {
-	// 	return 0.0;
-	// }
 
 	virtual Real computeQpResidual() override;
 	virtual Real computeQpJacobian() override;

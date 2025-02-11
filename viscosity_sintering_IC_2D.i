@@ -135,17 +135,17 @@
 
 [Executioner]
   type = Steady
-  solve_type = JFNK
+  solve_type = PJFNK
   # scheme = bdf2
 
-  petsc_options_iname = '-pc_type -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu      mumps'
+  petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
+  petsc_options_value = 'lu 1500 superlu_dist'
 
   # l_max_its = 500
   # l_tol = 1e-6
   # nl_max_its = 30
-  nl_rel_tol = 1e-3
-  nl_abs_tol = 1e-2
+  nl_rel_tol = 1e-15
+  nl_abs_tol = 1e-6
 
   # dt = 0.001
   # start_time = 0.0

@@ -3,12 +3,12 @@
   type = GeneratedMesh
   dim = 2
   nx = 200
-  ny = 200
+  ny = 150
   xmin = 0
   xmax = 200
   ymin = 0
-  ymax = 200
-  elem_type = QUAD9
+  ymax = 150
+  elem_type = TRI6
   # uniform_refine = 1
 []
 
@@ -23,9 +23,9 @@
         delta = 3
         radius = 25
         number_x = 2
-        number_y = 2
+        number_y = 1
         omega = 0.05
-        domain = '200 200'
+        domain = '200 150'
     [../]
   [../]
   [./mu]
@@ -191,16 +191,16 @@
 
 [Executioner]
   type = Transient
-  solve_type = JFNK
+  solve_type = PJFNK
   # scheme = bdf2
 
-  petsc_options_iname = '-pc_type -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu      mumps'
+  petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
+  petsc_options_value = 'lu 1500 superlu_dist'
 
-  # l_max_its = 100
+  # l_max_its = 500
   # l_tol = 1e-6
   # nl_max_its = 30
-  nl_rel_tol = 1e-7
+  nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 
   dt = 0.5

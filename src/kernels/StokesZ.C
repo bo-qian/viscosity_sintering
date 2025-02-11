@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:57:41
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-25 16:43:32
+ * @LastEditTime: 2025-02-11 19:38:14
  * @LastEditors: Bo Qian
  * @Description: Kernel of z-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesZ.C

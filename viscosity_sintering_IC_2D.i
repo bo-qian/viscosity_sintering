@@ -2,12 +2,12 @@
   type = GeneratedMesh
   dim = 2
   nx = 200
-  ny = 200
+  ny = 150
   xmin = 0
   xmax = 200
   ymin = 0
-  ymax = 200
-  elem_type = QUAD9
+  ymax = 150
+  elem_type = TRI6
   # uniform_refine = 1
 []
 
@@ -70,9 +70,9 @@
       delta = 3
       radius = 25
       number_x = 2
-      number_y = 2
+      number_y = 1
       omega = 0.05
-      domain = '200 200'
+      domain = '200 150'
     [../]
   [../]
   [./F_density]

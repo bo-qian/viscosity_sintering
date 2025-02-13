@@ -61,6 +61,7 @@
   [./Incompressibility]
     type = Incompressibility
     variable = p
+    dim = 2
     x_velocity = u
     y_velocity = v
   [../]
@@ -130,16 +131,16 @@
 
 [Executioner]
   type = Transient
-  solve_type = JFNK
+  solve_type = NEWTON
   # scheme = bdf2
 
-  petsc_options_iname = '-pc_type -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu      mumps'
+  petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
+  petsc_options_value = 'lu 1500 superlu_dist'
 
-  # l_max_its = 100
+  # l_max_its = 500
   # l_tol = 1e-6
   # nl_max_its = 30
-  nl_rel_tol = 1e-7
+  nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 
   dt = 0.5

@@ -3,7 +3,7 @@
  * @Date: 2024-10-24 09:08:53
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-11-28 17:24:32
+ * @LastEditTime: 2025-02-12 15:51:31
  * @LastEditors: Bo Qian
  * @Description: Header file for Incompressibility Kernel
  * @FilePath: /viscosity_sintering/include/kernels/Incompressibility.h
@@ -14,6 +14,7 @@
 # pragma once
 
 #include "Kernel.h"
+#include "MooseEnum.h"
 
 class Incompressibility : public Kernel
 {
@@ -22,6 +23,7 @@ class Incompressibility : public Kernel
 		static InputParameters validParams();
 
 	protected:
+		MooseEnum _dim;
 		virtual RealVectorValue computeQpVelocity();
 		virtual Real computeQpDivVelocity();
 

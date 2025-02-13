@@ -3,7 +3,7 @@
  * @Date: 2024-10-24 09:08:32
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-02-12 14:50:04
+ * @LastEditTime: 2025-02-12 19:28:52
  * @LastEditors: Bo Qian
  * @Description: Incompressibility Kernel
  * @FilePath: /viscosity_sintering/src/kernels/Incompressibility.C
@@ -17,6 +17,8 @@ InputParameters
 Incompressibility::validParams()
 {
   InputParameters params = Kernel::validParams();
+  MooseEnum dims("2=2 3");
+	params.addRequiredParam<MooseEnum>("dim", dims, "The dimension of the simulation");
   params.addClassDescription("Incompressibility Kernel");
   params.addRequiredCoupledVar("x_velocity", "The x-velocity variable coupled into CH equation");
   params.addRequiredCoupledVar("y_velocity", "The y-velocity variable coupled into CH equation");
@@ -26,6 +28,8 @@ Incompressibility::validParams()
 
 Incompressibility::Incompressibility(const InputParameters & parameters)
   : Kernel(parameters),
+  _dim(getParam<MooseEnum>("dim")),
+
   _u_velocity_var(coupled("x_velocity")),
   _v_velocity_var(coupled("y_velocity")),
   _w_velocity_var(coupled("z_velocity")),
@@ -44,13 +48,29 @@ Incompressibility::Incompressibility(const InputParameters & parameters)
 RealVectorValue
 Incompressibility::computeQpVelocity()
 {
-  return RealVectorValue(_u_velocity[_qp], _v_velocity[_qp], _w_velocity[_qp]);
+  switch (_dim)
+  {
+    case 2:
+      return RealVectorValue(_u_velocity[_qp], _v_velocity[_qp]);
+    case 3:
+      return RealVectorValue(_u_velocity[_qp], _v_velocity[_qp], _w_velocity[_qp]);
+    default:
+      mooseError("Invalid dimension value, should be 2 or 3, from computeQpVelocity");
+  }
 }
 
 Real 
 Incompressibility::computeQpDivVelocity()
 {
-  return _grad_u_velocity[_qp](0) + _grad_v_velocity[_qp](1) + _grad_w_velocity[_qp](2);
+  switch (_dim)
+  {
+    case 2:
+      return _grad_u_velocity[_qp](0) + _grad_v_velocity[_qp](1);
+    case 3:
+      return _grad_u_velocity[_qp](0) + _grad_v_velocity[_qp](1) + _grad_w_velocity[_qp](2);
+    default:
+      mooseError("Invalid dimension value, should be 2 or 3, from computeQpDivVelocity");
+  }
 }
 
 // 计算残差项
@@ -70,14 +90,30 @@ Incompressibility::computeQpJacobian()
 Real
 Incompressibility::computeQpOffDiagJacobian(unsigned jvar)
 {
-  if (jvar == _u_velocity_var)
-    return _grad_phi[_j][_qp](0) * _grad_test[_j][_qp](0);
+  switch (_dim)
+  {
+    case 2:
+      if (jvar == _u_velocity_var)
+        return _grad_phi[_j][_qp](0) * _test[_i][_qp];
 
-  if (jvar == _v_velocity_var)
-    return _grad_phi[_j][_qp](1) * _grad_test[_j][_qp](1);
+      if (jvar == _v_velocity_var)
+        return _grad_phi[_j][_qp](1) * _test[_i][_qp];
 
-  if (jvar == _w_velocity_var)
-    return _grad_phi[_j][_qp](2) * _grad_test[_j][_qp](2);
+      return 0.0;
+      
+    case 3:
+      if (jvar == _u_velocity_var)
+        return _grad_phi[_j][_qp](0) * _test[_i][_qp];
 
-  return 0.0;
+      if (jvar == _v_velocity_var)
+        return _grad_phi[_j][_qp](1) * _test[_i][_qp];
+
+      if (jvar == _w_velocity_var)
+        return _grad_phi[_j][_qp](2) * _test[_i][_qp];
+      
+      return 0.0;
+  
+    default:
+      mooseError("Invalid dimension value, should be 2 or 3, from computeQpOffDiagJacobian");
+  }
 }

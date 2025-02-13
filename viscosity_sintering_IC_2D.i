@@ -1,14 +1,15 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 200
-  ny = 150
+  nx = 240
+  ny = 180
   xmin = 0
-  xmax = 200
+  xmax = 160
   ymin = 0
-  ymax = 150
-  elem_type = TRI6
+  ymax = 120
+  elem_type = QUAD9
   # uniform_refine = 1
+  # file = 'mesh.e'
 []
 
 [Variables]
@@ -68,14 +69,18 @@
     [./InitialCondition]
       type = MultiParticles_2D
       delta = 3
-      radius = 25
+      radius = 20
       number_x = 2
       number_y = 1
       omega = 0.05
-      domain = '200 150'
+      domain = '160 120'
     [../]
   [../]
   [./F_density]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./V_Magnitude]
     order = FIRST
     family = MONOMIAL
   [../]
@@ -87,6 +92,22 @@
     variable = F_density
     phase_field = c
   [../]
+  [./VelocityMagnitude]
+    type = VelocityMagnitude
+    variable = V_Magnitude
+    dim = 2
+    x_velocity = u
+    y_velocity = v
+  [../]
+
+  # [./StressTensor]
+  #   type = StressTensor
+  #   variable = stress
+  #   dim = 2
+  #   x_velocity = u
+  #   y_velocity = v
+  #   pressure = p
+  # [../]
 []
 
 [Kernels]
@@ -111,6 +132,7 @@
   [./Incompressibility]
     type = Incompressibility
     variable = p
+    dim = 2
     x_velocity = u
     y_velocity = v
   [../]
@@ -135,7 +157,7 @@
 
 [Executioner]
   type = Steady
-  solve_type = PJFNK
+  solve_type = NEWTON
   # scheme = bdf2
 
   petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'

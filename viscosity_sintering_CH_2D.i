@@ -1,15 +1,16 @@
 
 [Mesh]
-  type = GeneratedMesh
-  dim = 2
-  nx = 200
-  ny = 150
-  xmin = 0
-  xmax = 200
-  ymin = 0
-  ymax = 150
-  elem_type = TRI6
+  # type = GeneratedMesh
+  # dim = 2
+  # nx = 200
+  # ny = 150
+  # xmin = 0
+  # xmax = 200
+  # ymin = 0
+  # ymax = 150
+  # elem_type = TRI6
   # uniform_refine = 1
+  file = 'viscosity_sintering_IC_2D_out.e'
 []
 
 [Variables]
@@ -23,27 +24,27 @@
         delta = 3
         radius = 25
         number_x = 2
-        number_y = 1
+        number_y = 2
         omega = 0.05
-        domain = '200 150'
+        domain = '200 200'
     [../]
   [../]
   [./mu]
     order = FIRST
     family = LAGRANGE
   [../]
-  # [./u]
-  #   order = SECOND
-  #   family = LAGRANGE
-  # [../]
-  # [./v]
-  #   order = SECOND
-  #   family = LAGRANGE
-  # [../]
-  # [./p]
-  #   order = FIRST
-  #   family = LAGRANGE
-  # [../]
+  [./u]
+    order = SECOND
+    family = LAGRANGE
+  [../]
+  [./v]
+    order = SECOND
+    family = LAGRANGE
+  [../]
+  [./p]
+    order = FIRST
+    family = LAGRANGE
+  [../]
 []
 
 [AuxVariables]
@@ -54,49 +55,47 @@
 []
 
 [Kernels]
-  # Cahn Hilliard kernels
-  # [./StokesX]
-  #   type = StokesX
-  #   variable = u
-  #   dim = 2
-  #   phase_field = c
-  #   pressure = p
-  #   y_velocity = v
-  # [../]
-  # [./StokesY]
-  #   type = StokesY
-  #   variable = v
-  #   dim = 2
-  #   phase_field = c
-  #   pressure = p
-  #   x_velocity = u
-  # [../]
-  # [./Incompressibility]
-  #   type = Incompressibility
-  #   variable = p
-  #   x_velocity = u
-  #   y_velocity = v
-  # [../]
-
+  [./StokesX]
+    type = StokesX
+    variable = u
+    dim = 2
+    phase_field = c
+    pressure = p
+    y_velocity = v
+  [../]
+  [./StokesY]
+    type = StokesY
+    variable = v
+    dim = 2
+    phase_field = c
+    pressure = p
+    x_velocity = u
+  [../]
+  [./Incompressibility]
+    type = Incompressibility
+    variable = p
+    dim = 2
+    x_velocity = u
+    y_velocity = v
+  [../]
 
   [./dt_C]
     type = TimeDerivative
     variable = c
   [../]
   
-  # [./CH_CoupleV]
-  #   type = CHCoupV
-  #   variable = c
-  #   x_velocity = u
-  #   y_velocity = v
-  # [../]
+  [./CH_CoupleV]
+    type = CHCoupV
+    variable = c
+    x_velocity = u
+    y_velocity = v
+  [../]
 
   [./CHMob]
     type = CHMob
     variable = c
     coupledvar = mu
   [../]
-
 
   [./CHMuFloc]
     type = CHMuFloc
@@ -108,44 +107,22 @@
     variable = mu
     coupledvar = c
   [../]
-
-
-  # [./dt_mu]
-  #   type = CoupledTimeDerivative
-  #   variable = mu
-  #   v = c
-  # [../]
-  # [./CH_wres]
-  #   type = SplitCHWRes
-  #   variable = mu
-  #   mob_name = M
-  # [../]
-  # [./CH_Parsed]
-  #   type = SplitCHParsed
-  #   variable = c
-  #   f_name = f_loc
-  #   w = mu
-  #   kappa_name = kappa_c
-  # [../]
-
 []
 
-
-
-# [BCs]
-#   [./bcs_u]
-#     type = DirichletBC
-#     variable = u
-#     boundary = '0 1 2 3'
-#     value = 0
-#   [../]
-#   [./bcs_v]
-#     type = DirichletBC
-#     variable = v
-#     boundary = '0 1 2 3'
-#     value = 0
-#   [../]
-# []
+[BCs]
+  [./bcs_u]
+    type = DirichletBC
+    variable = u
+    boundary = '0 1 2 3'
+    value = 0
+  [../]
+  [./bcs_v]
+    type = DirichletBC
+    variable = v
+    boundary = '0 1 2 3'
+    value = 0
+  [../]
+[]
 
 [AuxKernels]
   [./TotalFreeEnergy]
@@ -160,26 +137,7 @@
     type = ViscositySinteringMaterial
     cvar = c
   [../]
-
-
-  # [./constants]
-  #   type = GenericConstantMaterial
-  #   block = 0
-  #   prop_names = 'kappa_c M'
-  #   prop_values = '135.00 0.005'
-  # [../]
-
-  # [./free_energy]
-  #   type = DerivativeParsedMaterial
-  #   property_name = f_loc
-  #   constant_names = 'A'
-  #   constant_expressions = '120.00'
-  #   coupled_variables = 'c'
-  #   expression = 'A*c^2*(1-c)^2'
-  #   derivative_order = 2
-  # [../]
 []
-
 
 
 [Preconditioning]
@@ -191,7 +149,7 @@
 
 [Executioner]
   type = Transient
-  solve_type = PJFNK
+  solve_type = NEWTON
   # scheme = bdf2
 
   petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
@@ -211,7 +169,7 @@
 
 [Outputs]
   exodus = true
-  time_step_interval = 2
+  # time_step_interval = 1
   perf_graph = true
   [./display]
     type = Console

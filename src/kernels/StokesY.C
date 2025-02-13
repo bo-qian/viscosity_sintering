@@ -3,7 +3,7 @@
  * @Date: 2024-11-05 19:46:17
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-02-12 14:42:32
+ * @LastEditTime: 2025-02-12 19:29:30
  * @LastEditors: Bo Qian
  * @Description: Kernel of y-component of the Stokes equation
  * @FilePath: /viscosity_sintering/src/kernels/StokesY.C
@@ -168,6 +168,6 @@ StokesY::computeQpOffDiagJacobian(unsigned jvar)
 			
 			return 0.0;
 		default:
-		mooseError("Invalid dimension value, should be 2 or 3");
+			mooseError("Invalid dimension value, should be 2 or 3");
 	}
 }

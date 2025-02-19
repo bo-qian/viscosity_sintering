@@ -3,7 +3,7 @@
  * @Date: 2024-11-11 12:27:32
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-19 17:48:15
+ * @LastEditTime: 2025-02-18 15:56:15
  * @LastEditors: Bo Qian
  * @Description: Kernel of the mobility term of Cahn-Hilliard equation
  * @FilePath: /viscosity_sintering/src/kernels/CHMob.C

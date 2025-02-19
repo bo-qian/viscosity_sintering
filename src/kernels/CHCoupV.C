@@ -3,7 +3,7 @@
  * @Date: 2024-10-12 20:20:46
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-16 15:35:55
+ * @LastEditTime: 2025-02-18 20:49:06
  * @LastEditors: Bo Qian
  * @Description: Kernel for CH equation coupled with velocity
  * @FilePath: /viscosity_sintering/src/kernels/CHCoupV.C
@@ -61,11 +61,11 @@ CHCoupV::computeQpJacobian()
 Real 
 CHCoupV::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  // if (jvar == _u_velocoty_var)
-  //   return -_u[_qp] * (_phi[_j][_qp] * _grad_test[_j][_qp](0));
-  // if (jvar == _v_velocity_var)
-  //   return -_u[_qp] * (_phi[_j][_qp] * _grad_test[_j][_qp](1));
-  // if (jvar == _w_velocity_var)
-  //   return -_u[_qp] * (_phi[_j][_qp] * _grad_test[_j][_qp](2));
+  if (jvar == _u_velocoty_var)
+    return 0.0;
+  if (jvar == _v_velocity_var)
+    return 0.0;
+  if (jvar == _w_velocity_var)
+    return 0.0;
   return 0.0;
 }

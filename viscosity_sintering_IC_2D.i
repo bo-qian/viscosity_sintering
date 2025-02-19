@@ -7,7 +7,7 @@
   xmax = 160
   ymin = 0
   ymax = 120
-  elem_type = QUAD9
+  elem_type = TRI6
   # uniform_refine = 1
   # file = 'mesh.e'
 []
@@ -160,8 +160,16 @@
   solve_type = NEWTON
   # scheme = bdf2
 
-  petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu 1500 superlu_dist'
+  # petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
+  # petsc_options_value = 'lu 1500 superlu_dist'
+
+  petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type
+                         -sub_pc_type -pc_asm_overlap'
+  petsc_options_value = 'lu     20                 preonly
+                         ilu          2'
+
+  # petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type -sub_pc_type -pc_asm_overlap'
+  # petsc_options_value = 'lu              31            preonlya            mumps          2'
 
   # l_max_its = 500
   # l_tol = 1e-6
@@ -179,6 +187,9 @@
   exodus = true
   # time_step_interval = 1
   perf_graph = true
+  # [debug]
+  #   type = MaterialPropertyDebugOutput
+  # []
   [./display]
     type = Console
     max_rows = 12
@@ -187,5 +198,6 @@
 
 [Debug]
   show_material_props = true
-  # show_execution_order = true
+  show_var_residual_norms = true
+
 []

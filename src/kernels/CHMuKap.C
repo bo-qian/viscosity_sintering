@@ -3,7 +3,7 @@
  * @Date: 2024-11-11 15:16:57
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-25 15:08:15
+ * @LastEditTime: 2025-02-18 16:35:48
  * @LastEditors: Bo Qian
  * @Description: Kernel of the kappa term of Cahn-Hilliard equation
  * @FilePath: /viscosity_sintering/src/kernels/CHMuKap.C

@@ -75,6 +75,18 @@
       omega = 0.05
       domain = '160 120'
     [../]
+    # [./InitialCondition]
+    #   type = LatticeSmoothCircleIC
+    #   variable = c
+    #   invalue = 1.0
+    #   outvalue = 0.0001
+    #   circles_per_side = '3 3'
+    #   # pos_variation = 10.0
+    #   radius = 10.0
+    #   int_width = 2.0
+    #   radius_variation_type = uniform
+    #   avoid_bounds = false
+    # [../]
   [../]
   [./F_density]
     order = FIRST
@@ -140,11 +152,18 @@
 
 [Materials]
   [./ViscosityMaterial]
-    type = ViscositySinteringMaterial
+    type = StokesMaterial
     cvar = c
   [../]
 []
 
+[Postprocessors]
+  [./total_energy]
+    type = ElementIntegralVariablePostprocessor
+    variable = F_density
+    execute_on = 'initial timestep_end'
+  [../]
+[]
 
 [Preconditioning]
   [./cw_coupling]
@@ -160,13 +179,16 @@
   solve_type = NEWTON
   # scheme = bdf2
 
-  # petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  # petsc_options_value = 'lu 1500 superlu_dist'
+  petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
+  petsc_options_value = 'lu 2500 superlu_dist'
 
-  petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type
-                         -sub_pc_type -pc_asm_overlap'
-  petsc_options_value = 'lu     20                 preonly
-                         ilu          2'
+  # petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type
+  #                        -sub_pc_type -pc_asm_overlap'
+  # petsc_options_value = 'lu     20                 preonly
+  #                        ilu          2'
+                         
+  # petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type -sub_pc_type -pc_asm_overlap'
+  # petsc_options_value = 'asm     20                 preonly       ilu          2'
 
   # petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type -sub_pc_type -pc_asm_overlap'
   # petsc_options_value = 'lu              31            preonlya            mumps          2'

@@ -3,7 +3,7 @@
  * @Date: 2024-10-29 11:01:08
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-26 14:06:45
+ * @LastEditTime: 2025-02-21 15:21:24
  * @LastEditors: Bo Qian
  * @Description: Header file for Viscosity Sintering Material
  * @FilePath: /viscosity_sintering/include/materials/ViscositySinteringMaterial.h
@@ -34,8 +34,7 @@ class ViscositySinteringMaterial : public DerivativeMaterialInterface<Material>
 		const Real _theta;
 
 		const VariableValue & _c;
-		unsigned int  _c_var;
-		std::string _c_name;
+		const VariableValue & _c_old;
 
 		MaterialProperty<Real> & _Nc;
 		MaterialProperty<Real> & _dNdc;

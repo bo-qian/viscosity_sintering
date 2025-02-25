@@ -3,7 +3,7 @@
  * @Date: 2024-10-29 11:01:43
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-26 18:04:13
+ * @LastEditTime: 2025-02-21 15:21:28
  * @LastEditors: Bo Qian
  * @Description: Materials for Viscosity Sintering App
  * @FilePath: /viscosity_sintering/src/materials/ViscositySinteringMaterial.C
@@ -45,8 +45,8 @@ ViscositySinteringMaterial::ViscositySinteringMaterial(const InputParameters & p
 	_theta(getParam<Real>("theta")),
 
 	_c(coupledValue("cvar")),
-	_c_var(coupled("cvar")),
-	_c_name(getVar("cvar", 0)->name()),
+	_c_old(coupledValueOld("cvar")),
+	
 	_Nc(declareProperty<Real>("Nc")),
 	_dNdc(declareProperty<Real>("dNc")),
 	_F_loc(declareProperty<Real>("F_loc")),
@@ -127,7 +127,8 @@ ViscositySinteringMaterial::computeQpProperties()
 	_F_loc[_qp] = _alpha * _c[_qp] * _c[_qp] * (1 - _c[_qp]) * (1 - _c[_qp]);
 
 	// Compute dF_loc
-	_dF_loc[_qp] = 2 * _alpha * _c[_qp] * (1 - _c[_qp]) * (1 - 2 * _c[_qp]);
+	// _dF_loc[_qp] = 2 * _alpha * _c[_qp] * (1 - _c[_qp]) * (1 - 2 * _c[_qp]);
+	_dF_loc[_qp] = 2 * _alpha * _c_old[_qp] * (1 - _c_old[_qp]) * (1 - 2 * _c_old[_qp]);
 
 	// Compute dF2_loc
 	_dF2_loc[_qp] = 2 * _alpha * (1 - 2 * _c[_qp]) * (1 - 2 * _c[_qp]) - 4 * _alpha * _c[_qp] * (1 - _c[_qp]);

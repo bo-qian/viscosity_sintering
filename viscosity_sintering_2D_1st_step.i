@@ -8,20 +8,6 @@
     order = FIRST
     family = LAGRANGE
     initial_from_file_var = c
-    # [./InitialCondition]
-    #   type = ConstantIC
-    #   value = 0.0
-    # [../]
-    # Initial expression for phase-field c
-    # [./InitialCondition]
-    #     type = MultiParticles_2D
-    #     delta = 3
-    #     radius = 25
-    #     number_x = 2
-    #     number_y = 2
-    #     omega = 0.05
-    #     domain = '200 200'
-    # [../]
   [../]
   [./mu]
     order = FIRST
@@ -31,6 +17,9 @@
         value = 0.0
     [../]
   [../]
+[]
+
+[AuxVariables]
   [./u]
     order = SECOND
     family = LAGRANGE
@@ -46,9 +35,6 @@
     family = LAGRANGE
     initial_from_file_var = p
   [../]
-[]
-
-[AuxVariables]
   [./F_density]
     order = FIRST
     family = MONOMIAL
@@ -71,29 +57,29 @@
 
 [Kernels]
   # Stokes kernels
-  [./StokesX]
-    type = StokesX
-    variable = u
-    dim = 2
-    phase_field = c
-    pressure = p
-    y_velocity = v
-  [../]
-  [./StokesY]
-    type = StokesY
-    variable = v
-    dim = 2
-    phase_field = c
-    pressure = p
-    x_velocity = u
-  [../]
-  [./Incompressibility]
-    type = Incompressibility
-    variable = p
-    dim = 2
-    x_velocity = u
-    y_velocity = v
-  [../]
+  # [./StokesX]
+  #   type = StokesX
+  #   variable = u
+  #   dim = 2
+  #   phase_field = c
+  #   pressure = p
+  #   y_velocity = v
+  # [../]
+  # [./StokesY]
+  #   type = StokesY
+  #   variable = v
+  #   dim = 2
+  #   phase_field = c
+  #   pressure = p
+  #   x_velocity = u
+  # [../]
+  # [./Incompressibility]
+  #   type = Incompressibility
+  #   variable = p
+  #   dim = 2
+  #   x_velocity = u
+  #   y_velocity = v
+  # [../]
 
   # Cahn Hilliard kernels
   [./dt_C]
@@ -142,20 +128,20 @@
   [../]
 []
 
-[BCs]
-  [./bcs_u]
-    type = DirichletBC
-    variable = u
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-  [./bcs_v]
-    type = DirichletBC
-    variable = v
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-[]
+# [BCs]
+#   [./bcs_u]
+#     type = DirichletBC
+#     variable = u
+#     boundary = '0 1 2 3'
+#     value = 0
+#   [../]
+#   [./bcs_v]
+#     type = DirichletBC
+#     variable = v
+#     boundary = '0 1 2 3'
+#     value = 0
+#   [../]
+# []
 
 
 [Materials]
@@ -194,7 +180,7 @@
 
   dt = 0.01
   start_time = 0.0
-  end_time = 500
+  end_time = 0.01
 []
 
 

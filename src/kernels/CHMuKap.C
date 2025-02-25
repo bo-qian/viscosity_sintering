@@ -3,7 +3,7 @@
  * @Date: 2024-11-11 15:16:57
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-02-18 16:35:48
+ * @LastEditTime: 2025-02-21 15:18:54
  * @LastEditors: Bo Qian
  * @Description: Kernel of the kappa term of Cahn-Hilliard equation
  * @FilePath: /viscosity_sintering/src/kernels/CHMuKap.C
@@ -28,7 +28,9 @@ CHMuKap::CHMuKap(const InputParameters & parameters)
   _theta(getMaterialProperty<Real>("theta_value")),
   _cvar(coupled("coupledvar")),
   _c(coupledValue("coupledvar")),
-  _grad_c(coupledGradient("coupledvar"))
+  _cvar_old(coupledValueOld("coupledvar")),
+  _grad_c(coupledGradient("coupledvar")),
+  _grad_c_old(coupledGradientOld("coupledvar"))
 {
   
 }
@@ -36,7 +38,8 @@ CHMuKap::CHMuKap(const InputParameters & parameters)
 Real
 CHMuKap::computeQpResidual()
 {
-  return - _theta[_qp] * _kappa_c[_qp] * (_grad_c[_qp] * _grad_test[_i][_qp]);
+  return - _theta[_qp] * _kappa_c[_qp] * (_grad_c[_qp] * _grad_test[_i][_qp]) 
+          - (1 - _theta[_qp]) * _kappa_c[_qp] * (_grad_c_old[_qp] * _grad_test[_i][_qp]);
 }
 
 Real

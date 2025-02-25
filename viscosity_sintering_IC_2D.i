@@ -75,18 +75,6 @@
       omega = 0.05
       domain = '160 120'
     [../]
-    # [./InitialCondition]
-    #   type = LatticeSmoothCircleIC
-    #   variable = c
-    #   invalue = 1.0
-    #   outvalue = 0.0001
-    #   circles_per_side = '3 3'
-    #   # pos_variation = 10.0
-    #   radius = 10.0
-    #   int_width = 2.0
-    #   radius_variation_type = uniform
-    #   avoid_bounds = false
-    # [../]
   [../]
   [./F_density]
     order = FIRST
@@ -103,6 +91,7 @@
     type = VSTotalFreeEnergy
     variable = F_density
     phase_field = c
+    execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./VelocityMagnitude]
     type = VelocityMagnitude
@@ -110,6 +99,7 @@
     dim = 2
     x_velocity = u
     y_velocity = v
+    execute_on = 'INITIAL TIMESTEP_END'
   [../]
 
   # [./StressTensor]
@@ -161,7 +151,7 @@
   [./total_energy]
     type = ElementIntegralVariablePostprocessor
     variable = F_density
-    execute_on = 'initial timestep_end'
+    execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
 

@@ -1,13 +1,29 @@
 
 [Mesh]
-  file = viscosity_sintering_IC_2D_out.e
+  type = GeneratedMesh
+  dim = 2
+  nx = 240
+  ny = 180
+  xmin = 0
+  xmax = 160
+  ymin = 0
+  ymax = 120
+  elem_type = TRI6
 []
 
 [Variables]
   [./c]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = c
+    [./InitialCondition]
+      type = MultiParticles_2D
+      delta = 3
+      radius = 20
+      number_x = 2
+      number_y = 1
+      omega = 0.05
+      domain = '160 120'
+    [../]
   [../]
   [./mu]
     order = FIRST

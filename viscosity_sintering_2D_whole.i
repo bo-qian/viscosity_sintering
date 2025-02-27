@@ -36,17 +36,17 @@
   [./u]
     order = SECOND
     family = LAGRANGE
-    initial_from_file_var = u
+    # initial_from_file_var = u
   [../]
   [./v]
     order = SECOND
     family = LAGRANGE
-    initial_from_file_var = v
+    # initial_from_file_var = v
   [../]
   [./p]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = p
+    # initial_from_file_var = p
   [../]
 []
 
@@ -80,6 +80,7 @@
     phase_field = c
     pressure = p
     y_velocity = v
+    execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./StokesY]
     type = StokesY

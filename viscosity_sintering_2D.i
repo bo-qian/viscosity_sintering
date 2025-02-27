@@ -3,6 +3,10 @@
   file = viscosity_sintering_IC_2D_out.e
 []
 
+[Problem]
+  allow_initial_conditions_with_restart = true
+[]
+
 [Variables]
   [./c]
     order = FIRST
@@ -38,12 +42,10 @@
   [./F_density]
     order = FIRST
     family = MONOMIAL
-    # initial_from_file_var = F_density
   [../]
   [./V_Magnitude]
     order = FIRST
     family = MONOMIAL
-    # initial_from_file_var = V_Magnitude
   [../]
 []
 
@@ -163,26 +165,16 @@
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  # scheme = bdf2
 
   petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
   petsc_options_value = 'lu 1500 superlu_dist'
 
-  # petsc_options_iname = '-pc_type -pc_factor_mat_solver_package -ksp_type'
-  # petsc_options_value = 'lu superlu_dist gmres'
-
-  # reuse_preconditioner = true
-  # reuse_preconditioner_max_linear_its = 20
-
-  # l_max_its = 500
-  # l_tol = 1e-6
-  # nl_max_its = 30
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 
-  dt = 0.01
+  dt = 0.01 
   start_time = 0.0
-  end_time = 500
+  end_time = 5.0
 []
 
 
@@ -190,6 +182,7 @@
   exodus = true
   time_step_interval = 1
   perf_graph = true
+  checkpoint = true
   csv = true
   [./display]
     type = Console
@@ -199,5 +192,4 @@
 
 [Debug]
   show_material_props = true
-  # show_execution_order = true
 []

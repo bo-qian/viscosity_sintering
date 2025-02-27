@@ -3,7 +3,7 @@
  * @Date: 2024-12-26 14:02:56
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2024-12-26 14:40:10
+ * @LastEditTime: 2025-02-27 19:03:59
  * @LastEditors: Bo Qian
  * @Description: 
  * @FilePath: /viscosity_sintering/src/auxkernels/VSTotalFreeEnergy.C
@@ -34,5 +34,7 @@ VSTotalFreeEnergy::VSTotalFreeEnergy(const InputParameters & parameters)
 Real
 VSTotalFreeEnergy::computeValue()
 {
-  return _F_loc[_qp] + 0.5 * _kappa_C[_qp] * _grad_c[_qp].norm_sq();
+  Real local_energy = _F_loc[_qp];
+  Real gradient_energy = 0.5 * _kappa_C[_qp] * _grad_c[_qp].norm_sq();
+  return local_energy + gradient_energy;
 }

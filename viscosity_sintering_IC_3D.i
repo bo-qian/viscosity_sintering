@@ -1,13 +1,16 @@
 [Mesh]
   type = GeneratedMesh
-  dim = 2
-  nx = 240
-  ny = 180
+  dim = 3
+  nx = 160
+  ny = 120
+  nz = 120
   xmin = 0
   xmax = 160
   ymin = 0
   ymax = 120
-  elem_type = TRI6
+  zmin = 0
+  zmax = 120
+  elem_type = TET10
 []
 
 [Variables]
@@ -16,6 +19,10 @@
     family = LAGRANGE
   [../]
   [./v]
+    order = SECOND
+    family = LAGRANGE
+  [../]
+  [./w]
     order = SECOND
     family = LAGRANGE
   [../]
@@ -28,15 +35,16 @@
 [AuxVariables]
   [./c]
     order = FIRST
-    family = LAGRANGE
+    family = MONOMIAL
     [./InitialCondition]
-      type = MultiParticles_2D
+      type = MultiParticles_3D
       delta = 3
       radius = 20
       number_x = 2
       number_y = 1
+      number_z = 1
       omega = 0.05
-      domain = '160 120'
+      domain = '160 120 120'
     [../]
   [../]
   [./F_density]
@@ -71,26 +79,37 @@
   [./StokesX]
     type = StokesX
     variable = u
-    dim = 2
+    dim = 3
     phase_field = c
     pressure = p
     y_velocity = v
-
+    z_velocity = w
   [../]
   [./StokesY]
     type = StokesY
     variable = v
-    dim = 2
+    dim = 3
     phase_field = c
     pressure = p
     x_velocity = u
+    z_velocity = w
+  [../]
+  [./StokesZ]
+    type = StokesZ
+    variable = w
+    dim = 3
+    phase_field = c
+    pressure = p
+    x_velocity = u
+    y_velocity = v
   [../]
   [./Incompressibility]
     type = Incompressibility
     variable = p
-    dim = 2
+    dim = 3
     x_velocity = u
     y_velocity = v
+    z_velocity = w
   [../]
 []
 
@@ -131,6 +150,8 @@
 [Outputs]
   exodus = true
   csv = true
+  time_step_interval = 1
+  checkpoint = true
   perf_graph = true
   [./display]
     type = Console

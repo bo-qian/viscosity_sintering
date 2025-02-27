@@ -3,7 +3,7 @@
  * @Date: 2024-10-29 11:01:43
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-02-21 15:21:28
+ * @LastEditTime: 2025-02-27 19:00:55
  * @LastEditors: Bo Qian
  * @Description: Materials for Viscosity Sintering App
  * @FilePath: /viscosity_sintering/src/materials/ViscositySinteringMaterial.C
@@ -128,7 +128,7 @@ ViscositySinteringMaterial::computeQpProperties()
 
 	// Compute dF_loc
 	// _dF_loc[_qp] = 2 * _alpha * _c[_qp] * (1 - _c[_qp]) * (1 - 2 * _c[_qp]);
-	_dF_loc[_qp] = 2 * _alpha * _c_old[_qp] * (1 - _c_old[_qp]) * (1 - 2 * _c_old[_qp]);
+	_dF_loc[_qp] = 2 * _alpha * _c_old[_qp] * (1 - _c_old[_qp]) * (1 - 2 * _c_old[_qp]);  
 
 	// Compute dF2_loc
 	_dF2_loc[_qp] = 2 * _alpha * (1 - 2 * _c[_qp]) * (1 - 2 * _c[_qp]) - 4 * _alpha * _c[_qp] * (1 - _c[_qp]);

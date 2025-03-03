@@ -49,10 +49,37 @@
   [../]
 []
 
+[UserObjects/study]
+  type = RepeatableRayStudy
+  names = 'neck_length shrinkage_length'
+  start_points = '80 0 0
+                   0 60 0'
+  end_points = '80 120 0
+                 160 60 0'
+  execute_on = 'INITIAL TIMESTEP_END'
+[]
+
+[RayKernels/c_integral]
+  type = VariableIntegralRayKernel
+  variable = c
+[]
+
 [Postprocessors]
   [./total_energy]
     type = ElementIntegralVariablePostprocessor
     variable = F_density
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./neck_length]
+    type = RayIntegralValue
+    ray_kernel = c_integral
+    ray = neck_length
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./shrinkage_length]
+    type = RayIntegralValue
+    ray_kernel = c_integral
+    ray = shrinkage_length
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []

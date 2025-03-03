@@ -3,7 +3,7 @@ Author: Bo Qian
 Date: 2025-02-26 13:53:09
 Email: bqian@shu.edu.cn
 Location: Shanghai University
-LastEditTime: 2025-03-03 16:20:35
+LastEditTime: 2025-03-03 19:23:46
 LastEditors: Bo Qian
 Description: plotting program of viscosity sintering MOOSE program
 FilePath: /viscosity_sintering/python/curve_group.py
@@ -711,7 +711,7 @@ def plot_histogram(cores, time, name):
     time_hours = [t / 3600 for t in time]
 
     # 选择颜色映射方案
-    cmap = cm.get_cmap("viridis", len(cores))  # 选用 viridis 颜色映射
+    cmap = plt.get_cmap("viridis", len(cores))  # 兼容旧版本的 matplotlib
     colors = [cmap(i / (len(cores) - 1)) for i in range(len(cores))]
 
     # 使用相同的格式上下文

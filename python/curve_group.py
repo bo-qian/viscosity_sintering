@@ -3,7 +3,7 @@ Author: Bo Qian
 Date: 2025-02-26 13:53:09
 Email: bqian@shu.edu.cn
 Location: Shanghai University
-LastEditTime: 2025-02-26 16:05:26
+LastEditTime: 2025-03-03 16:20:35
 LastEditors: Bo Qian
 Description: plotting program of viscosity sintering MOOSE program
 FilePath: /viscosity_sintering/python/curve_group.py
@@ -18,6 +18,7 @@ from matplotlib.gridspec import GridSpec
 from matplotlib.pyplot import title
 from matplotlib.tri import Triangulation
 from mpl_toolkits.axes_grid1 import make_axes_locatable, axes_size
+import matplotlib.cm as cm
 
 plt.rcParams.update({
     'font.family': 'serif',
@@ -44,10 +45,11 @@ plt.rcParams.update({
 # })
 
 base_path = "/home/qianbo/projects/viscosity_sintering"
-# base_directory = "/mnt/d/OneDrive/Science_Research"
+base_path_wsl = "/mnt/d/OneDrive/Science_Research/2.Secondstage_CodeAndData_Python/Viscosity Sintering/viscosity_sintering"
+time_step = 360
 
 
-def curve_comparison_two(path, label, x_1, y_1):
+def curve_comparison_two(path, label, x_1, y_1, time_step):
     # Function to plot curve group ********************************************************************************
     file_directory = os.getcwd() + "/python/Comparison of Viscosity Sintering"
     line_width = 4
@@ -69,9 +71,10 @@ def curve_comparison_two(path, label, x_1, y_1):
             # 获取标题行
             title = data_csv[i].columns
             # 提取数据列
-            data_x_1 = data_csv[i].iloc[:, x_1]
-            data_y_1 = data_csv[i].iloc[:, y_1]
+            data_x_1 = data_csv[i].iloc[:time_step, x_1]
+            data_y_1 = data_csv[i].iloc[:time_step, y_1]
             ax.plot(data_x_1, data_y_1, label=fr'{label[i]}', linewidth=3)
+            print(f"Data_x: {data_x_1}, Data_y: {data_y_1}")
 
         offset = ax.yaxis.get_offset_text()
         transform = offset.get_transform()
@@ -84,15 +87,16 @@ def curve_comparison_two(path, label, x_1, y_1):
         plt.savefig(file_directory + f'/Comparison of {title[y_1]}.png', dpi=100, bbox_inches='tight')
         plt.close()
 
-curve_comparison_two(
-    [
-        base_path + "/viscosity_sintering_2D_out.csv",
-        base_path + "/various_data.csv"
-    ],
-    ["MOOSE", "FEniCS"],
-    0,
-    1
-)
+# curve_comparison_two(
+#     [
+#         base_path + "/viscosity_sintering_2D_out.csv",
+#         base_path + "/various_data_without stablizer.csv"
+#     ],
+#     ["MOOSE", "FEniCS"],
+#     0,
+#     1,
+#     time_step+1
+# )
 
 
 def plot_curve_group_comparison(end_curve, path, label, name):
@@ -193,9 +197,9 @@ def plot_curve_group(name, Data_directory):
         plt.close()
 
 
-def plot_curve(x, y, name, Data_directory):
+def plot_curve(x, y, name, Data_directory, time_step):
     file_directory = os.getcwd() + f"/python/Curve of {name}"
-    print(file_directory)
+    print(f"file directory: {file_directory}")
     if not os.path.exists(file_directory):
         os.makedirs(file_directory)
     with plt.rc_context(
@@ -207,31 +211,97 @@ def plot_curve(x, y, name, Data_directory):
         ax.spines['right'].set_linewidth(3)
         plt.tick_params(axis='both', direction='in', width=3, which='both', pad=10)  # 设置刻度朝内，边框厚度为 2
 
-        data = pd.read_csv(Data_directory, skiprows=1)
-        header = pd.read_csv(Data_directory, nrows=2, header=None)
+        data = pd.read_csv(Data_directory, skiprows=1, header=None)
+        header = pd.read_csv(Data_directory, nrows=1, header=None)
         data_curve = data.iloc
         name_unit = header.iloc
 
+        print(f"Data_x: {data_curve[:, x]}")
+        print(f"Data_y: {data_curve[:, y]}")
+
+        name_custom = ['Time', 'Total Free Energy']
         # 提取数据列
 
-        plt.plot(data_curve[:, x], data_curve[:, y], label=fr'{name_unit[0, y]}', linewidth=3, color='black')
+        plt.plot(data_curve[:time_step, x], data_curve[:time_step, y], label=fr'MOOSE', linewidth=3, color='black')
 
         offset = ax.yaxis.get_offset_text()
         transform = offset.get_transform()
         offset.set_transform(transform + plt.matplotlib.transforms.ScaledTranslation(0, 5 / 72., fig.dpi_scale_trans))
-        plt.title(f"{name_unit[0, y]}", pad=20, fontweight='bold')
-        plt.xlabel(f'{name_unit[0, x]} ', fontweight='bold')
-        plt.ylabel(f'{name_unit[0, y]} ', fontweight='bold')
+        # plt.title(f"{name_unit[0, y]}", pad=20, fontweight='bold')
+        # plt.xlabel(f'{name_unit[0, x]} ', fontweight='bold')
+        # plt.ylabel(f'{name_unit[0, y]} ', fontweight='bold')
+        plt.title(f"{name_custom[1]}", pad=20, fontweight='bold')
+        plt.xlabel(f'{name_custom[0]} ', fontweight='bold')
+        plt.ylabel(f'{name_custom[1]} ', fontweight='bold')
         plt.tight_layout()
-        # plt.legend(fontsize='small')
-        plt.savefig(file_directory + f'/{name} - {name_unit[0, y]}.png', dpi=100, bbox_inches='tight')
+        plt.legend(fontsize='small')
+        plt.savefig(file_directory + f'/{name} - {name_custom[1]}.png', dpi=100, bbox_inches='tight')
         plt.close()
 
 
-# plot_curve(0, 1, "Viscosity Sintering", base_path + "/viscosity_sintering_2D_out.csv")
+plot_curve(0, 1, "Viscosity Sintering of ABS", base_path_wsl + "/outputs/4135/4135_VS2D.csv", 19+1)
 
 
+def plot_relative_error(path, data_file_FEniCS, data_file_MOOSE, name, time_step):
 
+    data_FEniCS = pd.read_csv(path[0], skiprows=0, header=0)  # 跳过第一行
+    data_MOOSE = pd.read_csv(path[1], skiprows=1, header=None)  # 跳过第一行
+
+    # 假设数据文件中，第一列是时间，第二列是相应的数据值
+    time = data_FEniCS.iloc[:time_step, data_file_FEniCS[0]]  # 取出时间列
+    values_FEniCS = data_FEniCS.iloc[:time_step, data_file_FEniCS[1]]  # 取出FEniCS的数据
+    values_MOOSE = data_MOOSE.iloc[:time_step, data_file_MOOSE[1]]  # 取出MOOSE的数据
+
+    print(f"time: {time}")
+    print(f"data_FEniCS: {values_FEniCS}")
+    print(f"data_MOOSE: {values_MOOSE}")
+
+    # 计算相对误差
+    relative_error = np.abs(values_FEniCS - values_MOOSE) / np.abs(values_FEniCS) * 100
+
+    # 创建保存结果的文件夹
+    file_directory = os.getcwd() + f"/python/Relative_Error_{name}"
+    print(f"file directory: {file_directory}")
+    if not os.path.exists(file_directory):
+        os.makedirs(file_directory)
+
+    # 使用matplotlib绘图
+    with plt.rc_context(
+            {'font.family': 'serif', 'font.serif': ['Times New Roman'], 'font.weight': 'bold', 'font.size': 32}):
+        fig, ax = plt.subplots(figsize=(12, 9), dpi=100)
+
+        ax.spines['top'].set_linewidth(3)
+        ax.spines['bottom'].set_linewidth(3)
+        ax.spines['left'].set_linewidth(3)
+        ax.spines['right'].set_linewidth(3)
+        plt.tick_params(axis='both', direction='in', width=3, which='both', pad=10)  # 设置刻度朝内，边框厚度为 2
+
+        # 绘制相对误差曲线
+        ax.plot(time, relative_error, label=f'Relative Error ({name})', linewidth=3, color='black')
+
+        # 设置标题和标签
+        ax.set_title(f'Relative Error for {name}', pad=20, fontweight='bold')
+        ax.set_xlabel('Time', fontweight='bold')
+        ax.set_ylabel('Relative Error (%)', fontweight='bold')
+
+        # ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.2f}%'))
+
+        # 保存图像
+        plt.tight_layout()
+        plt.savefig(file_directory + f'/{name}_Relative_Error.png', dpi=100, bbox_inches='tight')
+        plt.close()
+
+# plot_relative_error(
+#     [
+#         base_path + "/various_data.csv",
+#         base_path + "/viscosity_sintering_2D_out.csv"
+
+#     ],
+#     [0, 1],
+#     [0, 1],
+#     "MOOSE_FEniCS",
+#     time_step+1
+# )
 
 # 定义函数 c_0
 def c_0(x, y):
@@ -630,3 +700,74 @@ def initial_schematic(coordinates, radii, domain):
 # initial_schematic(coordinates_part, radii_part, [120, 120])
 
 
+def plot_histogram(cores, time, name):
+    # 创建保存路径
+    file_directory = os.getcwd() + f"/python/Histogram of {name}"
+    print(f"File directory: {file_directory}")
+    if not os.path.exists(file_directory):
+        os.makedirs(file_directory)
+
+    # 转换时间单位（秒 -> 小时）
+    time_hours = [t / 3600 for t in time]
+
+    # 选择颜色映射方案
+    cmap = cm.get_cmap("viridis", len(cores))  # 选用 viridis 颜色映射
+    colors = [cmap(i / (len(cores) - 1)) for i in range(len(cores))]
+
+    # 使用相同的格式上下文
+    with plt.rc_context({'font.family': 'serif',
+                        'font.serif': ['Times New Roman'],
+                        'font.weight': 'bold',
+                        'font.size': 32}):
+        # 创建图形和坐标轴
+        fig, ax = plt.subplots(figsize=(12, 9), dpi=100)
+        
+        # 设置轴线宽度
+        for spine in ax.spines.values():
+            spine.set_linewidth(3)
+        
+        # 设置刻度参数
+        ax.tick_params(axis='both', direction='in', 
+                      width=3, which='both', pad=10)
+
+        # 绘制条形图
+        bars = ax.bar(cores, time_hours, 
+                      width=0.6, 
+                      color=colors,  # 使用渐变颜色
+                      edgecolor='black',
+                      alpha=0.85)
+
+        # 添加数据标签
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., 
+                    height,
+                    f'{height:.2f}',  # 显示两位小数
+                    ha='center', 
+                    va='bottom',
+                    fontsize=24)
+
+        # 设置坐标轴标签
+        ax.set_xlabel('Parallel Cores', fontweight='bold')
+        ax.set_ylabel('Execution Time (h)', fontweight='bold')
+        ax.set_title(f'{name} Scaling Analysis', 
+                    fontweight='bold', pad=20)
+
+        # 设置刻度范围
+        ax.set_xticks(cores)
+        ax.set_ylim(0, max(time_hours) * 1.2)
+
+        # 网格线设置
+        ax.grid(axis='y', linestyle='--', alpha=0.6)
+
+        # 调整布局并保存
+        plt.tight_layout()
+        plt.savefig(f"{file_directory}/{name}_parallel_performance.png", 
+                   dpi=100, 
+                   bbox_inches='tight')
+        plt.close()
+
+parallel_cores = [1, 2, 4, 6, 8, 10, 12, 14, 16]
+execution_time = [38468, 31047, 22431, 17719, 13897, 14029, 12218, 10018, 9940]  # 单位: 秒
+
+plot_histogram(parallel_cores, execution_time, name="MOOSE")

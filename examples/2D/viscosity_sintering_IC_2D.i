@@ -94,10 +94,29 @@
   [../]
 []
 
+[BCs]
+  [./bcs_u]
+    type = DirichletBC
+    variable = u
+    boundary = '0 1 2 3'
+    value = 0
+  [../]
+  [./bcs_v]
+    type = DirichletBC
+    variable = v
+    boundary = '0 1 2 3'
+    value = 0
+  [../]
+[]
+
 [Materials]
   [./ViscosityMaterial]
     type = StokesMaterial
     cvar = c
+    alpha = 120.00
+    kappa_C = 60.00
+    mu_volume = 35.17
+    mu_ratio = 0.001
   [../]
 []
 

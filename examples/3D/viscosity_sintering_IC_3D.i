@@ -67,9 +67,10 @@
   [./VelocityMagnitude]
     type = VelocityMagnitude
     variable = V_Magnitude
-    dim = 2
+    dim = 3
     x_velocity = u
     y_velocity = v
+    z_velocity = w
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
@@ -110,6 +111,27 @@
     x_velocity = u
     y_velocity = v
     z_velocity = w
+  [../]
+[]
+
+[BCs]
+  [./bcs_u]
+    type = DirichletBC
+    variable = u
+    boundary = '0 1 2 3 4 5'
+    value = 0
+  [../]
+  [./bcs_v]
+    type = DirichletBC
+    variable = v
+    boundary = '0 1 2 3 4 5'
+    value = 0
+  [../]
+  [./bcs_w]
+    type = DirichletBC
+    variable = w
+    boundary = '0 1 2 3 4 5'
+    value = 0
   [../]
 []
 

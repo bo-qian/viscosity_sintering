@@ -330,3 +330,4 @@ viscosity_sintering.yaml
 
 # Ignore output files
 outputs/
+python/

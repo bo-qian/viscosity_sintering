@@ -3,7 +3,7 @@
  * @Date: 2025-02-21 15:25:19
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-02-21 15:41:01
+ * @LastEditTime: 2025-03-05 18:37:59
  * @LastEditors: Bo Qian
  * @Description: Materials for Stokes equation
  * @FilePath: /viscosity_sintering/src/materials/StokesMaterial.C
@@ -28,7 +28,11 @@ StokesMaterial::validParams()
   params.addParam<Real>("alpha", 120.00, "The alpha parameter of the system");
   params.addParam<Real>("kappa_C", 135.00, "The kappa_C parameter of the system");
 
-  params.addCoupledVar("cvar", "Concentration variable");
+  params.addRequiredCoupledVar("cvar", "Concentration variable");
+	params.addRequiredCoupledVar("x_velocity", "x-velocity variable");
+	params.addRequiredCoupledVar("y_velocity", "y-velocity variable");
+	params.addCoupledVar("z_velocity", 0, "z-velocity variable");
+	params.addRequiredCoupledVar("pressure", "Pressure variable");
   return params;
 }
 
@@ -41,6 +45,15 @@ StokesMaterial::StokesMaterial(const InputParameters & parameters)
 	_kc(getParam<Real>("kappa_C")),
 
 	_c(coupledValue("cvar")),
+	_u(coupledValue("x_velocity")),
+	_v(coupledValue("y_velocity")),
+	_w(coupledValue("z_velocity")),
+	_p(coupledValue("pressure")),
+	_grad_c(coupledGradient("cvar")),
+	_grad_u(coupledGradient("x_velocity")),
+	_grad_v(coupledGradient("y_velocity")),
+	_grad_w(coupledGradient("z_velocity")),
+	_grad_p(coupledGradient("pressure")),
 	
 	_Nc(declareProperty<Real>("Nc")),
 	_dNdc(declareProperty<Real>("dNc")),
@@ -53,7 +66,17 @@ StokesMaterial::StokesMaterial(const InputParameters & parameters)
 	_kappa_C(declareProperty<Real>("kappa_C_value")),
 	_mu_vol(declareProperty<Real>("mu_volume_value")),
 	_mu_rat(declareProperty<Real>("mu_ratio_value")),
-	_epsilon_Nc_var(declareProperty<Real>("epsilon_Nc_value"))
+	_epsilon_Nc_var(declareProperty<Real>("epsilon_Nc_value")),
+	_stress_xx(declareProperty<Real>("stress_xx")),
+	_stress_xy(declareProperty<Real>("stress_xy")),
+	_stress_xz(declareProperty<Real>("stress_xz")),
+	_stress_yx(declareProperty<Real>("stress_yx")),
+	_stress_yy(declareProperty<Real>("stress_yy")),
+	_stress_yz(declareProperty<Real>("stress_yz")),
+	_stress_zx(declareProperty<Real>("stress_zx")),
+	_stress_zy(declareProperty<Real>("stress_zy")),
+	_stress_zz(declareProperty<Real>("stress_zz")),
+	_stress(declareProperty<RankTwoTensor>("stress"))
 {
   
 }
@@ -94,4 +117,19 @@ StokesMaterial::computeQpProperties()
 	_mu_rat[_qp] = _mu_ratio;
 
 	_epsilon_Nc_var[_qp] = _epsilon_Nc;
+
+	_stress_xx[_qp] = 2 * _mu_eff[_qp] * _grad_u[_qp](0) + (_p[_qp] - _F_loc[_qp] - 0.5 * _kappa_C[_qp] * _grad_c[_qp].norm_sq());
+	_stress_xy[_qp] = _mu_eff[_qp] * (_grad_v[_qp](0) + _grad_u[_qp](1));
+	_stress_xz[_qp] = _mu_eff[_qp] * (_grad_w[_qp](0) + _grad_u[_qp](2));
+	_stress_yx[_qp] = _mu_eff[_qp] * (_grad_u[_qp](1) + _grad_v[_qp](0));
+	_stress_yy[_qp] = 2 * _mu_eff[_qp] * _grad_v[_qp](1) + (_p[_qp] - _F_loc[_qp] - 0.5 * _kappa_C[_qp] * _grad_c[_qp].norm_sq());
+	_stress_yz[_qp] = _mu_eff[_qp] * (_grad_w[_qp](1) + _grad_v[_qp](2));
+	_stress_zx[_qp] = _mu_eff[_qp] * (_grad_u[_qp](2) + _grad_w[_qp](0));
+	_stress_zy[_qp] = _mu_eff[_qp] * (_grad_v[_qp](2) + _grad_w[_qp](1));
+	_stress_zz[_qp] = 2 * _mu_eff[_qp] * _grad_w[_qp](2) + (_p[_qp] - _F_loc[_qp] - 0.5 * _kappa_C[_qp] * _grad_c[_qp].norm_sq());
+	_stress[_qp] = RankTwoTensor(
+		_stress_xx[_qp], _stress_xy[_qp], _stress_xz[_qp],
+		_stress_yx[_qp], _stress_yy[_qp], _stress_yz[_qp],
+		_stress_zx[_qp], _stress_zy[_qp], _stress_zz[_qp]
+	);
 }

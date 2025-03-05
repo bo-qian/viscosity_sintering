@@ -47,6 +47,26 @@
     order = FIRST
     family = MONOMIAL
   [../]
+  [./Stress_Magnitude]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_xx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_xy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_yy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_yx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
 []
 
 [AuxKernels]
@@ -62,6 +82,43 @@
     dim = 2
     x_velocity = u
     y_velocity = v
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./StressMagnitude]
+    type = StressMagnitude
+    variable = Stress_Magnitude
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xx]
+    type = RankTwoAux
+    variable = Stress_xx
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xy]
+    type = RankTwoAux
+    variable = Stress_xy
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yy]
+    type = RankTwoAux
+    variable = Stress_yy
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yx]
+    type = RankTwoAux
+    variable = Stress_yx
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 0
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
@@ -113,6 +170,13 @@
   [./ViscosityMaterial]
     type = StokesMaterial
     cvar = c
+    x_velocity = u
+    y_velocity = v
+    pressure = p
+    # alpha = 120.0
+    # kappa_C = 60.0
+    # mu_volume = 35.17
+    # mu_ratio = 0.005
   [../]
 []
 
@@ -171,9 +235,14 @@
 
 
 [Outputs]
-  exodus = true
+  # exodus = true
   csv = true
   perf_graph = true
+  [exodus]
+    type = Exodus
+    # file_name = output.e
+    # output_material_properties = true  # 允许输出材料属性
+  []
   [./display]
     type = Console
     max_rows = 12

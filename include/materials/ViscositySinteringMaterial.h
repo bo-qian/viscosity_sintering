@@ -3,7 +3,7 @@
  * @Date: 2024-10-29 11:01:08
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-02-21 15:21:24
+ * @LastEditTime: 2025-03-05 18:39:23
  * @LastEditors: Bo Qian
  * @Description: Header file for Viscosity Sintering Material
  * @FilePath: /viscosity_sintering/include/materials/ViscositySinteringMaterial.h
@@ -21,9 +21,8 @@ class ViscositySinteringMaterial : public DerivativeMaterialInterface<Material>
 		ViscositySinteringMaterial(const InputParameters & parameters);
 
 	protected:
+	
 		virtual void computeQpProperties() override;
-
-	private:
 
 		const Real _mu_volume;
 		const Real _mu_ratio;
@@ -35,6 +34,15 @@ class ViscositySinteringMaterial : public DerivativeMaterialInterface<Material>
 
 		const VariableValue & _c;
 		const VariableValue & _c_old;
+		const VariableValue & _u;
+    const VariableValue & _v;
+    const VariableValue & _w;
+    const VariableValue & _p;
+    const VariableGradient & _grad_c;
+    const VariableGradient & _grad_u;
+    const VariableGradient & _grad_v;
+    const VariableGradient & _grad_w;
+    const VariableGradient & _grad_p;
 
 		MaterialProperty<Real> & _Nc;
 		MaterialProperty<Real> & _dNdc;
@@ -50,6 +58,16 @@ class ViscositySinteringMaterial : public DerivativeMaterialInterface<Material>
 		MaterialProperty<Real> & _mu_vol;
 		MaterialProperty<Real> & _mu_rat;
 		MaterialProperty<Real> & _epsilon_Nc_var;
+    MaterialProperty<Real> & _stress_xx;
+    MaterialProperty<Real> & _stress_xy;
+    MaterialProperty<Real> & _stress_xz;
+    MaterialProperty<Real> & _stress_yx;
+    MaterialProperty<Real> & _stress_yy;
+    MaterialProperty<Real> & _stress_yz;
+    MaterialProperty<Real> & _stress_zx;
+    MaterialProperty<Real> & _stress_zy;
+    MaterialProperty<Real> & _stress_zz;
+		MaterialProperty<RankTwoTensor> & _stress;
 
 };
 

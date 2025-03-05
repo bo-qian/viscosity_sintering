@@ -3,7 +3,7 @@ Author: Bo Qian
 Date: 2025-02-26 13:53:09
 Email: bqian@shu.edu.cn
 Location: Shanghai University
-LastEditTime: 2025-03-03 19:23:46
+LastEditTime: 2025-03-05 13:49:10
 LastEditors: Bo Qian
 Description: plotting program of viscosity sintering MOOSE program
 FilePath: /viscosity_sintering/python/curve_group.py
@@ -46,13 +46,13 @@ plt.rcParams.update({
 
 base_path = "/home/qianbo/projects/viscosity_sintering"
 base_path_wsl = "/mnt/d/OneDrive/Science_Research/2.Secondstage_CodeAndData_Python/Viscosity Sintering/viscosity_sintering"
+base_path_local = "/mnt/d/OneDrive/Science_Research/2.Secondstage_CodeAndData_Python"
 time_step = 360
 
 
-def curve_comparison_two(path, label, x_1, y_1, time_step):
+def curve_comparison_two(path, label, x, y, time_step, factor, information, use_marker):
     # Function to plot curve group ********************************************************************************
     file_directory = os.getcwd() + "/python/Comparison of Viscosity Sintering"
-    line_width = 4
     if not os.path.exists(file_directory):
         os.makedirs(file_directory)
 
@@ -64,40 +64,128 @@ def curve_comparison_two(path, label, x_1, y_1, time_step):
         ax.spines['left'].set_linewidth(3)
         ax.spines['right'].set_linewidth(3)
         plt.tick_params(axis='both', direction='in', width=3, which='both', pad=10)  # 设置刻度朝内，边框厚度为 2
-
+        step = 8
         data_csv = [None for _ in path]
         for i in range(len(path)):
             data_csv[i] = pd.read_csv(path[i])
-            # 获取标题行
             title = data_csv[i].columns
-            # 提取数据列
-            data_x_1 = data_csv[i].iloc[:time_step, x_1]
-            data_y_1 = data_csv[i].iloc[:time_step, y_1]
-            ax.plot(data_x_1, data_y_1, label=fr'{label[i]}', linewidth=3)
-            print(f"Data_x: {data_x_1}, Data_y: {data_y_1}")
+            data_x_1 = data_csv[i].iloc[:time_step[i], x[i]]
+
+            if title[y[i]] == 'shrinkage_length':
+                data_y_1 = np.abs(data_csv[i].iloc[:time_step[i], y[i]] / data_csv[i].iloc[0, y[i]] - 1)
+            else:
+                data_y_1 = data_csv[i].iloc[:time_step[i], y[i]] * factor[i]
+
+            if use_marker[i]:  # 判断是否使用点
+                ax.plot(data_x_1[::step], data_y_1[::step], label=fr'{label[i]}', linestyle='', marker='o', markersize=6)
+            else:
+                ax.plot(data_x_1, data_y_1, label=fr'{label[i]}', linewidth=3)
 
         offset = ax.yaxis.get_offset_text()
         transform = offset.get_transform()
         offset.set_transform(transform + plt.matplotlib.transforms.ScaledTranslation(0, 5 / 72., fig.dpi_scale_trans))
-        plt.title(f'Comparison of {title[y_1]}', pad=20, fontweight='bold')
-        plt.xlabel(f'{title[x_1]}', fontweight='bold')
-        plt.ylabel(f'{title[y_1]}', fontweight='bold')
+        plt.title(f'Comparison of {title[y[1]]}', pad=20, fontweight='bold')
+        plt.xlabel(f'{title[x[1]]}', fontweight='bold')
+        plt.ylabel(f'{title[y[1]]}', fontweight='bold')
         plt.tight_layout()
         plt.legend(fontsize='small')
-        plt.savefig(file_directory + f'/Comparison of {title[y_1]}.png', dpi=100, bbox_inches='tight')
+
+        if information is None:
+            label = ""
+        else:
+            label = f"({information})"
+            
+        plt.savefig(file_directory + f'/Comparison of {title[y[1]]}{label}.png', dpi=100, bbox_inches='tight')
+        print(f"{file_directory}/Comparison of {title[y[1]]}{label}.png")
         plt.close()
 
-# curve_comparison_two(
-#     [
-#         base_path + "/viscosity_sintering_2D_out.csv",
-#         base_path + "/various_data_without stablizer.csv"
-#     ],
-#     ["MOOSE", "FEniCS"],
-#     0,
-#     1,
-#     time_step+1
-# )
+curve_comparison_two(
+    [
+        base_path_wsl + "/outputs/4145/4145_VS2D.csv",
+        base_path_local + "/Code_Python/Output_Files_Cluster/PPVS-V1-6 (March 04, 2025, 16-22-21)/Data/various_data.csv"
+    ],
+    ["MOOSE", "FEniCS"],
+    [0, 0],
+    [1, 3],
+    [None, None],
+    [0.5, 1],
+    None,
+    [False, True]
+)
 
+curve_comparison_two(
+    [
+        base_path_wsl + "/outputs/4145/4145_VS2D.csv",
+        base_path_local + "/Code_Python/Output_Files_Cluster/PPVS-V1-6 (March 04, 2025, 16-22-21)/Data/various_data.csv"
+    ],
+    ["MOOSE (MR=1.5)", "FEniCS (MR=1.5)"],
+    [0, 0],
+    [3, 1],
+    [None, None],
+    [1, 1],
+    None,
+    [False, False]
+)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Function to plot shinkage rate ********************************************************************************
+curve_comparison_two(
+    [
+        base_path_wsl + "/outputs/4145/4145_VS2D.csv",
+        base_path_local + "/Code_Python/Output_Files_Cluster/PPVS-V1-6 (March 04, 2025, 16-22-21)/Data/various_data.csv"
+    ],
+    ["MOOSE", "FEniCS"],
+    [0, 0],
+    [2, 5],
+    [None, None],
+    [1, 1],
+    None,
+    [False, True]
+)
+
+curve_comparison_two(
+    [
+        base_path_wsl + "/outputs/4145/4145_VS2D.csv",
+        base_path_local + "/Code_Python/Output_Files_Cluster/PPVS-V1-4 (March 03, 2025, 19-47-22)/Data/various_data.csv"
+    ],
+    ["MOOSE (MR=1.5)", "FEniCS (MR=1.0)"],
+    [0, 0],
+    [1, 3],
+    [None, 301],
+    [0.5, 1],
+    "FEniCS mr=1.0",
+    [False, True]
+)
+
+curve_comparison_two(
+    [
+        base_path_wsl + "/outputs/4145/4145_VS2D.csv",
+        base_path_local + "/Code_Python/Output_Files_Cluster/PPVS-V1-4 (March 03, 2025, 19-47-22)/Data/various_data.csv"
+    ],
+    ["MOOSE (MR=1.5)", "FEniCS (MR=1.0)"],
+    [0, 0],
+    [3, 1],
+    [None, 301],
+    [1, 1],
+    "FEniCS mr=1.0",
+    [False, False]
+)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Function to plot shinkage rate ********************************************************************************
+curve_comparison_two(
+    [
+        base_path_wsl + "/outputs/4145/4145_VS2D.csv",
+        base_path_local + "/Code_Python/Output_Files_Cluster/PPVS-V1-4 (March 03, 2025, 19-47-22)/Data/various_data.csv"
+    ],
+    ["MOOSE (MR=1.5)", "FEniCS (MR=1.0)"],
+    [0, 0],
+    [2, 5],
+    [None, 301],
+    [1, 1],
+    "FEniCS mr=1.0",
+    [False, True]
+)
 
 def plot_curve_group_comparison(end_curve, path, label, name):
     file_directory = os.getcwd() + "/python/Curve Group Comparison of Viscosity Sintering"
@@ -145,7 +233,7 @@ def plot_curve_group_comparison(end_curve, path, label, name):
         plt.close()
 
 # plot_curve_group_comparison(
-#     454,
+#     None,
 #     [
 #         base_path + "/viscosity_sintering_2D_out.csv",
 #         base_path + "/various_data.csv"
@@ -194,12 +282,12 @@ def plot_curve_group(name, Data_directory):
 
         plt.tight_layout()
         plt.savefig(file_directory + f'/{name}.png', dpi=100, bbox_inches='tight')
+        print(f"{file_directory}/{name}.png")
         plt.close()
 
 
-def plot_curve(x, y, name, Data_directory, time_step):
-    file_directory = os.getcwd() + f"/python/Curve of {name}"
-    print(f"file directory: {file_directory}")
+def plot_curve(x, y, name, Data_directory, time_step, factor):
+    file_directory = os.getcwd() + f"/python/Curves"
     if not os.path.exists(file_directory):
         os.makedirs(file_directory)
     with plt.rc_context(
@@ -214,53 +302,60 @@ def plot_curve(x, y, name, Data_directory, time_step):
         data = pd.read_csv(Data_directory, skiprows=1, header=None)
         header = pd.read_csv(Data_directory, nrows=1, header=None)
         data_curve = data.iloc
-        name_unit = header.iloc
+        # name_unit = header.iloc
 
-        print(f"Data_x: {data_curve[:, x]}")
-        print(f"Data_y: {data_curve[:, y]}")
+        # print(f"Data_x: {data_curve[:, x]}")
+        # print(f"Data_y: {data_curve[:, y]}")
 
-        name_custom = ['Time', 'Total Free Energy']
+        # name_custom = ['Time', 'Radius Neck', 'Shrinkage', 'Total Free Energy']
+
         # 提取数据列
-
-        plt.plot(data_curve[:time_step, x], data_curve[:time_step, y], label=fr'MOOSE', linewidth=3, color='black')
+        if header.iloc[0, y] == 'shrinkage_length':
+            plt.plot(data_curve[:time_step, x], abs((data_curve[:time_step, y] - data_curve[0, y]) / data_curve[0, y]), label=fr'MOOSE', linewidth=3, color='black')
+        else:
+            plt.plot(data_curve[:time_step, x], data_curve[:time_step, y] * factor, label=fr'MOOSE', linewidth=3, color='black')
 
         offset = ax.yaxis.get_offset_text()
         transform = offset.get_transform()
         offset.set_transform(transform + plt.matplotlib.transforms.ScaledTranslation(0, 5 / 72., fig.dpi_scale_trans))
-        # plt.title(f"{name_unit[0, y]}", pad=20, fontweight='bold')
-        # plt.xlabel(f'{name_unit[0, x]} ', fontweight='bold')
-        # plt.ylabel(f'{name_unit[0, y]} ', fontweight='bold')
-        plt.title(f"{name_custom[1]}", pad=20, fontweight='bold')
-        plt.xlabel(f'{name_custom[0]} ', fontweight='bold')
-        plt.ylabel(f'{name_custom[1]} ', fontweight='bold')
+        plt.title(f"{name}", pad=20, fontweight='bold')
+        plt.xlabel(f'Time', fontweight='bold')
+        plt.ylabel(f'{name}', fontweight='bold')
         plt.tight_layout()
         plt.legend(fontsize='small')
-        plt.savefig(file_directory + f'/{name} - {name_custom[1]}.png', dpi=100, bbox_inches='tight')
+        plt.savefig(file_directory + f'/{name}.png', dpi=100, bbox_inches='tight')
+        print(f"{file_directory}/{name}.png")
         plt.close()
 
 
-plot_curve(0, 1, "Viscosity Sintering of ABS", base_path_wsl + "/outputs/4135/4135_VS2D.csv", 19+1)
+plot_curve(0, 1, "Radius Neck", base_path_wsl + "/outputs/4145/4145_VS2D.csv", None, factor=0.5)
+plot_curve(0, 2, "Shrinkage", base_path_wsl + "/outputs/4145/4145_VS2D.csv", None, factor=1)
+plot_curve(0, 3, "Total Free Energy", base_path_wsl + "/outputs/4145/4145_VS2D.csv", None, factor=1)
+
+plot_curve(0, 1, "Radius Neck (ABS)", base_path_wsl + "/outputs/4155/4155_VS2D.csv", None, factor=0.5)
+plot_curve(0, 2, "Shrinkage (ABS)", base_path_wsl + "/outputs/4155/4155_VS2D.csv", None, factor=1)
+plot_curve(0, 3, "Total Free Energy (ABS)", base_path_wsl + "/outputs/4155/4155_VS2D.csv", None, factor=1)
 
 
-def plot_relative_error(path, data_file_FEniCS, data_file_MOOSE, name, time_step):
+def plot_relative_error(path, data_file_FEniCS, data_file_MOOSE, name, time_step, factor):
 
-    data_FEniCS = pd.read_csv(path[0], skiprows=0, header=0)  # 跳过第一行
-    data_MOOSE = pd.read_csv(path[1], skiprows=1, header=None)  # 跳过第一行
+    data_FEniCS = pd.read_csv(path[1], skiprows=0, header=0)  # 跳过第一行
+    data_MOOSE = pd.read_csv(path[0], skiprows=1, header=None)  # 跳过第一行
 
     # 假设数据文件中，第一列是时间，第二列是相应的数据值
-    time = data_FEniCS.iloc[:time_step, data_file_FEniCS[0]]  # 取出时间列
-    values_FEniCS = data_FEniCS.iloc[:time_step, data_file_FEniCS[1]]  # 取出FEniCS的数据
-    values_MOOSE = data_MOOSE.iloc[:time_step, data_file_MOOSE[1]]  # 取出MOOSE的数据
+    time = data_FEniCS.iloc[:time_step[1], data_file_FEniCS[0]]  # 取出时间列
+    values_FEniCS = data_FEniCS.iloc[:time_step[1], data_file_FEniCS[1]]  # 取出FEniCS的数据
+    values_MOOSE = data_MOOSE.iloc[:time_step[0], data_file_MOOSE[1]]  # 取出MOOSE的数据
 
     print(f"time: {time}")
     print(f"data_FEniCS: {values_FEniCS}")
     print(f"data_MOOSE: {values_MOOSE}")
 
     # 计算相对误差
-    relative_error = np.abs(values_FEniCS - values_MOOSE) / np.abs(values_FEniCS) * 100
+    relative_error = np.abs(values_FEniCS * factor[1] - values_MOOSE * factor[0]) / np.abs(values_FEniCS) * 100
 
     # 创建保存结果的文件夹
-    file_directory = os.getcwd() + f"/python/Relative_Error_{name}"
+    file_directory = os.getcwd() + f"/python/Relative_Error"
     print(f"file directory: {file_directory}")
     if not os.path.exists(file_directory):
         os.makedirs(file_directory)
@@ -288,19 +383,19 @@ def plot_relative_error(path, data_file_FEniCS, data_file_MOOSE, name, time_step
 
         # 保存图像
         plt.tight_layout()
-        plt.savefig(file_directory + f'/{name}_Relative_Error.png', dpi=100, bbox_inches='tight')
+        plt.savefig(file_directory + f'/{name}.png', dpi=100, bbox_inches='tight')
         plt.close()
 
 # plot_relative_error(
 #     [
-#         base_path + "/various_data.csv",
-#         base_path + "/viscosity_sintering_2D_out.csv"
-
+#         base_path_wsl + "/outputs/4145/4145_VS2D.csv",
+#         base_path_local + "/Code_Python/Output_Files_Cluster/PPVS-V1-4 (March 03, 2025, 19-47-22)/Data/various_data.csv"
 #     ],
+#     [0, 3],
 #     [0, 1],
-#     [0, 1],
-#     "MOOSE_FEniCS",
-#     time_step+1
+#     "Total Free Energy",
+#     [None, 302],
+#     [0.5, 1]
 # )
 
 # 定义函数 c_0
@@ -700,15 +795,16 @@ def initial_schematic(coordinates, radii, domain):
 # initial_schematic(coordinates_part, radii_part, [120, 120])
 
 
-def plot_histogram(cores, time, name):
+def plot_histogram(cores, time, name, fenics_data):
     # 创建保存路径
     file_directory = os.getcwd() + f"/python/Histogram of {name}"
-    print(f"File directory: {file_directory}")
     if not os.path.exists(file_directory):
         os.makedirs(file_directory)
 
     # 转换时间单位（秒 -> 小时）
     time_hours = [t / 3600 for t in time]
+
+    fenics_threshold = fenics_data / 3600 
 
     # 选择颜色映射方案
     cmap = plt.get_cmap("viridis", len(cores))  # 兼容旧版本的 matplotlib
@@ -747,6 +843,9 @@ def plot_histogram(cores, time, name):
                     va='bottom',
                     fontsize=24)
 
+        ax.axhspan(0, fenics_threshold, 
+           color='#6B9AC4', alpha=0.4, label=f"FEniCS ({fenics_threshold:.2f}h)")  # 浅蓝色，柔和耐看
+
         # 设置坐标轴标签
         ax.set_xlabel('Parallel Cores', fontweight='bold')
         ax.set_ylabel('Execution Time (h)', fontweight='bold')
@@ -758,16 +857,20 @@ def plot_histogram(cores, time, name):
         ax.set_ylim(0, max(time_hours) * 1.2)
 
         # 网格线设置
-        ax.grid(axis='y', linestyle='--', alpha=0.6)
+        # ax.grid(axis='y', linestyle='--', alpha=0.6)
+
+        plt.legend(fontsize='small', frameon=True, edgecolor="black", framealpha=1, fancybox=True)
+  
 
         # 调整布局并保存
         plt.tight_layout()
         plt.savefig(f"{file_directory}/{name}_parallel_performance.png", 
                    dpi=100, 
                    bbox_inches='tight')
+        print(f"{file_directory}/{name}_parallel_performance.png")
         plt.close()
 
 parallel_cores = [1, 2, 4, 6, 8, 10, 12, 14, 16]
 execution_time = [38468, 31047, 22431, 17719, 13897, 14029, 12218, 10018, 9940]  # 单位: 秒
 
-plot_histogram(parallel_cores, execution_time, name="MOOSE")
+plot_histogram(parallel_cores, execution_time, name="MOOSE", fenics_data=1498.56)

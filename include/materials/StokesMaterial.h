@@ -3,7 +3,7 @@
  * @Date: 2025-02-21 15:26:07
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-02-21 15:40:14
+ * @LastEditTime: 2025-03-05 18:39:40
  * @LastEditors: Bo Qian
  * @Description: Materials for Stokes equation
  * @FilePath: /viscosity_sintering/include/materials/StokesMaterial.h
@@ -23,8 +23,6 @@ class StokesMaterial : public DerivativeMaterialInterface<Material>
   protected:
     virtual void computeQpProperties() override;
 
-  private:
-
     const Real _mu_volume;
     const Real _mu_ratio;
     const Real _epsilon_Nc;
@@ -32,6 +30,15 @@ class StokesMaterial : public DerivativeMaterialInterface<Material>
     const Real _kc;
 
     const VariableValue & _c;
+    const VariableValue & _u;
+    const VariableValue & _v;
+    const VariableValue & _w;
+    const VariableValue & _p;
+    const VariableGradient & _grad_c;
+    const VariableGradient & _grad_u;
+    const VariableGradient & _grad_v;
+    const VariableGradient & _grad_w;
+    const VariableGradient & _grad_p;
     
 		MaterialProperty<Real> & _Nc;
 		MaterialProperty<Real> & _dNdc;
@@ -45,6 +52,16 @@ class StokesMaterial : public DerivativeMaterialInterface<Material>
 		MaterialProperty<Real> & _mu_vol;
 		MaterialProperty<Real> & _mu_rat;
 		MaterialProperty<Real> & _epsilon_Nc_var;
+    MaterialProperty<Real> & _stress_xx;
+    MaterialProperty<Real> & _stress_xy;
+    MaterialProperty<Real> & _stress_xz;
+    MaterialProperty<Real> & _stress_yx;
+    MaterialProperty<Real> & _stress_yy;
+    MaterialProperty<Real> & _stress_yz;
+    MaterialProperty<Real> & _stress_zx;
+    MaterialProperty<Real> & _stress_zy;
+    MaterialProperty<Real> & _stress_zz;
+    MaterialProperty<RankTwoTensor> & _stress;
 
 };
 

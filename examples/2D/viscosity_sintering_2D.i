@@ -47,39 +47,78 @@
     order = FIRST
     family = MONOMIAL
   [../]
+  [./Stress_Magnitude]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_xx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_xy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_yy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_yx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
 []
 
-[UserObjects/study]
-  type = RepeatableRayStudy
-  names = 'neck_length shrinkage_length'
-  start_points = '80 0 0
-                   0 60 0'
-  end_points = '80 120 0
-                 160 60 0'
-  execute_on = 'INITIAL TIMESTEP_END'
-[]
-
-[RayKernels/c_integral]
-  type = VariableIntegralRayKernel
-  variable = c
-[]
-
-[Postprocessors]
-  [./total_energy]
-    type = ElementIntegralVariablePostprocessor
+[AuxKernels]
+  [./TotalFreeEnergy]
+    type = VSTotalFreeEnergy
     variable = F_density
+    phase_field = c
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
-  [./neck_length]
-    type = RayIntegralValue
-    ray_kernel = c_integral
-    ray = neck_length
+  [./VelocityMagnitude]
+    type = VelocityMagnitude
+    variable = V_Magnitude
+    dim = 2
+    x_velocity = u
+    y_velocity = v
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
-  [./shrinkage_length]
-    type = RayIntegralValue
-    ray_kernel = c_integral
-    ray = shrinkage_length
+  [./StressMagnitude]
+    type = StressMagnitude
+    variable = Stress_Magnitude
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xx]
+    type = RankTwoAux
+    variable = Stress_xx
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xy]
+    type = RankTwoAux
+    variable = Stress_xy
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yy]
+    type = RankTwoAux
+    variable = Stress_yy
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yx]
+    type = RankTwoAux
+    variable = Stress_yx
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 0
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
@@ -142,23 +181,6 @@
   [../]
 []
 
-[AuxKernels]
-  [./TotalFreeEnergy]
-    type = VSTotalFreeEnergy
-    variable = F_density
-    phase_field = c
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
-  [./VelocityMagnitude]
-    type = VelocityMagnitude
-    variable = V_Magnitude
-    dim = 2
-    x_velocity = u
-    y_velocity = v
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
-[]
-
 [BCs]
   [./bcs_u]
     type = DirichletBC
@@ -179,6 +201,44 @@
   [./ViscosityMaterial]
     type = ViscositySinteringMaterial
     cvar = c
+    x_velocity = u
+    y_velocity = v
+    pressure = p
+  [../]
+[]
+
+[UserObjects/study]
+  type = RepeatableRayStudy
+  names = 'neck_length shrinkage_length'
+  start_points = '80 0 0
+                   0 60 0'
+  end_points = '80 120 0
+                 160 60 0'
+  execute_on = 'INITIAL TIMESTEP_END'
+[]
+
+[RayKernels/c_integral]
+  type = VariableIntegralRayKernel
+  variable = c
+[]
+
+[Postprocessors]
+  [./total_energy]
+    type = ElementIntegralVariablePostprocessor
+    variable = F_density
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./neck_length]
+    type = RayIntegralValue
+    ray_kernel = c_integral
+    ray = neck_length
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./shrinkage_length]
+    type = RayIntegralValue
+    ray_kernel = c_integral
+    ray = shrinkage_length
+    execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
 

@@ -235,14 +235,14 @@
 
 
 [Outputs]
-  # exodus = true
+  exodus = true
   csv = true
   perf_graph = true
-  [exodus]
-    type = Exodus
-    # file_name = output.e
-    # output_material_properties = true  # 允许输出材料属性
-  []
+  # [exodus]
+  #   type = Exodus
+  #   # file_name = output.e
+  #   # output_material_properties = true  # 允许输出材料属性
+  # []
   [./display]
     type = Console
     max_rows = 12

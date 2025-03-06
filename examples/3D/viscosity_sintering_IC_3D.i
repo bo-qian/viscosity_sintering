@@ -55,6 +55,46 @@
     order = FIRST
     family = MONOMIAL
   [../]
+  [./Stress_Magnitude]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_xx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_xy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_xz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_yy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_yx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_yz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
 []
 
 [AuxKernels]
@@ -71,6 +111,83 @@
     x_velocity = u
     y_velocity = v
     z_velocity = w
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./StressMagnitude]
+    type = StressMagnitude
+    variable = Stress_Magnitude
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xx]
+    type = RankTwoAux
+    variable = Stress_xx
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xy]
+    type = RankTwoAux
+    variable = Stress_xy
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xz]
+    type = RankTwoAux
+    variable = Stress_xz
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 2
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yy]
+    type = RankTwoAux
+    variable = Stress_yy
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yx]
+    type = RankTwoAux
+    variable = Stress_yx
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yz]
+    type = RankTwoAux
+    variable = Stress_yz
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 2
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zx]
+    type = RankTwoAux
+    variable = Stress_zx
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zy]
+    type = RankTwoAux
+    variable = Stress_zy
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zz]
+    type = RankTwoAux
+    variable = Stress_zz
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 2
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
@@ -139,6 +256,10 @@
   [./ViscosityMaterial]
     type = StokesMaterial
     cvar = c
+    x_velocity = u
+    y_velocity = v
+    z_velocity = w
+    pressure = p
   [../]
 []
 
@@ -172,7 +293,6 @@
 [Outputs]
   exodus = true
   csv = true
-  time_step_interval = 1
   checkpoint = true
   perf_graph = true
   [./display]

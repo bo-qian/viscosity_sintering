@@ -52,12 +52,139 @@
     order = FIRST
     family = MONOMIAL
   [../]
+  [./Stress_Magnitude]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_xx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_xy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_xz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_yy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [Stress_yx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_yz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zy]
+    order = FIRST
+    family = MONOMIAL
+  [../]
 []
 
-[Postprocessors]
-  [./total_energy]
-    type = ElementIntegralVariablePostprocessor
+[AuxKernels]
+  [./TotalFreeEnergy]
+    type = VSTotalFreeEnergy
     variable = F_density
+    phase_field = c
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./VelocityMagnitude]
+    type = VelocityMagnitude
+    variable = V_Magnitude
+    dim = 3
+    x_velocity = u
+    y_velocity = v
+    z_velocity = w
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./StressMagnitude]
+    type = StressMagnitude
+    variable = Stress_Magnitude
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xx]
+    type = RankTwoAux
+    variable = Stress_xx
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xy]
+    type = RankTwoAux
+    variable = Stress_xy
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_xz]
+    type = RankTwoAux
+    variable = Stress_xz
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 2
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yy]
+    type = RankTwoAux
+    variable = Stress_yy
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yx]
+    type = RankTwoAux
+    variable = Stress_yx
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_yz]
+    type = RankTwoAux
+    variable = Stress_yz
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 2
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zx]
+    type = RankTwoAux
+    variable = Stress_zx
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zy]
+    type = RankTwoAux
+    variable = Stress_zy
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zz]
+    type = RankTwoAux
+    variable = Stress_zz
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 2
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
@@ -133,41 +260,25 @@
   [../]
 []
 
-[AuxKernels]
-  [./TotalFreeEnergy]
-    type = VSTotalFreeEnergy
-    variable = F_density
-    phase_field = c
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
-  [./VelocityMagnitude]
-    type = VelocityMagnitude
-    variable = V_Magnitude
-    dim = 3
-    x_velocity = u
-    y_velocity = v
-    z_velocity = w
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
-[]
+
 
 [BCs]
   [./bcs_u]
     type = DirichletBC
     variable = u
-    boundary = '0 1 2 3'
+    boundary = '0 1 2 3 4 5'
     value = 0
   [../]
   [./bcs_v]
     type = DirichletBC
     variable = v
-    boundary = '0 1 2 3'
+    boundary = '0 1 2 3 4 5'
     value = 0
   [../]
   [./bcs_w]
     type = DirichletBC
     variable = w
-    boundary = '0 1 2 3'
+    boundary = '0 1 2 3 4 5'
     value = 0
   [../]
 []
@@ -177,6 +288,18 @@
   [./ViscosityMaterial]
     type = ViscositySinteringMaterial
     cvar = c
+    x_velocity = u
+    y_velocity = v
+    z_velocity = w
+    pressure = p
+  [../]
+[]
+
+[Postprocessors]
+  [./total_energy]
+    type = ElementIntegralVariablePostprocessor
+    variable = F_density
+    execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
 
@@ -199,7 +322,7 @@
 
   dt = 0.01 
   start_time = 0.0
-  end_time = 5.0
+  end_time = 3.0
 []
 
 

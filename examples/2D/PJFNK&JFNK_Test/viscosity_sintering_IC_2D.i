@@ -1,44 +1,44 @@
-
 [Mesh]
-  file = viscosity_sintering_IC_2D_out.e
-[]
-
-[Problem]
-  allow_initial_conditions_with_restart = true
+  type = GeneratedMesh
+  dim = 2
+  nx = 240
+  ny = 180
+  xmin = 0
+  xmax = 160
+  ymin = 0
+  ymax = 120
+  elem_type = TRI6
 []
 
 [Variables]
-  [./c]
-    order = FIRST
-    family = LAGRANGE
-    initial_from_file_var = c
-  [../]
-  [./mu]
-    order = FIRST
-    family = LAGRANGE
-    [./InitialCondition]
-        type = ConstantIC
-        value = 0.0
-    [../]
-  [../]
   [./u]
     order = SECOND
     family = LAGRANGE
-    initial_from_file_var = u
   [../]
   [./v]
     order = SECOND
     family = LAGRANGE
-    initial_from_file_var = v
   [../]
   [./p]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = p
   [../]
 []
 
 [AuxVariables]
+  [./c]
+    order = FIRST
+    family = LAGRANGE
+    [./InitialCondition]
+      type = MultiParticles_2D
+      delta = 3
+      radius = 20
+      number_x = 2
+      number_y = 1
+      omega = 0.05
+      domain = '160 120'
+    [../]
+  [../]
   [./F_density]
     order = FIRST
     family = MONOMIAL
@@ -132,6 +132,7 @@
     phase_field = c
     pressure = p
     y_velocity = v
+
   [../]
   [./StokesY]
     type = StokesY
@@ -147,37 +148,6 @@
     dim = 2
     x_velocity = u
     y_velocity = v
-  [../]
-
-  # Cahn Hilliard kernels
-  [./dt_C]
-    type = TimeDerivative
-    variable = c
-  [../]
-  
-  [./CH_CoupleV]
-    type = CHCoupV
-    variable = c
-    x_velocity = u
-    y_velocity = v
-  [../]
-
-  [./CHMob]
-    type = CHMob
-    variable = c
-    coupledvar = mu
-  [../]
-
-
-  [./CHMuFloc]
-    type = CHMuFloc
-    variable = mu
-    coupledvar = c
-  [../]
-  [./CHMuKap]
-    type = CHMuKap
-    variable = mu
-    coupledvar = c
   [../]
 []
 
@@ -196,14 +166,17 @@
   [../]
 []
 
-
 [Materials]
   [./ViscosityMaterial]
-    type = ViscositySinteringMaterial
+    type = StokesMaterial
     cvar = c
     x_velocity = u
     y_velocity = v
     pressure = p
+    # alpha = 120.0
+    # kappa_C = 60.0
+    # mu_volume = 35.17
+    # mu_ratio = 0.005
   [../]
 []
 
@@ -250,7 +223,7 @@
 []
 
 [Executioner]
-  type = Transient
+  type = Steady
   solve_type = NEWTON
 
   petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
@@ -258,26 +231,18 @@
 
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
-
-  dt = 0.01
-  start_time = 0.0
-  end_time = 3.0
-
-  # [./Adaptivity]
-  #   refine_fraction = 0.3
-  #   coarsen_fraction = 0.1
-  #   max_h_level = 2
-  #   cycles_per_step = 4
-  # [../]
 []
 
 
 [Outputs]
   exodus = true
-  time_step_interval = 1
-  perf_graph = true
-  checkpoint = true
   csv = true
+  perf_graph = true
+  # [exodus]
+  #   type = Exodus
+  #   # file_name = output.e
+  #   # output_material_properties = true  # 允许输出材料属性
+  # []
   [./display]
     type = Console
     max_rows = 12
@@ -286,4 +251,5 @@
 
 [Debug]
   show_material_props = true
+  show_var_residual_norms = true
 []

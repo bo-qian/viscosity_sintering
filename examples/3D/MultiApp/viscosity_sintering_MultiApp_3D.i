@@ -1,17 +1,33 @@
-
 [Mesh]
-  file = viscosity_sintering_IC_2D_out.e
-[]
-
-[Problem]
-  allow_initial_conditions_with_restart = true
+  type = GeneratedMesh
+  dim = 3
+  nx = 160
+  ny = 120
+  nz = 120
+  xmin = 0
+  xmax = 160
+  ymin = 0
+  ymax = 120
+  zmin = 0
+  zmax = 120
+  elem_type = TET10
 []
 
 [Variables]
   [./c]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = c
+    [./InitialCondition]
+      type = MultiParticlesIC
+      dim = 3
+      delta = 3
+      radius = 20
+      number_x = 2
+      number_y = 1
+      number_z = 1
+      omega = 0.05
+      domain = '160 120 120'
+    [../]
   [../]
   [./mu]
     order = FIRST
@@ -21,24 +37,25 @@
         value = 0.0
     [../]
   [../]
+[]
+
+[AuxVariables]
   [./u]
     order = SECOND
     family = LAGRANGE
-    initial_from_file_var = u
   [../]
   [./v]
     order = SECOND
     family = LAGRANGE
-    initial_from_file_var = v
+  [../]
+  [./w]
+    order = SECOND
+    family = LAGRANGE
   [../]
   [./p]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = p
   [../]
-[]
-
-[AuxVariables]
   [./F_density]
     order = FIRST
     family = MONOMIAL
@@ -59,11 +76,31 @@
     order = FIRST
     family = MONOMIAL
   [../]
+  [./Stress_xz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
   [Stress_yy]
     order = FIRST
     family = MONOMIAL
   [../]
   [Stress_yx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_yz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zz]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zx]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./Stress_zy]
     order = FIRST
     family = MONOMIAL
   [../]
@@ -79,9 +116,10 @@
   [./VelocityMagnitude]
     type = VelocityMagnitude
     variable = V_Magnitude
-    dim = 2
+    dim = 3
     x_velocity = u
     y_velocity = v
+    z_velocity = w
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./StressMagnitude]
@@ -105,6 +143,14 @@
     index_j = 1
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
+  [./stress_xz]
+    type = RankTwoAux
+    variable = Stress_xz
+    rank_two_tensor = stress
+    index_i = 0
+    index_j = 2
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
   [./stress_yy]
     type = RankTwoAux
     variable = Stress_yy
@@ -121,34 +167,41 @@
     index_j = 0
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
+  [./stress_yz]
+    type = RankTwoAux
+    variable = Stress_yz
+    rank_two_tensor = stress
+    index_i = 1
+    index_j = 2
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zx]
+    type = RankTwoAux
+    variable = Stress_zx
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 0
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zy]
+    type = RankTwoAux
+    variable = Stress_zy
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 1
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
+  [./stress_zz]
+    type = RankTwoAux
+    variable = Stress_zz
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 2
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
 []
 
 [Kernels]
-  # Stokes kernels
-  [./StokesX]
-    type = StokesX
-    variable = u
-    dim = 2
-    phase_field = c
-    pressure = p
-    y_velocity = v
-  [../]
-  [./StokesY]
-    type = StokesY
-    variable = v
-    dim = 2
-    phase_field = c
-    pressure = p
-    x_velocity = u
-  [../]
-  [./Incompressibility]
-    type = Incompressibility
-    variable = p
-    dim = 2
-    x_velocity = u
-    y_velocity = v
-  [../]
-
   # Cahn Hilliard kernels
   [./dt_C]
     type = TimeDerivative
@@ -168,12 +221,12 @@
     coupledvar = mu
   [../]
 
-
   [./CHMuFloc]
     type = CHMuFloc
     variable = mu
     coupledvar = c
   [../]
+
   [./CHMuKap]
     type = CHMuKap
     variable = mu
@@ -181,46 +234,31 @@
   [../]
 []
 
-[BCs]
-  [./bcs_u]
-    type = DirichletBC
-    variable = u
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-  [./bcs_v]
-    type = DirichletBC
-    variable = v
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-[]
-
-
 [Materials]
   [./ViscosityMaterial]
     type = ViscositySinteringMaterial
     cvar = c
     x_velocity = u
     y_velocity = v
+    z_velocity = w
     pressure = p
   [../]
 []
 
-[UserObjects/study]
-  type = RepeatableRayStudy
-  names = 'neck_length shrinkage_length'
-  start_points = '80 0 0
-                   0 60 0'
-  end_points = '80 120 0
-                 160 60 0'
-  execute_on = 'INITIAL TIMESTEP_END'
-[]
+# [UserObjects/study]
+#   type = RepeatableRayStudy
+#   names = 'neck_length shrinkage_length'
+#   start_points = '80 0 0
+#                    0 60 0'
+#   end_points = '80 120 0
+#                  160 60 0'
+#   execute_on = 'INITIAL TIMESTEP_END'
+# []
 
-[RayKernels/c_integral]
-  type = VariableIntegralRayKernel
-  variable = c
-[]
+# [RayKernels/c_integral]
+#   type = VariableIntegralRayKernel
+#   variable = c
+# []
 
 [Postprocessors]
   [./total_energy]
@@ -228,18 +266,18 @@
     variable = F_density
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
-  [./neck_length]
-    type = RayIntegralValue
-    ray_kernel = c_integral
-    ray = neck_length
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
-  [./shrinkage_length]
-    type = RayIntegralValue
-    ray_kernel = c_integral
-    ray = shrinkage_length
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
+  # [./neck_length]
+  #   type = RayIntegralValue
+  #   ray_kernel = c_integral
+  #   ray = neck_length
+  #   execute_on = 'INITIAL TIMESTEP_END'
+  # [../]
+  # [./shrinkage_length]
+  #   type = RayIntegralValue
+  #   ray_kernel = c_integral
+  #   ray = shrinkage_length
+  #   execute_on = 'INITIAL TIMESTEP_END'
+  # [../]
 []
 
 [Preconditioning]
@@ -254,36 +292,45 @@
   solve_type = NEWTON
 
   petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu 2500 superlu_dist'
+  petsc_options_value = 'lu 2500 mumps'
 
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 
   dt = 0.01
   start_time = 0.0
-  end_time = 3.0
+  end_time = 0.1
 
-  # [./Adaptivity]
-  #   refine_fraction = 0.3
-  #   coarsen_fraction = 0.1
-  #   max_h_level = 2
-  #   cycles_per_step = 4
-  # [../]
 []
 
+[MultiApps]
+  [./Stokes]
+    type = FullSolveMultiApp
+    input_files = "viscosity_sintering_Stokes_3D.i"
+    execute_on = 'INITIAL TIMESTEP_END'
+    clone_parent_mesh = true
+  [../]
+[]
+
+[Transfers]
+  [./CHToStokes]
+    type = MultiAppCopyTransfer
+    to_multi_app = Stokes
+    source_variable = c
+    variable = c
+  [../]
+  [./StokesToCH]
+    type = MultiAppCopyTransfer
+    from_multi_app = Stokes
+    source_variable = 'u v w p' 
+    variable = 'u v w p'
+  [../]
+[]
 
 [Outputs]
   exodus = true
   time_step_interval = 1
-  perf_graph = true
+  # perf_graph = true
   checkpoint = true
   csv = true
-  [./display]
-    type = Console
-    max_rows = 12
-  [../]
-[]
-
-[Debug]
-  show_material_props = true
 []

@@ -13,13 +13,6 @@
 
 #include "Kernel.h"
 
-/**
- * Define the Kernel for a convection operator that looks like:
- *
- * (-u * v , grad(test))
- *
- * where v is a coupled.
- */
 class CHCoupV : public Kernel
 {
 public:

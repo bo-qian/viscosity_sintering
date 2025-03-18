@@ -23,22 +23,6 @@ public:
 protected:
 
 	MooseEnum _dim;
-	// enum Dimension { two_dimension, three_dimension };
-
-	// virtual Real computeQpResidual() override
-	// {
-	// 	return 0.0;
-	// }
-
-  // virtual Real computeQpJacobian() override
-	// {
-	// 	return 0.0;
-	// }
-
-  // virtual Real computeQpOffDiagJacobian(unsigned jvar) override
-	// {
-	// 	return 0.0;
-	// }
 
 	virtual Real computeQpResidual() override;
 	virtual Real computeQpJacobian() override;
@@ -47,21 +31,9 @@ protected:
 	virtual Real velocityTermX();
 	virtual Real pressureTermX();
 	virtual Real surfaceTensionTermX();
-	virtual Real muEffPhiX();
-
-	// virtual Real velocityTermX(Dimension type);
-	// virtual Real pressureTermX();
-	// virtual Real surfaceTensionTermX(Dimension type);
-	// virtual Real ResidualX(Dimension type);
-
-	// const Real _kappa_c;
 
 	const MaterialProperty<Real> & _mu_eff;
-	const MaterialProperty<Real> & _dmu_eff;
 	const MaterialProperty<Real> & _kappa_c;
-	const MaterialProperty<Real> & _mu_volume;
-	const MaterialProperty<Real> & _mu_ratio;
-	const MaterialProperty<Real> & _epsilon_Nc;
 
 	const unsigned int _cvar;
 	const VariableValue & _c;

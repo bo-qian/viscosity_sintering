@@ -1,17 +1,29 @@
-
 [Mesh]
-  file = viscosity_sintering_IC_2D_out.e
-[]
-
-[Problem]
-  allow_initial_conditions_with_restart = true
+  type = GeneratedMesh
+  dim = 2
+  nx = 240
+  ny = 240
+  xmin = 0
+  xmax = 160
+  ymin = 0
+  ymax = 160
+  elem_type = TRI6
 []
 
 [Variables]
   [./c]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = c
+    [./InitialCondition]
+      type = MultiParticlesIC
+      dim = 2
+      delta = 3
+      radius = 20
+      number_x = 2
+      number_y = 2
+      omega = 0.05
+      domain = '160 160'
+    [../]
   [../]
   [./mu]
     order = FIRST
@@ -21,24 +33,22 @@
         value = 0.0
     [../]
   [../]
+[]
+
+[AuxVariables]
   [./u]
     order = SECOND
     family = LAGRANGE
-    initial_from_file_var = u
   [../]
   [./v]
     order = SECOND
     family = LAGRANGE
-    initial_from_file_var = v
   [../]
   [./p]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = p
   [../]
-[]
 
-[AuxVariables]
   [./F_density]
     order = FIRST
     family = MONOMIAL
@@ -124,31 +134,6 @@
 []
 
 [Kernels]
-  # Stokes kernels
-  [./StokesX]
-    type = StokesX
-    variable = u
-    dim = 2
-    phase_field = c
-    pressure = p
-    y_velocity = v
-  [../]
-  [./StokesY]
-    type = StokesY
-    variable = v
-    dim = 2
-    phase_field = c
-    pressure = p
-    x_velocity = u
-  [../]
-  [./Incompressibility]
-    type = Incompressibility
-    variable = p
-    dim = 2
-    x_velocity = u
-    y_velocity = v
-  [../]
-
   # Cahn Hilliard kernels
   [./dt_C]
     type = TimeDerivative
@@ -180,22 +165,6 @@
     coupledvar = c
   [../]
 []
-
-[BCs]
-  [./bcs_u]
-    type = DirichletBC
-    variable = u
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-  [./bcs_v]
-    type = DirichletBC
-    variable = v
-    boundary = '0 1 2 3'
-    value = 0
-  [../]
-[]
-
 
 [Materials]
   [./ViscosityMaterial]
@@ -243,7 +212,7 @@
 []
 
 [Preconditioning]
-  [./cw_coupling]
+  [./CH_Stokes]
     type = SMP
     full = true
   [../]
@@ -254,36 +223,44 @@
   solve_type = NEWTON
 
   petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu 2500 superlu_dist'
+  petsc_options_value = 'lu 2500 mumps'
 
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 
   dt = 0.01
   start_time = 0.0
-  end_time = 3.0
-
-  # [./Adaptivity]
-  #   refine_fraction = 0.3
-  #   coarsen_fraction = 0.1
-  #   max_h_level = 2
-  #   cycles_per_step = 4
-  # [../]
+  end_time = 0.1
 []
 
+[MultiApps]
+  [./Stokes]
+    type = FullSolveMultiApp
+    input_files = "viscosity_sintering_Stokes_2D.i"
+    execute_on = 'INITIAL TIMESTEP_END'
+    clone_parent_mesh = true
+  [../]
+[]
+
+[Transfers]
+  [./CHToStokes]
+    type = MultiAppCopyTransfer
+    to_multi_app = Stokes
+    source_variable = c
+    variable = c
+  [../]
+  [./StokesToCH]
+    type = MultiAppCopyTransfer
+    from_multi_app = Stokes
+    source_variable = 'u v p' 
+    variable = 'u v p'
+  [../]
+[]
 
 [Outputs]
   exodus = true
   time_step_interval = 1
-  perf_graph = true
+  # perf_graph = true
   checkpoint = true
   csv = true
-  [./display]
-    type = Console
-    max_rows = 12
-  [../]
-[]
-
-[Debug]
-  show_material_props = true
 []

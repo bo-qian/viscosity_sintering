@@ -212,7 +212,6 @@
   [./StokesZ]
     type = StokesZ
     variable = w
-    dim = 3
     phase_field = c
     pressure = p
     x_velocity = u

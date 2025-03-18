@@ -41,27 +41,8 @@ class StokesMaterial : public DerivativeMaterialInterface<Material>
     const VariableGradient & _grad_p;
     
 		MaterialProperty<Real> & _Nc;
-		MaterialProperty<Real> & _dNdc;
-		MaterialProperty<Real> & _F_loc;
-		MaterialProperty<Real> & _dF_loc;
-		MaterialProperty<Real> & _dF2_loc;
 		MaterialProperty<Real> & _mu_eff;
-		MaterialProperty<Real> & _dmu_eff;
-		MaterialProperty<Real> & _alpha_var;
 		MaterialProperty<Real> & _kappa_C;
-		MaterialProperty<Real> & _mu_vol;
-		MaterialProperty<Real> & _mu_rat;
-		MaterialProperty<Real> & _epsilon_Nc_var;
-    MaterialProperty<Real> & _stress_xx;
-    MaterialProperty<Real> & _stress_xy;
-    MaterialProperty<Real> & _stress_xz;
-    MaterialProperty<Real> & _stress_yx;
-    MaterialProperty<Real> & _stress_yy;
-    MaterialProperty<Real> & _stress_yz;
-    MaterialProperty<Real> & _stress_zx;
-    MaterialProperty<Real> & _stress_zy;
-    MaterialProperty<Real> & _stress_zz;
-    MaterialProperty<RankTwoTensor> & _stress;
 
 };
 

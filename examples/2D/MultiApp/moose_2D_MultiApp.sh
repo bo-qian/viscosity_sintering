@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name=VS2D_ABS
+#SBATCH --job-name=VS2D
 #SBATCH --output=%j_moose_run.out     # 临时 .out 文件名
 #SBATCH --error=%j_moose_run.err      # 临时 .err 文件名
 #SBATCH --nodes=1
-#SBATCH --ntasks=16
+#SBATCH --ntasks=1
 #SBATCH --nodelist=node1
 
 # 加载 Conda 环境
@@ -31,8 +31,7 @@ echo "开始时间: $(date)"  | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
 echo "====================================" | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
 
 # 运行 MOOSE
-mpiexec -n $SLURM_NTASKS ./viscosity_sintering-opt -i ./examples/2D/viscosity_sintering_IC_2D.i --no-color 2>&1 | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
-mpiexec -n $SLURM_NTASKS ./viscosity_sintering-opt -i ./examples/2D/viscosity_sintering_2D.i Outputs/file_base="${OUTPUT_DIR}/${TASK_ID}_VS2D" --no-color 2>&1 | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
+mpiexec -n $SLURM_NTASKS ./viscosity_sintering-opt -i ./examples/2D/MultiApp/viscosity_sintering_MultiApp_2D.i Outputs/file_base="${OUTPUT_DIR}/${TASK_ID}_VS2D" --color off 2>&1 | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
 
 # 记录结束时间
 end_time=$(date +%s) 

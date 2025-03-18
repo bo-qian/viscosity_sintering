@@ -254,14 +254,14 @@
   solve_type = NEWTON
 
   petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu 2500 superlu_dist'
+  petsc_options_value = 'lu 2500 mumps'
 
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 
   dt = 0.01
   start_time = 0.0
-  end_time = 3.0
+  end_time = 0.1
 
   # [./Adaptivity]
   #   refine_fraction = 0.3
@@ -270,7 +270,6 @@
   #   cycles_per_step = 4
   # [../]
 []
-
 
 [Outputs]
   exodus = true

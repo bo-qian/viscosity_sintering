@@ -1,12 +1,17 @@
+dimension = 2
+mesh_ratio = 1.5
+domain_x = 250
+domain_y = 250
+
 [Mesh]
   type = GeneratedMesh
-  dim = 2
-  nx = 240
-  ny = 240
+  dim = ${dimension}
+  nx = ${fparse domain_x * mesh_ratio}
+  ny = ${fparse domain_y * mesh_ratio}
   xmin = 0
-  xmax = 160
+  xmax = ${domain_x}
   ymin = 0
-  ymax = 160
+  ymax = ${domain_y}
   elem_type = TRI6
 []
 
@@ -14,15 +19,26 @@
   [./c]
     order = FIRST
     family = LAGRANGE
+    # [./InitialCondition]
+    #   type = MultiParticlesIC
+    #   dim = ${dimension}
+    #   delta = 3
+    #   radius = 20
+    #   number_x = 3
+    #   number_y = 3
+    #   omega = 0.05
+    #   domain = '${domain_x} ${domain_y}'
+    # [../]
     [./InitialCondition]
-      type = MultiParticlesIC
-      dim = 2
-      delta = 3
-      radius = 20
-      number_x = 2
-      number_y = 2
+      type = RandomParticle2DIC
+      domain = '${domain_x} ${domain_y}'
+      num_particles = 15
+      radius_min = 15
+      radius_max = 25
+      max_attempts = 20
+      edge_factor = 0.05
+      delta =3
       omega = 0.05
-      domain = '160 160'
     [../]
   [../]
   [./mu]
@@ -89,7 +105,7 @@
   [./VelocityMagnitude]
     type = VelocityMagnitude
     variable = V_Magnitude
-    dim = 2
+    dim = ${dimension}
     x_velocity = u
     y_velocity = v
     execute_on = 'INITIAL TIMESTEP_END'
@@ -230,7 +246,7 @@
 
   dt = 0.01
   start_time = 0.0
-  end_time = 0.1
+  end_time = 10.0
 []
 
 [MultiApps]

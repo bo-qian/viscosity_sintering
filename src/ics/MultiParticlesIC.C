@@ -3,7 +3,7 @@
  * @Date: 2024-10-12 20:20:46
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-03-18 19:40:20
+ * @LastEditTime: 2025-03-28 13:41:19
  * @LastEditors: bo-qian bqian@shu.edu.cn
  * @Description: 2D Initial Condition for MultiParticles
  * @FilePath: /viscosity_sintering/src/ics/MultiParticlesIC.C
@@ -100,21 +100,50 @@ MultiParticlesIC::generateParticleCenters(
 void
 MultiParticlesIC::printParticleInfo() const
 {
-  const int width = 35;
-  std::cout << "\n" << std::string(width, '=') << "\n";
-  std::cout << "Particle Configuration (" << _dim << "D)\n";
-  std::cout << std::string(width, '-') << "\n";
+  const int table_width = 46;
+  const int index_width = 7;
+  const int coord_width = 25;
+  const int radius_width = 10;
 
-  for (size_t i = 0; i < _particle_centers.size(); ++i) {
-    auto &center = _particle_centers[i];
-    std::cout << "Particle " << i+1 << ": ("
-              << std::get<0>(center) << ", " 
-              << std::get<1>(center);
-    if (_dim == "3") 
-      std::cout << ", " << std::get<2>(center);
-    std::cout << "), Radius: " << _particle_radii[i] << "\n";
+  auto center_text = [](const std::string & text, int width) -> std::string {
+    int padding = width - text.length();
+    int pad_left = padding / 2;
+    int pad_right = padding - pad_left;
+    return std::string(pad_left, ' ') + text + std::string(pad_right, ' ');
+  };
+
+  std::cout << "\n" << std::string(table_width, '=') << "\n";
+  std::ostringstream title;
+  title << "Particle Configuration (" << _dim << "D)";
+  std::cout << center_text(title.str(), table_width) << "\n";  
+  std::cout << std::string(table_width, '-') << "\n";
+
+  // Header
+  std::cout << "|"
+            << center_text("Index", index_width) << "|"
+            << center_text("Coordinate", coord_width) << "|"
+            << center_text("Radius", radius_width) << "|\n";
+  std::cout << std::string(table_width, '-') << "\n";
+
+  // Content
+  for (size_t i = 0; i < _particle_centers.size(); ++i)
+  {
+    auto & center = _particle_centers[i];
+    std::ostringstream coord;
+    coord << "(" << std::get<0>(center) << ", " << std::get<1>(center);
+    if (_dim == "3")
+      coord << ", " << std::get<2>(center);
+    coord << ")";
+
+    std::ostringstream radius;
+    radius << _particle_radii[i];
+
+    std::cout << "|"
+              << center_text(std::to_string(i + 1), index_width) << "|"
+              << center_text(coord.str(), coord_width) << "|"
+              << center_text(radius.str(), radius_width) << "|\n";
   }
-  std::cout << std::string(width, '=') << "\n\n";
+  std::cout << std::string(table_width, '=') << "\n\n";
 }
 
 Real

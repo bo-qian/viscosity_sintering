@@ -80,6 +80,9 @@
   [./CH_Stokes]
     type = SMP
     full = true
+
+    petsc_options_iname = '-pc_factor_levels'
+    petsc_options_value = '0' 
   [../]
 []
 
@@ -87,12 +90,14 @@
   type = Steady
   solve_type = NEWTON
 
-  petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu 2500 mumps'
+  petsc_options_iname = '-pc_type -pc_factor_mat_solver_type -ksp_gmres_restart'
+  petsc_options_value = 'lu mumps 2500'
 
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 []
 
 [Outputs]
+  perf_graph = true
+  execute_on = 'TIMESTEP_END'
 []

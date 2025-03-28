@@ -2,7 +2,7 @@
  * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-03-20 17:42:46
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-03-20 20:22:38
+ * @LastEditTime: 2025-03-28 13:54:38
  * @FilePath: /viscosity_sintering/include/ics/RandomParticle2DIC.h
  * @Description: 
  * ${git_name} ${git_email} ${git_name_email}
@@ -36,4 +36,7 @@ protected:
   std::vector<Point> _centers;
   std::vector<Real> _radii;
   unsigned int _global_seed;  // Add global seed
+  
+  // Information printing method
+  void printParticleInfo() const;
 };

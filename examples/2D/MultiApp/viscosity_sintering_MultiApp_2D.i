@@ -1,7 +1,7 @@
 dimension = 2
 mesh_ratio = 1.5
-domain_x = 250
-domain_y = 250
+domain_x = 300
+domain_y = 300
 
 [Mesh]
   type = GeneratedMesh
@@ -19,27 +19,27 @@ domain_y = 250
   [./c]
     order = FIRST
     family = LAGRANGE
-    # [./InitialCondition]
-    #   type = MultiParticlesIC
-    #   dim = ${dimension}
-    #   delta = 3
-    #   radius = 20
-    #   number_x = 3
-    #   number_y = 3
-    #   omega = 0.05
-    #   domain = '${domain_x} ${domain_y}'
-    # [../]
     [./InitialCondition]
-      type = RandomParticle2DIC
-      domain = '${domain_x} ${domain_y}'
-      num_particles = 15
-      radius_min = 15
-      radius_max = 25
-      max_attempts = 20
-      edge_factor = 0.05
-      delta =3
+      type = MultiParticlesIC
+      dim = ${dimension}
+      delta = 3
+      radius = 20
+      number_x = 2
+      number_y = 1
       omega = 0.05
+      domain = '${domain_x} ${domain_y}'
     [../]
+    # [./InitialCondition]
+    #   type = RandomParticle2DIC
+    #   domain = '${domain_x} ${domain_y}'
+    #   num_particles = 15
+    #   radius_min = 15
+    #   radius_max = 25
+    #   max_attempts = 30
+    #   edge_factor = 0.05
+    #   delta =3
+    #   omega = 0.05
+    # [../]
   [../]
   [./mu]
     order = FIRST
@@ -192,20 +192,20 @@ domain_y = 250
   [../]
 []
 
-[UserObjects/study]
-  type = RepeatableRayStudy
-  names = 'neck_length shrinkage_length'
-  start_points = '80 0 0
-                   0 60 0'
-  end_points = '80 120 0
-                 160 60 0'
-  execute_on = 'INITIAL TIMESTEP_END'
-[]
+# [UserObjects/study]
+#   type = RepeatableRayStudy
+#   names = 'neck_length shrinkage_length'
+#   start_points = '80 0 0
+#                    0 60 0'
+#   end_points = '80 120 0
+#                  160 60 0'
+#   execute_on = 'INITIAL TIMESTEP_END'
+# []
 
-[RayKernels/c_integral]
-  type = VariableIntegralRayKernel
-  variable = c
-[]
+# [RayKernels/c_integral]
+#   type = VariableIntegralRayKernel
+#   variable = c
+# []
 
 [Postprocessors]
   [./total_energy]
@@ -213,24 +213,27 @@ domain_y = 250
     variable = F_density
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
-  [./neck_length]
-    type = RayIntegralValue
-    ray_kernel = c_integral
-    ray = neck_length
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
-  [./shrinkage_length]
-    type = RayIntegralValue
-    ray_kernel = c_integral
-    ray = shrinkage_length
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
+#   [./neck_length]
+#     type = RayIntegralValue
+#     ray_kernel = c_integral
+#     ray = neck_length
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   [../]
+#   [./shrinkage_length]
+#     type = RayIntegralValue
+#     ray_kernel = c_integral
+#     ray = shrinkage_length
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   [../]
 []
 
 [Preconditioning]
   [./CH_Stokes]
     type = SMP
     full = true
+    
+    # petsc_options_iname = '-pc_factor_levels'
+    # petsc_options_value = '0' 
   [../]
 []
 
@@ -238,15 +241,18 @@ domain_y = 250
   type = Transient
   solve_type = NEWTON
 
-  petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu 2500 mumps'
+  # petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
+  # petsc_options_value = 'lu 2500 mumps'
+
+  petsc_options_iname = '-ksp_type -pc_type'
+  petsc_options_value = 'tfqmr ilu'
 
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 
   dt = 0.01
   start_time = 0.0
-  end_time = 10.0
+  end_time = 0.01
 []
 
 [MultiApps]
@@ -276,7 +282,7 @@ domain_y = 250
 [Outputs]
   exodus = true
   time_step_interval = 1
-  # perf_graph = true
+  perf_graph = true
   checkpoint = true
   csv = true
 []

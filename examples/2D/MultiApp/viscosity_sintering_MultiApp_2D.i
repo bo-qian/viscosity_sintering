@@ -1,7 +1,7 @@
 dimension = 2
 mesh_ratio = 1.5
-domain_x = 300
-domain_y = 300
+domain_x = 160
+domain_y = 120
 
 [Mesh]
   type = GeneratedMesh
@@ -189,23 +189,25 @@ domain_y = 300
     x_velocity = u
     y_velocity = v
     pressure = p
+    # kappa_C = 33.75
+    # mu_volume = 0.2
   [../]
 []
 
-# [UserObjects/study]
-#   type = RepeatableRayStudy
-#   names = 'neck_length shrinkage_length'
-#   start_points = '80 0 0
-#                    0 60 0'
-#   end_points = '80 120 0
-#                  160 60 0'
-#   execute_on = 'INITIAL TIMESTEP_END'
-# []
+[UserObjects/study]
+  type = RepeatableRayStudy
+  names = 'neck_length shrinkage_length'
+  start_points = '${fparse 0.5*domain_x} 0 0
+                  0 ${fparse 0.5*domain_y} 0'
+  end_points = '${fparse 0.5*domain_x} ${fparse domain_y} 0
+                ${fparse domain_x} ${fparse 0.5*domain_y} 0'
+  execute_on = 'INITIAL TIMESTEP_END'
+[]
 
-# [RayKernels/c_integral]
-#   type = VariableIntegralRayKernel
-#   variable = c
-# []
+[RayKernels/c_integral]
+  type = VariableIntegralRayKernel
+  variable = c
+[]
 
 [Postprocessors]
   [./total_energy]
@@ -213,46 +215,18 @@ domain_y = 300
     variable = F_density
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
-#   [./neck_length]
-#     type = RayIntegralValue
-#     ray_kernel = c_integral
-#     ray = neck_length
-#     execute_on = 'INITIAL TIMESTEP_END'
-#   [../]
-#   [./shrinkage_length]
-#     type = RayIntegralValue
-#     ray_kernel = c_integral
-#     ray = shrinkage_length
-#     execute_on = 'INITIAL TIMESTEP_END'
-#   [../]
-[]
-
-[Preconditioning]
-  [./CH_Stokes]
-    type = SMP
-    full = true
-    
-    # petsc_options_iname = '-pc_factor_levels'
-    # petsc_options_value = '0' 
+  [./neck_length]
+    type = RayIntegralValue
+    ray_kernel = c_integral
+    ray = neck_length
+    execute_on = 'INITIAL TIMESTEP_END'
   [../]
-[]
-
-[Executioner]
-  type = Transient
-  solve_type = NEWTON
-
-  # petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  # petsc_options_value = 'lu 2500 mumps'
-
-  petsc_options_iname = '-ksp_type -pc_type'
-  petsc_options_value = 'tfqmr ilu'
-
-  nl_rel_tol = 1e-15
-  nl_abs_tol = 1e-6
-
-  dt = 0.01
-  start_time = 0.0
-  end_time = 0.01
+  [./shrinkage_length]
+    type = RayIntegralValue
+    ray_kernel = c_integral
+    ray = shrinkage_length
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
 []
 
 [MultiApps]
@@ -279,10 +253,39 @@ domain_y = 300
   [../]
 []
 
+[Preconditioning]
+  [./CH_Stokes]
+    type = SMP
+    full = true
+    petsc_options_iname = '-ksp_type -pc_type'
+    petsc_options_value = 'tfqmr ilu'
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = NEWTON
+  # verbose = true
+
+  # petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
+  # petsc_options_value = 'lu 2500 mumps'
+
+  nl_rel_tol = 1e-15
+  nl_abs_tol = 1e-6
+
+  dt = 0.01
+  start_time = 0.0
+  end_time = 0.1
+[]
+
 [Outputs]
   exodus = true
   time_step_interval = 1
   perf_graph = true
   checkpoint = true
   csv = true
+[]
+
+[Debug]
+  show_var_residual_norms = true
 []

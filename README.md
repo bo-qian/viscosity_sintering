@@ -3,7 +3,7 @@
  * @Date: 2025-02-11 17:10:06
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-04-01 19:32:48
+ * @LastEditTime: 2025-04-01 19:35:23
  * @LastEditors: bo-qian bqian@shu.edu.cn
  * @Description: Readme
  * @FilePath: /viscosity_sintering/README.md
@@ -22,8 +22,7 @@ X. Dai, B. Qian, A. Kirshtein, Q. Yang, *A Phase-Field-Micromechanics Study on t
 
 ### MOOSE Installation
 
-Refer to the MOOSE installation guide:  
-*https://mooseframework.inl.gov/getting_started/installation/*
+Refer to the MOOSE installation guide: *https://mooseframework.inl.gov/getting_started/installation/*
 
 ### Project Setup
 

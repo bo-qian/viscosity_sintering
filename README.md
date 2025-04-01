@@ -3,7 +3,7 @@
  * @Date: 2025-02-11 17:10:06
  * @Email: bqian@shu.edu.cn
  * @Location: Shanghai University
- * @LastEditTime: 2025-04-01 18:33:17
+ * @LastEditTime: 2025-04-01 19:32:48
  * @LastEditors: bo-qian bqian@shu.edu.cn
  * @Description: Readme
  * @FilePath: /viscosity_sintering/README.md
@@ -16,14 +16,14 @@
 This project simulates the process of viscous sintering, developed based on the MOOSE framework. It includes the solution of the Stokes equations and the Cahn-Hilliard equations.
 
 Related publication:  
-X. Dai, B. Qian, A. Kirshtein, Q. Yang, *A Phase-Field-Micromechanics Study on the Microstructural Evolution during Viscous Sintering*, (2024). https://doi.org/10.1016/j.powtec.2025.120823
+X. Dai, B. Qian, A. Kirshtein, Q. Yang, *A Phase-Field-Micromechanics Study on the Microstructural Evolution during Viscous Sintering*, (2024). *https://doi.org/10.1016/j.powtec.2025.120823*
 
 ## Environment Setup
 
 ### MOOSE Installation
 
 Refer to the MOOSE installation guide:  
-https://mooseframework.inl.gov/getting_started/installation/
+*https://mooseframework.inl.gov/getting_started/installation/*
 
 ### Project Setup
 

@@ -1,12 +1,11 @@
-/*** 
- * @Author: Bo Qian
+/*
+ * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-03-05 18:56:17
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-03-05 19:02:33
- * @LastEditors: Bo Qian
- * @Description: 
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-07 16:04:27
  * @FilePath: /viscosity_sintering/include/auxkernels/StressMagnitude.h
+ * @Description: Stress Magnitude AuxKernel
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #pragma once

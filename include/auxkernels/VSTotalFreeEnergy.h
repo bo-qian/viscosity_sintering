@@ -1,12 +1,11 @@
-/*** 
- * @Author: Bo Qian
- * @Date: 2024-12-26 14:03:10
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2024-12-26 14:30:24
- * @LastEditors: Bo Qian
- * @Description: 
+/*
+ * @Author: bo-qian bqian@shu.edu.cn
+ * @Date: 2025-02-11 17:10:06
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:40:23
  * @FilePath: /viscosity_sintering/include/auxkernels/VSTotalFreeEnergy.h
+ * @Description: Header file for VSTotalFreeEnergy class
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #pragma once

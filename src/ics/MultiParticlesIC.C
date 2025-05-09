@@ -1,12 +1,11 @@
 /*
- * @Author: Bo Qian
- * @Date: 2024-10-12 20:20:46
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-03-28 13:41:19
+ * @Author: bo-qian bqian@shu.edu.cn
+ * @Date: 2025-03-18 19:38:24
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @Description: 2D Initial Condition for MultiParticles
+ * @LastEditTime: 2025-05-08 12:29:17
  * @FilePath: /viscosity_sintering/src/ics/MultiParticlesIC.C
+ * @Description: Initial Condition for MultiParticlesIC
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #include "MultiParticlesIC.h"

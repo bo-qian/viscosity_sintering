@@ -1,12 +1,11 @@
-/*** 
- * @Author: Bo Qian
+/*
+ * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-02-13 14:19:45
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-02-13 14:31:03
- * @LastEditors: Bo Qian
- * @Description: VelocityMagnitude.h
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:40:34
  * @FilePath: /viscosity_sintering/include/auxkernels/VelocityMagnitude.h
+ * @Description: Header file for VelocityMagnitude class
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
  #pragma once

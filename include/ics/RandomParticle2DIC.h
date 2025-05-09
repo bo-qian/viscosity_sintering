@@ -2,12 +2,12 @@
  * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-03-20 17:42:46
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-03-28 13:54:38
+ * @LastEditTime: 2025-05-08 12:33:02
  * @FilePath: /viscosity_sintering/include/ics/RandomParticle2DIC.h
- * @Description: 
- * ${git_name} ${git_email} ${git_name_email}
- * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
+ * @Description: Header file for RandomParticle2DIC class
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
+
 
 #pragma once
 #include "InitialCondition.h"

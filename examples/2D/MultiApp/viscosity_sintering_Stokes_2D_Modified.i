@@ -21,24 +21,30 @@
     order = FIRST
     family = LAGRANGE
   [../]
+  [./mu]
+    order = FIRST
+    family = LAGRANGE
+  [../]
 []
 
 [Kernels]
   # Stokes kernels
   [./StokesX]
-    type = StokesX
+    type = StokesXModified
     variable = u
     dim = 2
     phase_field = c
+    chemical_potential = mu
     pressure = p
     y_velocity = v
 
   [../]
   [./StokesY]
-    type = StokesY
+    type = StokesYModified
     variable = v
     dim = 2
     phase_field = c
+    chemical_potential = mu
     pressure = p
     x_velocity = u
   [../]

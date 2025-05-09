@@ -1,12 +1,11 @@
 /*
- * @Author: Bo Qian
- * @Date: 2024-10-12 20:20:46
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-03-18 19:40:17
+ * @Author: bo-qian bqian@shu.edu.cn
+ * @Date: 2025-03-18 19:38:49
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @Description: Header File of MultiParticlesIC
+ * @LastEditTime: 2025-05-08 12:31:05
  * @FilePath: /viscosity_sintering/include/ics/MultiParticlesIC.h
+ * @Description: Header file for MultiParticlesIC class
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #pragma once

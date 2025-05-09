@@ -1,12 +1,11 @@
-/*** 
- * @Author: Bo Qian
- * @Date: 2024-10-29 11:01:08
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-03-05 18:39:23
- * @LastEditors: Bo Qian
- * @Description: Header file for Viscosity Sintering Material
+/*
+ * @Author: bo-qian bqian@shu.edu.cn
+ * @Date: 2025-02-11 17:10:06
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:44:42
  * @FilePath: /viscosity_sintering/include/materials/ViscositySinteringMaterial.h
+ * @Description: Header file for ViscositySinteringMaterial class
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #pragma once
@@ -68,6 +67,10 @@ class ViscositySinteringMaterial : public DerivativeMaterialInterface<Material>
     MaterialProperty<Real> & _stress_zy;
     MaterialProperty<Real> & _stress_zz;
 		MaterialProperty<RankTwoTensor> & _stress;
+		MaterialProperty<Real> & _stress_xx_modified;
+		MaterialProperty<Real> & _stress_yy_modified;
+		MaterialProperty<Real> & _stress_zz_modified;
+		MaterialProperty<RankTwoTensor> & _stress_modified;
 
 };
 

@@ -1,13 +1,13 @@
 /*
- * @Author: Bo Qian
+ * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-03-05 18:56:37
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-03-05 19:01:01
- * @LastEditors: Bo Qian
- * @Description: 
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:28:59
  * @FilePath: /viscosity_sintering/src/auxkernels/StressMagnitude.C
+ * @Description: AuxKernel for computing the stress magnitude
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
+
 
 #include "StressMagnitude.h"
 

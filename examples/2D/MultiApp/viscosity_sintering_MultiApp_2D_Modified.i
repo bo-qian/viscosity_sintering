@@ -93,22 +93,9 @@ domain_y = 120
     order = FIRST
     family = MONOMIAL
   [../]
-
-  [./Real_Pressure]
-    order = FIRST
-    family = MONOMIAL
-  [../]
 []
 
 [AuxKernels]
-  [./Real_Pressure]
-    type = RealPressure
-    variable = Real_Pressure
-    phase_field = c
-    pressure = p
-    chemical_potential = mu
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
   [./TotalFreeEnergy]
     type = VSTotalFreeEnergy
     variable = F_density
@@ -131,7 +118,7 @@ domain_y = 120
   [./stress_xx]
     type = RankTwoAux
     variable = Stress_xx
-    rank_two_tensor = stress
+    rank_two_tensor = stress_modified
     index_i = 0
     index_j = 0
     execute_on = 'INITIAL TIMESTEP_END'
@@ -147,7 +134,7 @@ domain_y = 120
   [./stress_yy]
     type = RankTwoAux
     variable = Stress_yy
-    rank_two_tensor = stress
+    rank_two_tensor = stress_modified
     index_i = 1
     index_j = 1
     execute_on = 'INITIAL TIMESTEP_END'
@@ -245,7 +232,7 @@ domain_y = 120
 [MultiApps]
   [./Stokes]
     type = FullSolveMultiApp
-    input_files = "viscosity_sintering_Stokes_2D.i"
+    input_files = "viscosity_sintering_Stokes_2D_Modified.i"
     execute_on = 'INITIAL TIMESTEP_END'
     clone_parent_mesh = true
   [../]
@@ -255,8 +242,8 @@ domain_y = 120
   [./CHToStokes]
     type = MultiAppCopyTransfer
     to_multi_app = Stokes
-    source_variable = c
-    variable = c
+    source_variable = 'c mu'
+    variable = 'c mu'
   [../]
   [./StokesToCH]
     type = MultiAppCopyTransfer
@@ -292,7 +279,7 @@ domain_y = 120
 
   dt = 0.01
   start_time = 0.0
-  end_time = 1.0
+  end_time = 0.15
 []
 
 [Outputs]

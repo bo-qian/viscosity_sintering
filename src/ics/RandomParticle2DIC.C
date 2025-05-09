@@ -2,9 +2,10 @@
  * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-03-20 17:42:15
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-03-28 14:29:42
+ * @LastEditTime: 2025-05-08 12:33:22
  * @FilePath: /viscosity_sintering/src/ics/RandomParticle2DIC.C
- * @Description: Random Particle Initial Condition
+ * @Description: Initial Condition for Random Particle Distribution in 2D
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #include "RandomParticle2DIC.h"

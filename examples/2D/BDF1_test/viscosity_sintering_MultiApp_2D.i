@@ -1,7 +1,8 @@
+
 dimension = 2
-mesh_ratio = 1.5
-domain_x = 160
-domain_y = 120
+mesh_ratio = 2.5
+domain_x = 240
+domain_y = 180
 
 [Mesh]
   type = GeneratedMesh
@@ -22,8 +23,8 @@ domain_y = 120
     [./InitialCondition]
       type = MultiParticlesIC
       dim = ${dimension}
-      delta = 3
-      radius = 20
+      delta = 1.5
+      radius = 30
       number_x = 2
       number_y = 1
       omega = 0.05
@@ -93,22 +94,9 @@ domain_y = 120
     order = FIRST
     family = MONOMIAL
   [../]
-
-  [./Real_Pressure]
-    order = FIRST
-    family = MONOMIAL
-  [../]
 []
 
 [AuxKernels]
-  [./Real_Pressure]
-    type = RealPressure
-    variable = Real_Pressure
-    phase_field = c
-    pressure = p
-    chemical_potential = mu
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
   [./TotalFreeEnergy]
     type = VSTotalFreeEnergy
     variable = F_density
@@ -202,8 +190,9 @@ domain_y = 120
     x_velocity = u
     y_velocity = v
     pressure = p
-    # kappa_C = 33.75
-    # mu_volume = 0.2
+    theta = 0.5
+    kappa_C = 33.75
+    mu_volume = 0.2
   [../]
 []
 
@@ -290,14 +279,14 @@ domain_y = 120
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 
-  dt = 0.01
+  dt = 0.02
   start_time = 0.0
-  end_time = 1.0
+  end_time = 4.0
 []
 
 [Outputs]
   exodus = true
-  time_step_interval = 1
+  time_step_interval = 20
   perf_graph = true
   checkpoint = true
   csv = true

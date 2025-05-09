@@ -1,19 +1,19 @@
 /*
  * @Author: bo-qian bqian@shu.edu.cn
- * @Date: 2025-02-11 17:10:06
+ * @Date: 2025-05-03 15:37:28
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-05-08 12:30:23
- * @FilePath: /viscosity_sintering/src/kernels/StokesY.C
+ * @LastEditTime: 2025-05-08 12:34:57
+ * @FilePath: /viscosity_sintering/src/kernels/StokesYModified.C
  * @Description: Kernel of y-component of the Stokes equation
  * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
-#include "StokesY.h"
+#include "StokesYModified.h"
 
-registerMooseObject("viscosity_sinteringApp", StokesY);
+registerMooseObject("viscosity_sinteringApp", StokesYModified);
 
 InputParameters
-StokesY::validParams()
+StokesYModified::validParams()
 {
   InputParameters params = Kernel::validParams();
   MooseEnum dims("2=2 3");
@@ -23,17 +23,21 @@ StokesY::validParams()
   params.addCoupledVar("z_velocity", 0, "z-velocity variable");
   params.addRequiredCoupledVar("pressure", "Pressure variable");
   params.addRequiredCoupledVar("phase_field", "variant of phase field");
+  params.addRequiredCoupledVar("chemical_potential", "chemical potential variable");
   return params;
 }
 
-StokesY::StokesY(const InputParameters & parameters)
+StokesYModified::StokesYModified(const InputParameters & parameters)
   : Kernel(parameters),
     _dim(getParam<MooseEnum>("dim")),
     _mu_eff(getMaterialProperty<Real>("mu_eff")),
+    _alpha(getMaterialProperty<Real>("alpha_value")),
     _kappa_c(getMaterialProperty<Real>("kappa_C_value")),
     _cvar(coupled("phase_field")),
     _c(coupledValue("phase_field")),
     _grad_c(coupledGradient("phase_field")),
+    _mu(coupledValue("chemical_potential")),
+    _grad_mu(coupledGradient("chemical_potential")),
     _pvar(coupled("pressure")),
     _p(coupledValue("pressure")),
     // Coupled variables
@@ -47,7 +51,7 @@ StokesY::StokesY(const InputParameters & parameters)
 }
 
 Real 
-StokesY::velocityTermY()
+StokesYModified::velocityTermY()
 {
   switch (_dim)
   {
@@ -64,13 +68,15 @@ StokesY::velocityTermY()
 }
 
 Real
-StokesY::pressureTermY()
+StokesYModified::pressureTermY()
 {
-  return _p[_qp] * _grad_test[_i][_qp](1);
+  const Real f = _alpha[_qp] * _c[_qp] * _c[_qp] * (1 - _c[_qp]) * (1 - _c[_qp]) +
+                 0.5 * _kappa_c[_qp] * _grad_c[_qp].norm_sq();
+  return (_p[_qp] - _c[_qp] * _mu[_qp] + f) * _grad_test[_i][_qp](1);
 }
 
 Real
-StokesY::surfaceTensionTermY()
+StokesYModified::surfaceTensionTermY()
 {
   switch (_dim)
   {
@@ -87,13 +93,13 @@ StokesY::surfaceTensionTermY()
 }
 
 Real 
-StokesY::computeQpResidual()
+StokesYModified::computeQpResidual()
 {
   return _mu_eff[_qp] * velocityTermY() + pressureTermY() - surfaceTensionTermY();
 }
 
 Real
-StokesY::computeQpJacobian()
+StokesYModified::computeQpJacobian()
 {
   switch (_dim)
   {
@@ -110,7 +116,7 @@ StokesY::computeQpJacobian()
 }
 
 Real
-StokesY::computeQpOffDiagJacobian(unsigned jvar)
+StokesYModified::computeQpOffDiagJacobian(unsigned jvar)
 {
   switch (_dim)
   {

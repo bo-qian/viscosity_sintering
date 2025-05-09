@@ -1,12 +1,11 @@
 /*
- * @Author: Bo Qian
- * @Date: 2024-10-29 11:01:43
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-03-18 20:01:54
+ * @Author: bo-qian bqian@shu.edu.cn
+ * @Date: 2025-02-11 17:10:06
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @Description: Materials for Viscosity Sintering App
+ * @LastEditTime: 2025-05-08 12:44:35
  * @FilePath: /viscosity_sintering/src/materials/ViscositySinteringMaterial.C
+ * @Description: Materials for Viscosity Sintering App
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #include "ViscositySinteringMaterial.h"
@@ -80,7 +79,11 @@ ViscositySinteringMaterial::ViscositySinteringMaterial(const InputParameters & p
     _stress_zx(declareProperty<Real>("stress_zx")),
     _stress_zy(declareProperty<Real>("stress_zy")),
     _stress_zz(declareProperty<Real>("stress_zz")),
-    _stress(declareProperty<RankTwoTensor>("stress"))
+    _stress(declareProperty<RankTwoTensor>("stress")),
+    _stress_xx_modified(declareProperty<Real>("stress_xx_modified")),
+    _stress_yy_modified(declareProperty<Real>("stress_yy_modified")),
+    _stress_zz_modified(declareProperty<Real>("stress_zz_modified")),
+    _stress_modified(declareProperty<RankTwoTensor>("stress_modified"))
 {
 }
 
@@ -143,5 +146,14 @@ ViscositySinteringMaterial::computeQpProperties()
     _stress_xx[_qp], _stress_xy[_qp], _stress_xz[_qp],
     _stress_yx[_qp], _stress_yy[_qp], _stress_yz[_qp],
     _stress_zx[_qp], _stress_zy[_qp], _stress_zz[_qp]
+  );
+
+  _stress_xx_modified[_qp] = 2 * _mu_eff[_qp] * _grad_u[_qp](0) + _p[_qp];
+  _stress_yy_modified[_qp] = 2 * _mu_eff[_qp] * _grad_v[_qp](1) + _p[_qp];
+  _stress_zz_modified[_qp] = 2 * _mu_eff[_qp] * _grad_w[_qp](2) + _p[_qp];
+  _stress_modified[_qp] = RankTwoTensor(
+    _stress_xx_modified[_qp], _stress_xy[_qp], _stress_xz[_qp],
+    _stress_yx[_qp], _stress_yy_modified[_qp], _stress_yz[_qp],
+    _stress_zx[_qp], _stress_zy[_qp], _stress_zz_modified[_qp]
   );
 }

@@ -1,12 +1,11 @@
 /*
- * @Author: Bo Qian
- * @Date: 2024-11-11 12:27:32
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-02-19 19:25:16
- * @LastEditors: Bo Qian
- * @Description: Kernel of the mobility term of Cahn-Hilliard equation
+ * @Author: bo-qian bqian@shu.edu.cn
+ * @Date: 2025-02-11 17:10:06
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:36:35
  * @FilePath: /viscosity_sintering/src/kernels/CHMob.C
+ * @Description: Kernel of the mobility term of Cahn-Hilliard equation
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #include "CHMob.h"

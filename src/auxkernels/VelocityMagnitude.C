@@ -1,13 +1,13 @@
 /*
- * @Author: Bo Qian
+ * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-02-13 14:20:19
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-02-13 15:01:14
- * @LastEditors: Bo Qian
- * @Description: VelocityMagnitude.C
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:37:18
  * @FilePath: /viscosity_sintering/src/auxkernels/VelocityMagnitude.C
-*/
+ * @Description: Auxkernel of the velocity magnitude
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
+ */
+
 
 #include "VelocityMagnitude.h"
 

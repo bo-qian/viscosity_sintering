@@ -1,12 +1,11 @@
-/*** 
- * @Author: Bo Qian
+/*
+ * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-02-21 15:26:07
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-03-05 18:39:40
- * @LastEditors: Bo Qian
- * @Description: Materials for Stokes equation
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:32:03
  * @FilePath: /viscosity_sintering/include/materials/StokesMaterial.h
+ * @Description: Header file for StokesMaterial class
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #pragma once
@@ -43,6 +42,7 @@ class StokesMaterial : public DerivativeMaterialInterface<Material>
 		MaterialProperty<Real> & _Nc;
 		MaterialProperty<Real> & _mu_eff;
 		MaterialProperty<Real> & _kappa_C;
+    MaterialProperty<Real> & _alpha_var;
 
 };
 

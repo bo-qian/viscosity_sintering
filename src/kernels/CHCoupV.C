@@ -1,12 +1,11 @@
 /*
- * @Author: Bo Qian
- * @Date: 2024-10-12 20:20:46
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-02-21 19:48:57
- * @LastEditors: Bo Qian
- * @Description: Kernel for CH equation coupled with velocity
+ * @Author: bo-qian bqian@shu.edu.cn
+ * @Date: 2025-02-11 17:10:06
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:36:53
  * @FilePath: /viscosity_sintering/src/kernels/CHCoupV.C
+ * @Description: Kernel of the velocity term of Cahn-Hilliard equation
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #include "CHCoupV.h"

@@ -1,12 +1,11 @@
 /*
- * @Author: Bo Qian
+ * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-02-21 15:25:19
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2025-03-18 19:55:11
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @Description: Materials for Stokes equation
+ * @LastEditTime: 2025-05-08 12:28:28
  * @FilePath: /viscosity_sintering/src/materials/StokesMaterial.C
+ * @Description: Materials for Stokes equation
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #include "StokesMaterial.h"
@@ -54,7 +53,8 @@ StokesMaterial::StokesMaterial(const InputParameters & parameters)
     _grad_p(coupledGradient("pressure")),
     _Nc(declareProperty<Real>("Nc")),
     _mu_eff(declareProperty<Real>("mu_eff")),
-    _kappa_C(declareProperty<Real>("kappa_C_value"))
+    _kappa_C(declareProperty<Real>("kappa_C_value")),
+    _alpha_var(declareProperty<Real>("alpha_value"))
 {
 }
 
@@ -69,4 +69,7 @@ StokesMaterial::computeQpProperties()
 
   // Compute kappa_C
   _kappa_C[_qp] = _kc;
+
+  // Compute alpha
+  _alpha_var[_qp] = _alpha;
 }

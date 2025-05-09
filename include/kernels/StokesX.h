@@ -1,12 +1,11 @@
-/*** 
- * @Author: Bo Qian
- * @Date: 2024-11-05 14:05:01
- * @Email: bqian@shu.edu.cn
- * @Location: Shanghai University
- * @LastEditTime: 2024-12-25 16:29:57
- * @LastEditors: Bo Qian
- * @Description: Kernel of x-component of the Stokes equation
+/*
+ * @Author: bo-qian bqian@shu.edu.cn
+ * @Date: 2025-02-11 17:10:06
+ * @LastEditors: bo-qian bqian@shu.edu.cn
+ * @LastEditTime: 2025-05-08 12:38:57
  * @FilePath: /viscosity_sintering/include/kernels/StokesX.h
+ * @Description: Kernel of x-component of the Stokes equation
+ * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
 
 #pragma once

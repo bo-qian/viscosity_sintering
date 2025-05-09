@@ -1,21 +1,22 @@
 /*
  * @Author: bo-qian bqian@shu.edu.cn
- * @Date: 2025-02-11 17:10:06
+ * @Date: 2025-05-03 15:38:49
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-05-08 12:37:55
- * @FilePath: /viscosity_sintering/include/kernels/StokesZ.h
- * @Description: Kernel of z-component of the Stokes equation
+ * @LastEditTime: 2025-05-08 12:33:59
+ * @FilePath: /viscosity_sintering/include/kernels/StokesZModified.h
+ * @Description: Header file for StokesZModified class
  * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
  */
+
 
 #pragma once
 
 #include "Kernel.h"
 
-class StokesZ : public Kernel
+class StokesZModified : public Kernel
 {
 public:
-	StokesZ(const InputParameters & parameters);
+	StokesZModified(const InputParameters & parameters);
 	static InputParameters validParams();
 
 protected:
@@ -29,11 +30,14 @@ protected:
 	virtual Real surfaceTensionTermZ();
 
 	const MaterialProperty<Real> & _mu_eff;
+	const MaterialProperty<Real> & _alpha;
 	const MaterialProperty<Real> & _kappa_c;
 
 	const unsigned int _cvar;
 	const VariableValue & _c;
 	const VariableGradient & _grad_c;
+	const VariableValue & _mu;
+	const VariableGradient & _grad_mu;
 	const unsigned int _pvar;
 	const VariableValue & _p;
 

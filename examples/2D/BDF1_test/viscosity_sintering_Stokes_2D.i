@@ -73,8 +73,8 @@
     x_velocity = u
     y_velocity = v
     pressure = p
-    # kappa_C = 33.75
-    # mu_volume = 0.2
+    kappa_C = 33.75
+    mu_volume = 0.2
   [../]
 []
 

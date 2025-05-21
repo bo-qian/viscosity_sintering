@@ -30,7 +30,8 @@
     order = FIRST
     family = LAGRANGE
     [./InitialCondition]
-      type = MultiParticles_2D
+      type = MultiParticlesIC
+      dim = 2
       delta = 3
       radius = 20
       number_x = 2
@@ -73,7 +74,6 @@
   [./TotalFreeEnergy]
     type = VSTotalFreeEnergy
     variable = F_density
-    phase_field = c
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./VelocityMagnitude]

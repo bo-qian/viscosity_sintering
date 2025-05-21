@@ -73,7 +73,6 @@
   [./TotalFreeEnergy]
     type = VSTotalFreeEnergy
     variable = F_density
-    phase_field = c
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./VelocityMagnitude]
@@ -261,7 +260,7 @@
 
   dt = 0.01
   start_time = 0.0
-  end_time = 3.0
+  end_time = 0.20
 
   # [./Adaptivity]
   #   refine_fraction = 0.3

@@ -4,7 +4,8 @@
 #SBATCH --error=%j_moose_run.err      # 临时 .err 文件名
 #SBATCH --nodes=1
 #SBATCH --ntasks=2
-#SBATCH --nodelist=node3
+#SBATCH --nodelist=node1
+#SBATCH --mem=200G
 
 # 加载 Conda 环境
 source ~/.bashrc

@@ -2,7 +2,7 @@
  * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-02-21 15:25:19
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-05-08 12:28:28
+ * @LastEditTime: 2025-05-14 14:52:24
  * @FilePath: /viscosity_sintering/src/materials/StokesMaterial.C
  * @Description: Materials for Stokes equation
  * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
@@ -54,7 +54,19 @@ StokesMaterial::StokesMaterial(const InputParameters & parameters)
     _Nc(declareProperty<Real>("Nc")),
     _mu_eff(declareProperty<Real>("mu_eff")),
     _kappa_C(declareProperty<Real>("kappa_C_value")),
-    _alpha_var(declareProperty<Real>("alpha_value"))
+    _alpha_var(declareProperty<Real>("alpha_value")),
+    _F_loc(declareProperty<Real>("F_loc")),
+    _F_grad(declareProperty<Real>("F_grad")),
+    _stress_xx(declareProperty<Real>("stress_xx")),
+    _stress_xy(declareProperty<Real>("stress_xy")),
+    _stress_xz(declareProperty<Real>("stress_xz")),
+    _stress_yx(declareProperty<Real>("stress_yx")),
+    _stress_yy(declareProperty<Real>("stress_yy")),
+    _stress_yz(declareProperty<Real>("stress_yz")),
+    _stress_zx(declareProperty<Real>("stress_zx")),
+    _stress_zy(declareProperty<Real>("stress_zy")),
+    _stress_zz(declareProperty<Real>("stress_zz")),
+    _stress(declareProperty<RankTwoTensor>("stress"))
 {
 }
 
@@ -72,4 +84,26 @@ StokesMaterial::computeQpProperties()
 
   // Compute alpha
   _alpha_var[_qp] = _alpha;
+
+    // Compute F_loc
+  _F_loc[_qp] = _alpha * _c[_qp] * _c[_qp] * (1 - _c[_qp]) * (1 - _c[_qp]);
+
+  // Compute f_grad
+  _F_grad[_qp] = 0.5 * _kc * _grad_c[_qp].norm_sq();
+
+  // Compute stress components
+  _stress_xx[_qp] = 2 * _mu_eff[_qp] * _grad_u[_qp](0) + (_p[_qp] - _F_loc[_qp] - _F_grad[_qp]);
+  _stress_xy[_qp] = _mu_eff[_qp] * (_grad_v[_qp](0) + _grad_u[_qp](1));
+  _stress_xz[_qp] = _mu_eff[_qp] * (_grad_w[_qp](0) + _grad_u[_qp](2));
+  _stress_yx[_qp] = _mu_eff[_qp] * (_grad_u[_qp](1) + _grad_v[_qp](0));
+  _stress_yy[_qp] = 2 * _mu_eff[_qp] * _grad_v[_qp](1) + (_p[_qp] - _F_loc[_qp] - _F_grad[_qp]);
+  _stress_yz[_qp] = _mu_eff[_qp] * (_grad_w[_qp](1) + _grad_v[_qp](2));
+  _stress_zx[_qp] = _mu_eff[_qp] * (_grad_u[_qp](2) + _grad_w[_qp](0));
+  _stress_zy[_qp] = _mu_eff[_qp] * (_grad_v[_qp](2) + _grad_w[_qp](1));
+  _stress_zz[_qp] = 2 * _mu_eff[_qp] * _grad_w[_qp](2) + (_p[_qp] - _F_loc[_qp] - _F_grad[_qp]);
+  _stress[_qp] = RankTwoTensor(
+    _stress_xx[_qp], _stress_xy[_qp], _stress_xz[_qp],
+    _stress_yx[_qp], _stress_yy[_qp], _stress_yz[_qp],
+    _stress_zx[_qp], _stress_zy[_qp], _stress_zz[_qp]
+  );
 }

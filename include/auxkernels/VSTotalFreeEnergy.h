@@ -2,7 +2,7 @@
  * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-02-11 17:10:06
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-05-08 12:40:23
+ * @LastEditTime: 2025-05-13 19:12:47
  * @FilePath: /viscosity_sintering/include/auxkernels/VSTotalFreeEnergy.h
  * @Description: Header file for VSTotalFreeEnergy class
  * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
@@ -22,8 +22,6 @@ class VSTotalFreeEnergy : public AuxKernel
   protected:
     virtual Real computeValue() override;
     
-    const VariableValue & _c;
-    const VariableGradient & _grad_c;
     const MaterialProperty<Real> & _F_loc;
-    const MaterialProperty<Real> & _kappa_C;
+    const MaterialProperty<Real> & _F_grad;
 };

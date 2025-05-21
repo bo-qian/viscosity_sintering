@@ -1,18 +1,34 @@
 dimension = 2
 mesh_ratio = 1.5
-domain_x = 160
-domain_y = 120
+domain_x = 240
+domain_y = 180
+
+# [Mesh]
+#   type = GeneratedMesh
+#   dim = ${dimension}
+#   nx = ${fparse domain_x * mesh_ratio}
+#   ny = ${fparse domain_y * mesh_ratio}
+#   xmin = 0
+#   xmax = ${domain_x}
+#   ymin = 0
+#   ymax = ${domain_y}
+#   elem_type = QUAD8
+# []
 
 [Mesh]
-  type = GeneratedMesh
-  dim = ${dimension}
-  nx = ${fparse domain_x * mesh_ratio}
-  ny = ${fparse domain_y * mesh_ratio}
-  xmin = 0
-  xmax = ${domain_x}
-  ymin = 0
-  ymax = ${domain_y}
-  elem_type = TRI6
+  [gen]
+    type = DistributedRectilinearMeshGenerator
+    dim = 2
+    xmin = 0
+    xmax = ${domain_x}
+    ymin = 0
+    ymax = ${domain_y}
+    nx = ${fparse domain_x * mesh_ratio}
+    ny = ${fparse domain_y * mesh_ratio}
+    elem_type = QUAD4
+  []
+  second_order = true
+  parallel_type = distributed
 []
 
 [Variables]
@@ -23,7 +39,7 @@ domain_y = 120
       type = MultiParticlesIC
       dim = ${dimension}
       delta = 3
-      radius = 20
+      radius = 30
       number_x = 2
       number_y = 1
       omega = 0.05
@@ -104,15 +120,12 @@ domain_y = 120
   [./Real_Pressure]
     type = RealPressure
     variable = Real_Pressure
-    phase_field = c
     pressure = p
-    chemical_potential = mu
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./TotalFreeEnergy]
     type = VSTotalFreeEnergy
     variable = F_density
-    phase_field = c
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./VelocityMagnitude]
@@ -245,7 +258,7 @@ domain_y = 120
 [MultiApps]
   [./Stokes]
     type = FullSolveMultiApp
-    input_files = "viscosity_sintering_Stokes_2D.i"
+    input_files = "viscosity_sintering_Stokes_2D_KSP.i"
     execute_on = 'INITIAL TIMESTEP_END'
     clone_parent_mesh = true
   [../]
@@ -292,12 +305,16 @@ domain_y = 120
 
   dt = 0.01
   start_time = 0.0
-  end_time = 1.0
+  end_time = 0.20
 []
 
 [Outputs]
-  exodus = true
-  time_step_interval = 1
+  [exo]
+    type = Exodus
+    execute_on = 'final'
+    # mesh_serializer = true
+  []
+  time_step_interval = 2
   perf_graph = true
   checkpoint = true
   csv = true

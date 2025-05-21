@@ -2,7 +2,7 @@
  * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-05-03 15:37:28
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-05-08 12:34:57
+ * @LastEditTime: 2025-05-13 08:58:35
  * @FilePath: /viscosity_sintering/src/kernels/StokesYModified.C
  * @Description: Kernel of y-component of the Stokes equation
  * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
@@ -33,6 +33,8 @@ StokesYModified::StokesYModified(const InputParameters & parameters)
     _mu_eff(getMaterialProperty<Real>("mu_eff")),
     _alpha(getMaterialProperty<Real>("alpha_value")),
     _kappa_c(getMaterialProperty<Real>("kappa_C_value")),
+    _f_loc(getMaterialProperty<Real>("F_loc")),
+    _f_grad(getMaterialProperty<Real>("F_grad")),
     _cvar(coupled("phase_field")),
     _c(coupledValue("phase_field")),
     _grad_c(coupledGradient("phase_field")),
@@ -70,9 +72,7 @@ StokesYModified::velocityTermY()
 Real
 StokesYModified::pressureTermY()
 {
-  const Real f = _alpha[_qp] * _c[_qp] * _c[_qp] * (1 - _c[_qp]) * (1 - _c[_qp]) +
-                 0.5 * _kappa_c[_qp] * _grad_c[_qp].norm_sq();
-  return (_p[_qp] - _c[_qp] * _mu[_qp] + f) * _grad_test[_i][_qp](1);
+  return (_p[_qp] - _c[_qp] * _mu[_qp] + (_f_loc[_qp] + _f_grad[_qp])) * _grad_test[_i][_qp](1);
 }
 
 Real

@@ -2,7 +2,7 @@
  * @Author: bo-qian bqian@shu.edu.cn
  * @Date: 2025-05-03 15:38:44
  * @LastEditors: bo-qian bqian@shu.edu.cn
- * @LastEditTime: 2025-05-07 14:09:41
+ * @LastEditTime: 2025-05-13 08:55:17
  * @FilePath: /viscosity_sintering/include/kernels/StokesXModified.h
  * @Description: Kernel of x-component of the Stokes equation
  * Copyright (c) 2025 by Bo Qian, All Rights Reserved. 
@@ -34,6 +34,8 @@ protected:
 	const MaterialProperty<Real> & _mu_eff;
 	const MaterialProperty<Real> & _alpha;
 	const MaterialProperty<Real> & _kappa_c;
+	const MaterialProperty<Real> & _f_loc;
+	const MaterialProperty<Real> & _f_grad;
 
 	const unsigned int _cvar;
 	const VariableValue & _c;

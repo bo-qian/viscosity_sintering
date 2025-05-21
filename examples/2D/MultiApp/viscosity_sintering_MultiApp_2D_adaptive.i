@@ -12,7 +12,28 @@ domain_y = 180
   xmax = ${domain_x}
   ymin = 0
   ymax = ${domain_y}
-  elem_type = TRI6
+  elem_type = QUAD8
+[]
+
+[Adaptivity]
+  marker = marker
+  steps = 3
+
+  [./Indicators]
+    [./my_error]
+      type = GradientJumpIndicator
+      variable = c
+    [../]
+  [../]
+
+  [./Markers]
+    [./marker]
+      type = ErrorFractionMarker
+      indicator = my_error
+      refine = 0.3
+      coarsen = 0.2
+    [../]
+  [../]
 []
 
 [Variables]
@@ -93,9 +114,20 @@ domain_y = 180
     order = FIRST
     family = MONOMIAL
   [../]
+
+  [./Real_Pressure]
+    order = FIRST
+    family = MONOMIAL
+  [../]
 []
 
 [AuxKernels]
+  [./Real_Pressure]
+    type = RealPressure
+    variable = Real_Pressure
+    pressure = p
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
   [./TotalFreeEnergy]
     type = VSTotalFreeEnergy
     variable = F_density
@@ -110,14 +142,14 @@ domain_y = 180
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./StressMagnitude]
-    type = StressMagnitudeModified
+    type = StressMagnitude
     variable = Stress_Magnitude
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./stress_xx]
     type = RankTwoAux
     variable = Stress_xx
-    rank_two_tensor = stress_modified
+    rank_two_tensor = stress
     index_i = 0
     index_j = 0
     execute_on = 'INITIAL TIMESTEP_END'
@@ -125,7 +157,7 @@ domain_y = 180
   [./stress_xy]
     type = RankTwoAux
     variable = Stress_xy
-    rank_two_tensor = stress_modified
+    rank_two_tensor = stress
     index_i = 0
     index_j = 1
     execute_on = 'INITIAL TIMESTEP_END'
@@ -133,7 +165,7 @@ domain_y = 180
   [./stress_yy]
     type = RankTwoAux
     variable = Stress_yy
-    rank_two_tensor = stress_modified
+    rank_two_tensor = stress
     index_i = 1
     index_j = 1
     execute_on = 'INITIAL TIMESTEP_END'
@@ -141,7 +173,7 @@ domain_y = 180
   [./stress_yx]
     type = RankTwoAux
     variable = Stress_yx
-    rank_two_tensor = stress_modified
+    rank_two_tensor = stress
     index_i = 1
     index_j = 0
     execute_on = 'INITIAL TIMESTEP_END'
@@ -193,20 +225,20 @@ domain_y = 180
   [../]
 []
 
-[UserObjects/study]
-  type = RepeatableRayStudy
-  names = 'neck_length shrinkage_length'
-  start_points = '${fparse 0.5*domain_x} 0 0
-                  0 ${fparse 0.5*domain_y} 0'
-  end_points = '${fparse 0.5*domain_x} ${fparse domain_y} 0
-                ${fparse domain_x} ${fparse 0.5*domain_y} 0'
-  execute_on = 'INITIAL TIMESTEP_END'
-[]
+# [UserObjects/study]
+#   type = RepeatableRayStudy
+#   names = 'neck_length shrinkage_length'
+#   start_points = '${fparse 0.5*domain_x} 0 0
+#                   0 ${fparse 0.5*domain_y} 0'
+#   end_points = '${fparse 0.5*domain_x} ${fparse domain_y} 0
+#                 ${fparse domain_x} ${fparse 0.5*domain_y} 0'
+#   execute_on = 'INITIAL TIMESTEP_END'
+# []
 
-[RayKernels/c_integral]
-  type = VariableIntegralRayKernel
-  variable = c
-[]
+# [RayKernels/c_integral]
+#   type = VariableIntegralRayKernel
+#   variable = c
+# []
 
 [Postprocessors]
   [./total_energy]
@@ -214,35 +246,42 @@ domain_y = 180
     variable = F_density
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
-  [./neck_length]
-    type = RayIntegralValue
-    ray_kernel = c_integral
-    ray = neck_length
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
-  [./shrinkage_length]
-    type = RayIntegralValue
-    ray_kernel = c_integral
-    ray = shrinkage_length
-    execute_on = 'INITIAL TIMESTEP_END'
-  [../]
+#   [./neck_length]
+#     type = RayIntegralValue
+#     ray_kernel = c_integral
+#     ray = neck_length
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   [../]
+#   [./shrinkage_length]
+#     type = RayIntegralValue
+#     ray_kernel = c_integral
+#     ray = shrinkage_length
+#     execute_on = 'INITIAL TIMESTEP_END'
+#   [../]
 []
 
 [MultiApps]
   [./Stokes]
     type = FullSolveMultiApp
-    input_files = "viscosity_sintering_Stokes_2D_Modified.i"
+    input_files = "viscosity_sintering_Stokes_2D_adaptive.i"
     execute_on = 'INITIAL TIMESTEP_END'
-    clone_parent_mesh = true
+    # clone_parent_mesh = true
   [../]
 []
 
 [Transfers]
+  [./marker_to_sub]
+    type = LevelSetMeshRefinementTransfer
+    to_multi_app = Stokes
+    source_variable = marker
+    variable = marker
+    check_multiapp_execute_on = false
+  [../]
   [./CHToStokes]
     type = MultiAppCopyTransfer
     to_multi_app = Stokes
-    source_variable = 'c mu'
-    variable = 'c mu'
+    source_variable = c
+    variable = c
   [../]
   [./StokesToCH]
     type = MultiAppCopyTransfer
@@ -264,7 +303,7 @@ domain_y = 180
 [Executioner]
   type = Transient
   solve_type = NEWTON
-  # verbose = true
+  verbose = true
 
   # petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
   # petsc_options_value = 'lu 2500 mumps'
@@ -278,12 +317,12 @@ domain_y = 180
 
   dt = 0.01
   start_time = 0.0
-  end_time = 5.0
+  end_time = 0.20
 []
 
 [Outputs]
   exodus = true
-  time_step_interval = 5
+  time_step_interval = 2
   perf_graph = true
   checkpoint = true
   csv = true

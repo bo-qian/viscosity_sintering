@@ -1,5 +1,3 @@
-dimension = 3
-
 [Mesh]
 []
 
@@ -9,10 +7,6 @@ dimension = 3
     family = LAGRANGE
   [../]
   [./v]
-    order = SECOND
-    family = LAGRANGE
-  [../]
-  [./w]
     order = SECOND
     family = LAGRANGE
   [../]
@@ -34,37 +28,26 @@ dimension = 3
   [./StokesX]
     type = StokesX
     variable = u
-    dim = ${dimension}
+    dim = 2
     phase_field = c
     pressure = p
     y_velocity = v
-    z_velocity = w
+
   [../]
   [./StokesY]
     type = StokesY
     variable = v
-    dim = ${dimension}
+    dim = 2
     phase_field = c
     pressure = p
     x_velocity = u
-    z_velocity = w
-  [../]
-  [./StokesZ]
-    type = StokesZ
-    variable = w
-    dim = ${dimension}
-    phase_field = c
-    pressure = p
-    x_velocity = u
-    y_velocity = v
   [../]
   [./Incompressibility]
     type = Incompressibility
     variable = p
-    dim = ${dimension}
+    dim = 2
     x_velocity = u
     y_velocity = v
-    z_velocity = w
   [../]
 []
 
@@ -72,19 +55,13 @@ dimension = 3
   [./bcs_u]
     type = DirichletBC
     variable = u
-    boundary = '0 1 2 3 4 5'
+    boundary = '0 1 2 3'
     value = 0
   [../]
   [./bcs_v]
     type = DirichletBC
     variable = v
-    boundary = '0 1 2 3 4 5'
-    value = 0
-  [../]
-  [./bcs_w]
-    type = DirichletBC
-    variable = w
-    boundary = '0 1 2 3 4 5'
+    boundary = '0 1 2 3'
     value = 0
   [../]
 []
@@ -95,28 +72,60 @@ dimension = 3
     cvar = c
     x_velocity = u
     y_velocity = v
-    z_velocity = w
     pressure = p
+    # kappa_C = 33.75
+    # mu_volume = 0.2
   [../]
 []
 
-[Preconditioning]
-  [./cw_coupling]
-    type = SMP
-    full = true
-  [../]
+[Problem]
+  type = FEProblem
+  mass_matrix = 'Incompressibility'
+  extra_tag_matrices = 'Incompressibility'
+  use_pressure_mass_matrix = true
 []
+
+[Preconditioning]
+  [FSP]
+    type = FSP
+    topsplit = 'up'
+
+    [up]
+      splitting = 'u v p'
+      vars = 'u:u v:v p:p'       # 显式绑定变量名到分块
+      splitting_type = schur
+      schur_precondition = selfp
+      petsc_options_value = '-pc_type fieldsplit -pc_fieldsplit_type schur -fieldsplit_u_pc_type hypre -fieldsplit_v_pc_type hypre -fieldsplit_p_pc_type jacobi'
+    []
+  []
+[]
+
+# [Preconditioning]
+#   [./CH_Stokes]
+#     type = SMP
+#     full = true
+#     petsc_options_iname = '-pc_type -pc_factor_mat_solver_type -ksp_gmres_restart'
+#     petsc_options_value = 'lu mumps 2500'
+#   [../]
+# []
 
 [Executioner]
   type = Steady
   solve_type = NEWTON
 
-  petsc_options_iname = '-pc_type -ksp_gmres_restart -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu 2500 mumps'
-
+  l_tol = 1e-7
+  l_abs_tol = 1e-10
+  l_max_its = 100
+  
   nl_rel_tol = 1e-15
   nl_abs_tol = 1e-6
 []
 
 [Outputs]
+  # perf_graph = true
+  # execute_on = 'TIMESTEP_END'
+[]
+
+[Debug]
+  show_var_residual_norms = true
 []

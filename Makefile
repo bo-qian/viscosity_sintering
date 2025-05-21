@@ -38,7 +38,7 @@ include $(FRAMEWORK_DIR)/moose.mk
 # FUNCTIONAL_EXPANSION_TOOLS  := no
 # GEOCHEMISTRY                := no
 # HEAT_TRANSFER               := no
-# LEVEL_SET                   := no
+LEVEL_SET                   := yes
 # MISC                        := no
 NAVIER_STOKES               := yes
 # OPTIMIZATION                := no

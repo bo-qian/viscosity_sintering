@@ -2,9 +2,9 @@
 #SBATCH --job-name=VS2D
 #SBATCH --output=%j_moose_run.out     # Temporary .out filename
 #SBATCH --error=%j_moose_run.err      # Temporary .err filename
-#SBATCH --nodes=3
-#SBATCH --ntasks=9
-# SBATCH --nodelist=node1,node2,node3
+#SBATCH --nodes=1
+#SBATCH --ntasks=32
+#SBATCH --nodelist=node1
 
 # Load Conda environment
 source ~/.bashrc
@@ -31,7 +31,7 @@ echo "Start Time: $(date)"  | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
 echo "===========================================" | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
 
 # Run MOOSE
-mpiexec -n $SLURM_NTASKS ./viscosity_sintering-opt -i ./examples/2D/MultiApp/viscosity_sintering_MultiApp_2D.i Outputs/file_base="${OUTPUT_DIR}/${TASK_ID}_VS2D" --color off 2>&1 | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
+mpiexec -n $SLURM_NTASKS ./viscosity_sintering-opt -i ./examples/2D/MultiApp/viscosity_sintering_MultiApp_2D_Modified.i Outputs/file_base="${OUTPUT_DIR}/${TASK_ID}_VS2D" --color off 2>&1 | tee -a "${OUTPUT_DIR}/${TASK_ID}.log"
 
 # Record end time
 end_time=$(date +%s) 

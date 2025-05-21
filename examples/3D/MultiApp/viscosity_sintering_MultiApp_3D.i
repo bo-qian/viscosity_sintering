@@ -1,16 +1,41 @@
+dimension = 3
+mesh_ratio = 1.0
+domain_x = 100
+domain_y = 60
+domain_z = 60
+
+# [Mesh]
+#   type = GeneratedMesh
+#   dim = ${dimension}
+#   nx = ${fparse domain_x * mesh_ratio}
+#   ny = ${fparse domain_y * mesh_ratio}
+#   nz = ${fparse domain_z * mesh_ratio}
+#   xmin = 0
+#   xmax = ${domain_x}
+#   ymin = 0
+#   ymax = ${domain_y}
+#   zmin = 0
+#   zmax = ${domain_z}
+#   elem_type = TET10
+# []
+
 [Mesh]
-  type = GeneratedMesh
-  dim = 3
-  nx = 160
-  ny = 120
-  nz = 120
-  xmin = 0
-  xmax = 160
-  ymin = 0
-  ymax = 120
-  zmin = 0
-  zmax = 120
-  elem_type = TET10
+  [gen]
+    type = DistributedRectilinearMeshGenerator
+    dim = ${dimension}
+    xmin = 0
+    xmax = ${domain_x}
+    ymin = 0
+    ymax = ${domain_y}
+    zmin = 0
+    zmax = ${domain_z}
+    nx = ${fparse domain_x * mesh_ratio}
+    ny = ${fparse domain_y * mesh_ratio}
+    nz = ${fparse domain_z * mesh_ratio}
+    elem_type = HEX8
+  []
+  second_order = true
+  parallel_type = distributed
 []
 
 [Variables]
@@ -19,14 +44,14 @@
     family = LAGRANGE
     [./InitialCondition]
       type = MultiParticlesIC
-      dim = 3
+      dim = ${dimension}
       delta = 3
-      radius = 20
+      radius = 15
       number_x = 2
       number_y = 1
       number_z = 1
       omega = 0.05
-      domain = '160 120 120'
+      domain = '${domain_x} ${domain_y} ${domain_z}'
     [../]
   [../]
   [./mu]
@@ -68,11 +93,11 @@
     order = FIRST
     family = MONOMIAL
   [../]
-  [Stress_xx]
+  [./Stress_xx]
     order = FIRST
     family = MONOMIAL
   [../]
-  [Stress_xy]
+  [./Stress_xy]
     order = FIRST
     family = MONOMIAL
   [../]
@@ -80,11 +105,11 @@
     order = FIRST
     family = MONOMIAL
   [../]
-  [Stress_yy]
+  [./Stress_yy]
     order = FIRST
     family = MONOMIAL
   [../]
-  [Stress_yx]
+  [./Stress_yx]
     order = FIRST
     family = MONOMIAL
   [../]
@@ -104,19 +129,22 @@
     order = FIRST
     family = MONOMIAL
   [../]
+  [./Real_Pressure]
+    order = FIRST
+    family = MONOMIAL
+  [../]
 []
 
 [AuxKernels]
   [./TotalFreeEnergy]
     type = VSTotalFreeEnergy
     variable = F_density
-    phase_field = c
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
   [./VelocityMagnitude]
     type = VelocityMagnitude
     variable = V_Magnitude
-    dim = 3
+    dim = ${dimension}
     x_velocity = u
     y_velocity = v
     z_velocity = w
@@ -199,6 +227,12 @@
     index_j = 2
     execute_on = 'INITIAL TIMESTEP_END'
   [../]
+  [./Real_Pressure]
+    type = RealPressure
+    variable = Real_Pressure
+    pressure = p
+    execute_on = 'INITIAL TIMESTEP_END'
+  [../]
 []
 
 [Kernels]
@@ -278,6 +312,20 @@
   #   ray = shrinkage_length
   #   execute_on = 'INITIAL TIMESTEP_END'
   # [../]
+  [total]
+    type = MemoryUsage
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [per_proc]
+    type = MemoryUsage
+    value_type = "average"
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
+  [max_proc]
+    type = MemoryUsage
+    value_type = "max_process"
+    execute_on = 'INITIAL TIMESTEP_END'
+  []
 []
 
 [Preconditioning]
